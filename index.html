@@ -1,0 +1,1920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>V-Taper Protocol & NutriBR</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card: #111827;
+      --card-2: #1e293b;
+      --border: #26334d;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --emerald: #10b981;
+      --emerald-dim: rgba(16, 185, 129, 0.15);
+      --cyan: #06b6d4;
+      --amber: #f59e0b;
+      --danger: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding-top: 64px;
+      padding-bottom: 155px;
+      overflow-x: hidden;
+      line-height: 1.4;
+    }
+    button, input, select { font-family: inherit; color: inherit; }
+    
+    /* TOPBAR */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; height: 60px;
+      background: rgba(9, 13, 22, 0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 14px; z-index: 100;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-logo {
+      width: 34px; height: 34px; border-radius: 9px;
+      background: var(--emerald-dim); border: 1px solid var(--emerald);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; color: var(--emerald); font-size: 16px;
+    }
+    .brand-title { font-size: 15px; font-weight: 800; letter-spacing: 0.4px; }
+    .brand-sub { font-size: 11px; color: var(--muted); }
+    .top-actions { display: flex; gap: 8px; align-items: center; }
+    .icon-btn {
+      background: var(--card-2); border: 1px solid var(--border);
+      height: 36px; padding: 0 11px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .icon-btn.active { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-dim); }
+
+    /* SIDEBAR DRAWER */
+    .drawer-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+      z-index: 200; display: none;
+    }
+    .drawer-backdrop.open { display: block; }
+    .drawer {
+      position: fixed; top: 0; bottom: 0; left: 0; width: 280px;
+      background: var(--card); border-right: 1px solid var(--border);
+      z-index: 201; transform: translateX(-100%); transition: transform 0.25s ease;
+      padding: 18px 14px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-top: 8px; font-weight: 700; }
+    .drawer-btn {
+      width: 100%; text-align: left; padding: 11px 12px; border-radius: 10px;
+      background: var(--card-2); border: 1px solid var(--border);
+      font-size: 13px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    }
+    .drawer-btn:active { border-color: var(--emerald); }
+
+    /* CONTAINER & CARDS */
+    .container { max-width: 540px; margin: 0 auto; padding: 12px; }
+    .tab-view { display: none; animation: fadeIn 0.2s ease; }
+    .tab-view.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px; margin-bottom: 12px;
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
+    .card-title { font-size: 15px; font-weight: 800; }
+    .badge {
+      display: inline-block; font-size: 10px; font-weight: 800; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 6px; background: var(--emerald-dim); color: var(--emerald);
+      border: 1px solid rgba(16,185,129,0.3); letter-spacing: 0.5px;
+    }
+    .badge-cyan { background: rgba(6,182,212,0.15); color: var(--cyan); border-color: rgba(6,182,212,0.3); }
+    .badge-amber { background: rgba(245,158,11,0.15); color: var(--amber); border-color: rgba(245,158,11,0.3); }
+
+    /* WORKOUT SELECTOR GRID */
+    .wk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .wk-btn {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 12px; text-align: left; cursor: pointer;
+    }
+    .wk-btn.active { border-color: var(--emerald); background: var(--emerald-dim); }
+    .wk-btn-tag { font-size: 10px; font-weight: 800; color: var(--emerald); text-transform: uppercase; }
+    .wk-btn-name { font-size: 13px; font-weight: 800; margin-top: 2px; }
+    .wk-btn-sub { font-size: 11px; color: var(--muted); }
+
+    /* STATS SUMMARY */
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
+    .stat-val { font-size: 18px; font-weight: 900; margin-top: 2px; color: var(--emerald); }
+
+    /* EXERCISE SETS */
+    .anim-trigger-btn {
+      width: 100%; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #38bdf8; border-radius: 9px; padding: 8px 12px; font-size: 12px; font-weight: 700;
+      margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .set-header, .set-row {
+      display: grid; grid-template-columns: 36px 1fr 1fr 44px; gap: 8px; align-items: center;
+    }
+    .set-header { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; padding-bottom: 6px; text-align: center; }
+    .set-row { padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.05); }
+    .set-num { font-size: 12px; font-weight: 800; color: var(--muted); text-align: center; }
+    .num-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 6px; text-align: center; font-size: 14px; font-weight: 800;
+    }
+    .check-btn {
+      width: 40px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--card-2); color: var(--muted); font-weight: 900; cursor: pointer;
+    }
+    .check-btn.done { background: var(--emerald); border-color: var(--emerald); color: #052e16; }
+    .ex-footer {
+      display: flex; justify-content: space-between; font-size: 11px; color: var(--muted);
+      margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);
+    }
+
+    /* INPUTS & SLIDERS */
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .field-box { background: var(--card-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
+    .field-box label { display: block; font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+    .field-box input, .field-box select {
+      width: 100%; background: transparent; border: none; font-size: 15px; font-weight: 800; color: var(--cyan); outline: none;
+    }
+    .field-box select option { background: var(--card); color: var(--text); }
+    .slider-wrap { margin-bottom: 12px; }
+    .slider-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+    input[type="range"] { width: 100%; accent-color: var(--emerald); height: 6px; }
+
+    /* PRIMARY BUTTON */
+    .btn-primary {
+      width: 100%; background: var(--emerald); color: #042f2e; border: none;
+      border-radius: 11px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer;
+    }
+    .btn-outline {
+      width: 100%; background: var(--card-2); color: var(--text); border: 1px solid var(--border);
+      border-radius: 11px; padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+
+    /* DIET & MACROS STYLES */
+    .macro-bar-wrap { margin-bottom: 10px; }
+    .macro-bar-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+    .macro-track { height: 9px; background: var(--card-2); border-radius: 99px; overflow: hidden; }
+    .macro-fill { height: 100%; border-radius: 99px; transition: width 0.25s ease; }
+    .meal-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
+    .meal-tabs::-webkit-scrollbar { display: none; }
+    .meal-tab {
+      white-space: nowrap; padding: 7px 12px; border-radius: 9px; font-size: 12px; font-weight: 700;
+      background: var(--card-2); border: 1px solid var(--border); color: var(--muted); cursor: pointer;
+    }
+    .meal-tab.active { background: var(--emerald-dim); border-color: var(--emerald); color: var(--emerald); }
+    .food-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 12px;
+    }
+    .del-btn {
+      background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.35);
+      color: #f87171; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 700; cursor: pointer;
+    }
+
+    /* REST TIMER BAR */
+    .rest-bar {
+      position: fixed; bottom: 64px; left: 0; right: 0;
+      background: rgba(17, 24, 39, 0.96); backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border); padding: 8px 12px; z-index: 95;
+    }
+    .rest-inner { max-width: 540px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .rest-time { font-size: 18px; font-weight: 900; color: var(--emerald); min-width: 58px; font-variant-numeric: tabular-nums; }
+    .rest-btns { display: flex; gap: 6px; flex: 1; justify-content: flex-end; }
+    .rest-btn {
+      background: var(--card-2); border: 1px solid var(--border); border-radius: 7px;
+      padding: 6px 10px; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .rest-btn.stop { border-color: rgba(239,68,68,0.4); color: #f87171; }
+
+    /* BOTTOM NAV (5 ABAS) */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
+      background: #090d16; border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(5, 1fr); z-index: 100;
+    }
+    .nav-item {
+      background: none; border: none; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 3px; color: var(--muted);
+      font-size: 10px; font-weight: 700; cursor: pointer;
+    }
+    .nav-item.active { color: var(--emerald); }
+    .nav-icon { font-size: 17px; }
+
+    /* MODAL BIOMECÂNICA */
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.82);
+      z-index: 300; display: none; align-items: center; justify-content: center; padding: 14px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; width: 100%; max-width: 440px; padding: 16px;
+      max-height: 90vh; overflow-y: auto;
+    }
+    .svg-stage {
+      width: 100%; height: 225px; background: #070a12; border: 1px solid var(--border);
+      border-radius: 12px; margin: 10px 0; display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .phase-pill {
+      position: absolute; top: 8px; left: 8px; font-size: 11px; font-weight: 800;
+      padding: 4px 8px; border-radius: 6px; background: rgba(16,185,129,0.2); color: var(--emerald);
+    }
+    .equip-pill {
+      position: absolute; bottom: 8px; right: 8px; font-size: 10px; font-weight: 700;
+      padding: 3px 7px; border-radius: 5px; background: rgba(255,255,255,0.06); color: var(--muted);
+    }
+    .step-list { list-style: none; margin: 8px 0 12px; font-size: 12px; color: var(--muted); }
+    .step-list li { margin-bottom: 5px; padding-left: 14px; position: relative; }
+    .step-list li::before { content: "•"; color: var(--emerald); position: absolute; left: 0; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <button class="icon-btn" onclick="toggleDrawer(true)" aria-label="Menu">☰</button>
+      <div class="brand-logo">V</div>
+      <div>
+        <div class="brand-title">V-TAPER & NUTRI</div>
+        <div class="brand-sub">Treino 4 Dias • 1.618 • Macros</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="installAppBtn" style="display:none; border-color:var(--emerald); color:var(--emerald);" onclick="installPWA()">📲 Instalar</button>
+      <button class="icon-btn active" id="soundBtn" onclick="toggleSound()">🔊</button>
+    </div>
+  </header>
+
+  <!-- SIDEBAR DRAWER -->
+  <div class="drawer-backdrop" id="drawerBackdrop" onclick="toggleDrawer(false)"></div>
+  <aside class="drawer" id="drawer">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <strong style="font-size:15px; color:var(--emerald);">Menu de Navegação</strong>
+      <button class="icon-btn" onclick="toggleDrawer(false)">✕</button>
+    </div>
+    <div class="drawer-title">Fichas de Treino</div>
+    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('A')"><span>Treino A • Superiores Força</span><span>→</span></button>
+    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('B')"><span>Treino B • Inferiores Base</span><span>→</span></button>
+    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('C')"><span>Treino C • Hipertrofia V-Taper</span><span>→</span></button>
+    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('D')"><span>Treino D • Posterior & Core</span><span>→</span></button>
+
+    <div class="drawer-title">Módulos do App</div>
+    <button class="drawer-btn" onclick="switchTab('diet'); toggleDrawer(false);"><span>🍽️ Calculadora de Dieta & Macros</span><span>→</span></button>
+    <button class="drawer-btn" onclick="switchTab('vtaper'); toggleDrawer(false);"><span>📐 Simulador Áureo 1.618</span><span>→</span></button>
+    <button class="drawer-btn" onclick="switchTab('vacuum'); toggleDrawer(false);"><span>🌬️ Guiador Stomach Vacuum</span><span>→</span></button>
+    <button class="drawer-btn" onclick="switchTab('ai'); toggleDrawer(false);"><span>📈 Evolução & IA Analytics</span><span>→</span></button>
+
+    <div class="drawer-title">Gerenciamento</div>
+    <button class="drawer-btn" onclick="resetCurrentChecks(); toggleDrawer(false);"><span>🔄 Nova Semana (Manter Cargas)</span></button>
+    <button class="drawer-btn" onclick="exportBackup()"><span>💾 Exportar Backup Completo</span></button>
+  </aside>
+
+  <main class="container">
+
+    <!-- ABA 1: TREINOS -->
+    <section id="tab-workout" class="tab-view active">
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-label">Tonelagem da Sessão</div>
+          <div class="stat-val" id="sessionVolume">0 kg</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Séries Concluídas</div>
+          <div class="stat-val" id="sessionSets">0 / 0</div>
+        </div>
+      </div>
+
+      <div class="wk-grid" id="wkSelector"></div>
+      <div class="card" id="wkBanner"></div>
+      <div id="exerciseList"></div>
+
+      <div class="card">
+        <label style="display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; cursor:pointer; margin-bottom:12px;">
+          <input type="checkbox" id="cardioDone" style="width:20px; height:20px; accent-color:var(--emerald);" onchange="saveState()">
+          <span id="cardioText">Cardio Pós-Treino Concluído</span>
+        </label>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button class="btn-outline" onclick="resetCurrentChecks()">Desmarcar Séries</button>
+          <button class="btn-primary" onclick="finishWorkoutSession()">✓ Salvar no Histórico</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 2: PROPORÇÃO ÁUREA V-TAPER -->
+    <section id="tab-vtaper" class="tab-view">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="badge">Geometria Corporal</span>
+            <h2 class="card-title" style="margin-top:4px;">Simulador de Proporção Áurea (1.618)</h2>
+          </div>
+          <button class="icon-btn" onclick="resetDefaultMeasures()">Padrão</button>
+        </div>
+
+        <div class="grid-3">
+          <div class="field-box">
+            <label>Peso (kg)</label>
+            <input type="number" id="mWeight" value="63" step="0.5" oninput="updateVTaper()">
+          </div>
+          <div class="field-box">
+            <label>Altura (cm)</label>
+            <input type="number" id="mHeight" value="170" oninput="updateVTaper()">
+          </div>
+          <div class="field-box">
+            <label>Peitoral (cm)</label>
+            <input type="number" id="mChest" value="98" oninput="updateVTaper()">
+          </div>
+        </div>
+
+        <div class="slider-wrap">
+          <div class="slider-head">
+            <span>Circunferência de Ombros / Dorsal</span>
+            <span style="color:var(--emerald);" id="valShoulders">118 cm</span>
+          </div>
+          <input type="range" id="sShoulders" min="95" max="155" step="0.5" value="118" oninput="updateVTaper()">
+        </div>
+
+        <div class="slider-wrap">
+          <div class="slider-head">
+            <span>Circunferência de Cintura (Umbilical)</span>
+            <span style="color:var(--cyan);" id="valWaist">75 cm</span>
+          </div>
+          <input type="range" id="sWaist" min="60" max="110" step="0.5" value="75" oninput="updateVTaper()">
+        </div>
+
+        <div class="svg-stage" style="height:190px; flex-direction:column;">
+          <svg id="vtaperSvg" width="220" height="145" viewBox="0 0 220 145"></svg>
+          <div style="font-size:20px; font-weight:900; color:var(--emerald);" id="vtaperRatioText">1.573 <span style="font-size:12px; color:var(--muted);">/ 1.618</span></div>
+        </div>
+
+        <div id="vtaperDiagnosis" style="font-size:12px; color:var(--muted); background:var(--card-2); padding:10px; border-radius:10px; border:1px solid var(--border);"></div>
+      </div>
+    </section>
+
+    <!-- ABA 3: CALCULADORA DE DIETA & MACROS -->
+    <section id="tab-diet" class="tab-view">
+      <!-- Metas Calóricas e Perfil -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="badge">NutriPerformance BR</span>
+            <h2 class="card-title" style="margin-top:4px;">Meta Diária & Macronutrientes</h2>
+          </div>
+          <button class="icon-btn" onclick="loadSampleDiet()">⚡ Cardápio Exemplo</button>
+        </div>
+
+        <div class="grid-3">
+          <div class="field-box">
+            <label>Idade</label>
+            <input type="number" id="dAge" value="25" oninput="updateDietConfig()">
+          </div>
+          <div class="field-box">
+            <label>Prot (g/kg)</label>
+            <input type="number" id="dProtKg" value="2.1" step="0.1" oninput="updateDietConfig()">
+          </div>
+          <div class="field-box">
+            <label>Gord (g/kg)</label>
+            <input type="number" id="dFatKg" value="1.0" step="0.1" oninput="updateDietConfig()">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field-box">
+            <label>Nível de Atividade</label>
+            <select id="dActivity" onchange="updateDietConfig()">
+              <option value="1.375">Leve (1-3x sem)</option>
+              <option value="1.55" selected>Moderado (4x Treino)</option>
+              <option value="1.725">Intenso (5-6x + Cardio)</option>
+            </select>
+          </div>
+          <div class="field-box">
+            <label>Objetivo V-Taper</label>
+            <select id="dGoal" onchange="updateDietConfig()">
+              <option value="300" selected>Bulking Limpo (+300 kcal)</option>
+              <option value="0">Manutenção (0 kcal)</option>
+              <option value="-350">Cutting Secar (-350 kcal)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+          <div class="stat-box" style="padding:8px 10px;">
+            <div class="stat-label">TMB / Gasto Total</div>
+            <div style="font-size:13px; font-weight:800; margin-top:2px;" id="dTmbTdee">1580 / 2450 kcal</div>
+          </div>
+          <div class="stat-box" style="padding:8px 10px;">
+            <div class="stat-label">Saldo Calórico</div>
+            <div style="font-size:13px; font-weight:800; margin-top:2px; color:var(--cyan);" id="dCalBalance">0 / 2750 kcal</div>
+          </div>
+        </div>
+
+        <!-- Barras de Progresso dos Macros -->
+        <div class="macro-bar-wrap">
+          <div class="macro-bar-head">
+            <span>🔥 Calorias Totais</span>
+            <span id="lblKcal">0 / 2750 kcal (0%)</span>
+          </div>
+          <div class="macro-track"><div class="macro-fill" id="barKcal" style="width:0%; background:var(--emerald);"></div></div>
+        </div>
+
+        <div class="macro-bar-wrap">
+          <div class="macro-bar-head">
+            <span>🥩 Proteínas (<span id="lblProtGkg">0.0</span>g/kg)</span>
+            <span id="lblProt" style="color:var(--emerald);">0g / 132g</span>
+          </div>
+          <div class="macro-track"><div class="macro-fill" id="barProt" style="width:0%; background:var(--emerald);"></div></div>
+        </div>
+
+        <div class="macro-bar-wrap">
+          <div class="macro-bar-head">
+            <span>🍚 Carboidratos (Energia)</span>
+            <span id="lblCarb" style="color:var(--cyan);">0g / 390g</span>
+          </div>
+          <div class="macro-track"><div class="macro-fill" id="barCarb" style="width:0%; background:var(--cyan);"></div></div>
+        </div>
+
+        <div class="macro-bar-wrap" style="margin-bottom:0;">
+          <div class="macro-bar-head">
+            <span>🥑 Gorduras (<span id="lblFatGkg">0.0</span>g/kg)</span>
+            <span id="lblFat" style="color:var(--amber);">0g / 63g</span>
+          </div>
+          <div class="macro-track"><div class="macro-fill" id="barFat" style="width:0%; background:var(--amber);"></div></div>
+        </div>
+      </div>
+
+      <!-- Controle de Hidratação -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <div>
+            <span class="badge badge-cyan">Hidratação Diária (35-45ml/kg)</span>
+            <h3 class="card-title" style="margin-top:3px;" id="waterText">0 ml / 2800 ml</h3>
+          </div>
+          <button class="icon-btn" onclick="addWater(-250)">-250</button>
+        </div>
+        <div class="macro-track" style="margin-bottom:10px;">
+          <div class="macro-fill" id="barWater" style="width:0%; background:#38bdf8;"></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+          <button class="rest-btn" onclick="addWater(200)">+200 ml (Copo)</button>
+          <button class="rest-btn" onclick="addWater(350)">+350 ml</button>
+          <button class="rest-btn" style="border-color:var(--cyan); color:var(--cyan);" onclick="addWater(500)">+500 ml (Garrafa)</button>
+        </div>
+      </div>
+
+      <!-- Planejador das 5 Refeições -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Diário de Refeições</h3>
+          <button class="icon-btn" onclick="clearAllMeals()">🗑️ Zerar Dia</button>
+        </div>
+
+        <div class="meal-tabs" id="mealTabs"></div>
+
+        <!-- Adicionar Alimento do Banco TACO/Regional -->
+        <div style="background:var(--card-2); padding:10px; border-radius:10px; border:1px solid var(--border); margin-bottom:12px;">
+          <div style="font-size:11px; font-weight:700; color:var(--muted); margin-bottom:6px; text-transform:uppercase;">Adicionar Alimento na Refeição:</div>
+          <select id="foodSelect" class="num-input" style="text-align:left; margin-bottom:8px; width:100%;" onchange="updateFoodUnitHint()"></select>
+          <div style="display:grid; grid-template-columns:1fr 110px; gap:8px;">
+            <input type="number" id="foodAmount" class="num-input" value="100" step="10" placeholder="Qtd">
+            <button class="btn-primary" style="padding:8px;" onclick="addFoodToMeal()">+ Adicionar</button>
+          </div>
+          <div style="font-size:11px; color:var(--muted); margin-top:5px;" id="foodHint">Valores calculados proporcionalmente.</div>
+        </div>
+
+        <!-- Lista de Alimentos da Refeição Ativa -->
+        <div id="mealFoodList"></div>
+      </div>
+
+      <!-- Cadastrar Alimento Personalizado -->
+      <div class="card">
+        <span class="badge badge-amber">Personalizado</span>
+        <h3 class="card-title" style="margin:4px 0 8px;">Criar Novo Alimento (por 100g ou 1 un)</h3>
+        <div class="grid-2">
+          <div class="field-box">
+            <label>Nome do Alimento</label>
+            <input type="text" id="cFoodName" placeholder="Ex: Sushi Salmão">
+          </div>
+          <div class="field-box">
+            <label>Porção Base (g ou un)</label>
+            <input type="number" id="cFoodBase" value="100">
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; margin-bottom:10px;">
+          <div class="field-box"><label>Kcal</label><input type="number" id="cFoodKcal" value="150"></div>
+          <div class="field-box"><label>Prot (g)</label><input type="number" id="cFoodP" value="12"></div>
+          <div class="field-box"><label>Carb (g)</label><input type="number" id="cFoodC" value="18"></div>
+          <div class="field-box"><label>Gord (g)</label><input type="number" id="cFoodF" value="4"></div>
+        </div>
+        <button class="btn-outline" onclick="saveCustomFood()">+ Salvar no Banco de Alimentos</button>
+      </div>
+    </section>
+
+    <!-- ABA 4: STOMACH VACUUM & CORE -->
+    <section id="tab-vacuum" class="tab-view">
+      <div class="card" style="text-align:center;">
+        <span class="badge badge-cyan">Controle de Transverso Abdominal</span>
+        <h2 class="card-title" style="margin:6px 0 12px;">Guiador de Stomach Vacuum</h2>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+          <button class="wk-btn active" id="modeVacBtn" onclick="setCoreMode('vacuum')" style="text-align:center;">
+            <div class="wk-btn-name">Stomach Vacuum</div>
+            <div class="wk-btn-sub">3 séries x 30s</div>
+          </button>
+          <button class="wk-btn" id="modePlankBtn" onclick="setCoreMode('plank')" style="text-align:center;">
+            <div class="wk-btn-name">Prancha Isométrica</div>
+            <div class="wk-btn-sub">3 séries x 60s</div>
+          </button>
+        </div>
+
+        <div style="width:170px; height:170px; border-radius:50%; border:5px solid var(--emerald); margin:10px auto; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--card-2);">
+          <div style="font-size:11px; font-weight:800; color:var(--cyan); text-transform:uppercase;" id="vacPhaseLabel">PRONTO</div>
+          <div style="font-size:38px; font-weight:900; margin:2px 0;" id="vacTimerDisplay">30s</div>
+          <div style="font-size:11px; color:var(--muted);" id="vacSeriesDisplay">Série 1 de 3</div>
+        </div>
+
+        <p style="font-size:12px; color:var(--muted); margin:10px 0 14px;" id="vacInstruction">
+          Expire todo o ar, sugue o umbigo em direção à coluna abrindo as costelas e segure.
+        </p>
+
+        <div style="display:grid; grid-template-columns:1fr auto; gap:8px;">
+          <button class="btn-primary" id="vacStartBtn" onclick="toggleVacuumTimer()">▶ Iniciar Ciclo Guiado</button>
+          <button class="btn-outline" style="width:52px;" onclick="resetVacuumTimer()">↺</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 5: EVOLUÇÃO & IA -->
+    <section id="tab-ai" class="tab-view">
+      <div class="card">
+        <span class="badge">Coach Biomecânico & Nutricional</span>
+        <h2 class="card-title" style="margin:4px 0 10px;">Análise Inteligente V-Taper</h2>
+        <div id="aiReportBox" style="font-size:13px; color:var(--text); display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="badge badge-cyan">Força Máxima</span>
+            <h3 class="card-title" style="margin-top:4px;">1RM Estimado nos Compostos</h3>
+          </div>
+        </div>
+        <div id="rmChartBox" style="display:flex; flex-direction:column; gap:10px; margin-top:8px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Histórico de Sessões Salvas</h3>
+          <button class="icon-btn" onclick="clearHistory()">🗑️ Limpar</button>
+        </div>
+        <div id="historyList" style="font-size:12px; color:var(--muted);"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL DE ANIMAÇÃO BIOMECÂNICA -->
+  <div class="modal-backdrop" id="animModal" onclick="if(event.target===this) closeAnimModal()">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span class="badge badge-cyan" id="animTargetBadge">Músculo Alvo</span>
+        <button class="icon-btn" onclick="closeAnimModal()">✕ Fechar</button>
+      </div>
+      <h3 style="font-size:16px; font-weight:800; margin-top:6px;" id="animExTitle">Exercício</h3>
+
+      <div class="svg-stage">
+        <div class="phase-pill" id="animPhaseText">Fase Concêntrica</div>
+        <div class="equip-pill" id="animEquipText">Simulação 60 FPS</div>
+        <svg id="biomechSvg" width="250" height="205" viewBox="0 0 250 205"></svg>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-bottom:12px;">
+        <button class="rest-btn" id="spd1Btn" style="border-color:var(--emerald); color:var(--emerald);" onclick="setAnimSpeed(1)">1x Normal</button>
+        <button class="rest-btn" id="spd05Btn" onclick="setAnimSpeed(0.45)">0.5x Lento</button>
+        <button class="rest-btn" id="spdPauseBtn" onclick="toggleAnimPause()">⏯ Pausar</button>
+      </div>
+
+      <div style="font-size:12px; font-weight:800; color:var(--emerald);">Passo a Passo da Execução:</div>
+      <ul class="step-list" id="animSteps"></ul>
+
+      <div style="font-size:12px; font-weight:800; color:#f87171;">Erro Comum a Evitar:</div>
+      <p style="font-size:12px; color:var(--muted); margin:4px 0 12px;" id="animMistake"></p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <a id="animYtLink" href="#" target="_blank" class="btn-outline" style="text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center;">▶ Vídeo YouTube</a>
+        <button class="btn-primary" onclick="closeAnimModal()">Entendi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA FLUTUANTE CRONÔMETRO DE DESCANSO -->
+  <div class="rest-bar">
+    <div class="rest-inner">
+      <div>
+        <div style="font-size:9px; color:var(--muted); text-transform:uppercase; font-weight:800;">Descanso</div>
+        <div class="rest-time" id="restDisplay">00:00</div>
+      </div>
+      <div class="rest-btns">
+        <button class="rest-btn" onclick="startRest(60)">60s</button>
+        <button class="rest-btn" onclick="startRest(90)">90s</button>
+        <button class="rest-btn" onclick="startRest(120)">120s</button>
+        <button class="rest-btn stop" onclick="stopRest()">Parar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVEGAÇÃO INFERIOR (5 ABAS) -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-tab="workout" onclick="switchTab('workout')">
+      <span class="nav-icon">🏋️</span><span>Treinos</span>
+    </button>
+    <button class="nav-item" data-tab="vtaper" onclick="switchTab('vtaper')">
+      <span class="nav-icon">📐</span><span>Shape V</span>
+    </button>
+    <button class="nav-item" data-tab="diet" onclick="switchTab('diet')">
+      <span class="nav-icon">🍽️</span><span>Dieta</span>
+    </button>
+    <button class="nav-item" data-tab="vacuum" onclick="switchTab('vacuum')">
+      <span class="nav-icon">🌬️</span><span>Vacuum</span>
+    </button>
+    <button class="nav-item" data-tab="ai" onclick="switchTab('ai')">
+      <span class="nav-icon">📈</span><span>Evolução</span>
+    </button>
+  </nav>
+
+  <script>
+    // BANCO DE DADOS DOS 23 EXERCÍCIOS COM ID EXCLUSIVO DE ANIMAÇÃO
+    const WORKOUT_DB = {
+      A: {
+        tag: "TREINO A", name: "Superiores — Força & Expansão", sub: "Peitoral, Largura de Dorsal e Topo de Ombro",
+        cardio: "15 min HIIT Pós-Treino (30s Sprint Forte / 60s Leve)",
+        exercises: [
+          { id:"a1", name:"1. Supino Reto (Barra ou Halteres)", target:"Peitoral Maior & Tríceps", sets:4, reps:"6-8", rest:90, equip:"Banco Reto + Barra",
+            steps:["Retraia as escápulas e crave os pés no chão.","Desça a barra controladamente por 2 segundos até tocar a linha inferior do peito.","Empurre explosivo mantendo os cotovelos a ~45° do tronco."],
+            mistake:"Abrir os cotovelos a 90° alinhados ao pescoço (sobrecarrega o ombro).",
+            defaultSets:[{w:60,r:8,d:false},{w:60,r:8,d:false},{w:64,r:6,d:false},{w:64,r:6,d:false}] },
+          { id:"a2", name:"2. Barra Fixa / Pull-up Pronada", target:"Largura de Dorsal (Asa V-Taper)", sets:4, reps:"Falha", rest:90, equip:"Barra Fixa Suspensa",
+            steps:["Segure a barra com pegada aberta (além da largura dos ombros).","Inicie o movimento deprimindo as escápulas e puxando os cotovelos para baixo.","Suba até o queixo ultrapassar a barra e desça controlando tudo."],
+            mistake:"Dar impulso com as pernas (kipping) ou encolher os ombros nas orelhas.",
+            defaultSets:[{w:63,r:10,d:false},{w:63,r:9,d:false},{w:63,r:8,d:false},{w:63,r:7,d:false}] },
+          { id:"a3", name:"3. Desenvolvimento com Halteres", target:"Deltoide Anterior & Lateral", sets:4, reps:"8-10", rest:90, equip:"Banco 85° + Halteres",
+            steps:["Sente-se com a lombar apoiada e halteres na altura do queixo.","Mantenha os cotovelos levemente à frente da linha dos ombros (plano escapular).","Empurre acima da cabeça sem bater os halteres no topo."],
+            mistake:"Arquear excessivamente a lombar para subir a carga.",
+            defaultSets:[{w:18,r:10,d:false},{w:18,r:10,d:false},{w:20,r:8,d:false},{w:20,r:8,d:false}] },
+          { id:"a4", name:"4. Remada Curvada Pronada", target:"Espessura de Costas & Romboides", sets:4, reps:"8-10", rest:90, equip:"Barra Livre (Tronco 45°)",
+            steps:["Incline o tronco a ~45° mantendo a coluna neutra e abdômen travado.","Puxe a barra em direção à linha umbilical esmagando as costas no topo.","Desça alongando as escápulas sem arredondar a lombar."],
+            mistake:"Dar tranco subindo o tronco para roubar na subida.",
+            defaultSets:[{w:50,r:10,d:false},{w:50,r:10,d:false},{w:54,r:8,d:false},{w:54,r:8,d:false}] },
+          { id:"a5", name:"5. Elevação Lateral com Halteres", target:"Deltoide Lateral (Largura V-Taper)", sets:4, reps:"12", rest:60, equip:"Par de Halteres",
+            steps:["Incline milimetricamente o tronco à frente com cotovelos semiflexionados.","Lance os halteres para longe do corpo (para os lados), não para cima.","Pare na linha dos ombros e desça segurando o peso em 2 segundos."],
+            mistake:"Encolher o trapézio ou balançar o quadril para jogar o peso.",
+            defaultSets:[{w:10,r:12,d:false},{w:10,r:12,d:false},{w:12,r:12,d:false},{w:12,r:12,d:false}] },
+          { id:"a6", name:"6. Bi-set: Rosca Direta + Tríceps Pulley", target:"Bíceps & Tríceps Completo", sets:3, reps:"10-12", rest:60, equip:"Barra W + Polia Alta",
+            steps:["Crave os cotovelos ao lado das costelas na Rosca Direta.","Sem descanso, vá à polia alta e estenda o tríceps travando tudo embaixo.","Controle a volta sem deixar o cotovelo subir."],
+            mistake:"Mover o cotovelo para frente e para trás usando o ombro.",
+            defaultSets:[{w:28,r:12,d:false},{w:30,r:10,d:false},{w:30,r:10,d:false}] }
+        ]
+      },
+      B: {
+        tag: "TREINO B", name: "Inferiores — Força & Base", sub: "Quadríceps, Panturrilha e Pegada Tática",
+        cardio: "20 min Cardio Moderado (Caminhada Inclinada ou Bike)",
+        exercises: [
+          { id:"b1", name:"1. Agachamento Livre com Barra", target:"Quadríceps, Glúteos & Core", sets:4, reps:"6-8", rest:120, equip:"Gaiola + Barra Olímpica",
+            steps:["Inspire fundo travando o abdômen (bracing) antes de descer.","Desça flexionando quadril e joelhos alinhados à ponta dos pés até quebrar a paralela.","Empurre o chão com o pé inteiro subindo com explosão."],
+            mistake:"Deixar os joelhos fecharem para dentro (valgo dinâmico) na subida.",
+            defaultSets:[{w:70,r:8,d:false},{w:70,r:8,d:false},{w:76,r:6,d:false},{w:76,r:6,d:false}] },
+          { id:"b2", name:"2. Leg Press 45°", target:"Volume de Quadríceps", sets:3, reps:"10-12", rest:90, equip:"Máquina Leg Press 45°",
+            steps:["Posicione os pés na largura dos ombros no centro da plataforma.","Desça até ~90° mantendo o quadril e a lombar 100% colados no banco.","Empurre sem trancar totalmente a articulação do joelho no topo."],
+            mistake:"Tirar o quadril do banco no fundo do movimento.",
+            defaultSets:[{w:160,r:12,d:false},{w:180,r:10,d:false},{w:180,r:10,d:false}] },
+          { id:"b3", name:"3. Cadeira Extensora (Pico 1s)", target:"Reto Femoral & Vasto", sets:3, reps:"12-15", rest:60, equip:"Máquina Cadeira Extensora",
+            steps:["Ajuste o encosto para que a dobra do joelho fique alinhada ao eixo da máquina.","Estenda totalmente os joelhos e segure 1 segundo cheio no topo.","Desça controlando o peso sem deixar as placas baterem."],
+            mistake:"Chutar o peso rápido e soltar na descida.",
+            defaultSets:[{w:55,r:15,d:false},{w:60,r:12,d:false},{w:60,r:12,d:false}] },
+          { id:"b4", name:"4. Panturrilha em Pé / Máquina", target:"Gastrocnêmio", sets:4, reps:"15", rest:60, equip:"Bloco / Máquina em Pé",
+            steps:["Desça o calcanhar ao máximo sentindo alongar a panturrilha por 1s.","Suba na ponta dos pés até o limite máximo e contraia forte no topo."],
+            mistake:"Fazer repetições curtas e rápidas quicando no tendão.",
+            defaultSets:[{w:70,r:15,d:false},{w:70,r:15,d:false},{w:75,r:15,d:false},{w:75,r:15,d:false}] },
+          { id:"b5", name:"5. Farmer's Walk (Caminhada Fazendeiro)", target:"Antebraço, Trapézio & Core", sets:3, reps:"40m", rest:90, equip:"Halteres Pesados em Movimento",
+            steps:["Segure um par de halteres pesados ao lado do corpo.","Mantenha postura alta, ombros encaixados para trás e abdômen firme.","Caminhe 40 metros em passos firmes e controlados."],
+            mistake:"Deixar os ombros caírem para frente ou inclinar o tronco.",
+            defaultSets:[{w:28,r:40,d:false},{w:28,r:40,d:false},{w:30,r:40,d:false}] }
+        ]
+      },
+      C: {
+        tag: "TREINO C", name: "Superiores — Hipertrofia V-Taper", sub: "Peitoral Clavicular, Dorsal e Ombros 3D",
+        cardio: "15 min HIIT Pós-Treino (Esteira ou Bike)",
+        exercises: [
+          { id:"c1", name:"1. Supino Inclinado com Halteres (30°)", target:"Peitoral Superior (Clavicular)", sets:4, reps:"8-12", rest:90, equip:"Banco Inclinado 30° + Halteres",
+            steps:["Ajuste o banco em 30° (não passe de 45° para não virar ombro).","Desça os halteres alongando bem as fibras superiores do peitoral.","Suba convergindo levemente sem encostar os pesos."],
+            mistake:"Banco alto demais ou descer apenas até a metade.",
+            defaultSets:[{w:22,r:12,d:false},{w:24,r:10,d:false},{w:24,r:10,d:false},{w:26,r:8,d:false}] },
+          { id:"c2", name:"2. Puxada Aberta no Pulley", target:"Expansão de Dorsal em V", sets:4, reps:"10-12", rest:90, equip:"Polia Alta + Barra Longa",
+            steps:["Estufe o peito e incline levemente o tronco para trás (~15°).","Puxe a barra em direção ao topo do peito apontando os cotovelos para o chão.","Alongue tudo na subida mantendo as escápulas ativas."],
+            mistake:"Jogar o corpo todo para trás transformando a puxada em remada.",
+            defaultSets:[{w:50,r:12,d:false},{w:55,r:10,d:false},{w:55,r:10,d:false},{w:60,r:10,d:false}] },
+          { id:"c3", name:"3. Pullover na Polia Alta com Corda", target:"Isolamento de Grande Dorsal", sets:3, reps:"12-15", rest:60, equip:"Polia Alta + Corda/Barra",
+            steps:["Incline o tronco a 45° com braços quase estendidos.","Traga a corda em arco até a coxa contraindo exclusivamente a dorsal.","Suba alongando a asa até a linha da cabeça."],
+            mistake:"Dobrar e esticar o cotovelo transformando em tríceps pulley.",
+            defaultSets:[{w:25,r:15,d:false},{w:28,r:12,d:false},{w:28,r:12,d:false}] },
+          { id:"c4", name:"4. Elevação Lateral na Polia / Halter", target:"Deltoide Lateral (Ombro 3D)", sets:4, reps:"12-15", rest:60, equip:"Polia Baixa / Halteres",
+            steps:["Eleve o braço no plano escapular até a altura do ombro sob tensão constante.","Segure meio segundo no topo e desça em 2 segundos controlados."],
+            mistake:"Perder a tensão descansando o peso colado na coxa embaixo.",
+            defaultSets:[{w:10,r:15,d:false},{w:10,r:15,d:false},{w:12,r:12,d:false},{w:12,r:12,d:false}] },
+          { id:"c5", name:"5. Crucifixo Inverso (Máquina ou Halter)", target:"Deltoide Posterior & Postura", sets:3, reps:"15", rest:60, equip:"Peck Deck Inverso / Halter",
+            steps:["Mantenha os ombros baixos (longe das orelhas).","Abra os braços para trás focando apenas na parte de trás do ombro.","Não junte as escápulas no final para não roubar com o trapézio."],
+            mistake:"Encolher o pescoço e puxar com o meio das costas.",
+            defaultSets:[{w:40,r:15,d:false},{w:45,r:15,d:false},{w:45,r:15,d:false}] },
+          { id:"c6", name:"6. Paralelas / Mergulho (Dips)", target:"Peitoral Inferior & Tríceps", sets:3, reps:"Falha", rest:60, equip:"Barras Paralelas",
+            steps:["Incline levemente o tronco à frente e desça até o cotovelo formar 90°.","Empurre até estender os braços mantendo os ombros firmes."],
+            mistake:"Descer além do limite articular jogando o ombro para frente.",
+            defaultSets:[{w:63,r:12,d:false},{w:63,r:10,d:false},{w:63,r:10,d:false}] }
+        ]
+      },
+      D: {
+        tag: "TREINO D", name: "Inferiores — Posterior & Core", sub: "Posterior de Coxa, Glúteos e Cintura Compacta",
+        cardio: "20 min Cardio Moderado (Esteira Inclinada ou Escada)",
+        exercises: [
+          { id:"d1", name:"1. Levantamento Terra Romeno / Stiff", target:"Posterior de Coxa, Glúteos & Lombar", sets:4, reps:"6-8", rest:120, equip:"Barra Olímpica (Dobradiça)",
+            steps:["Destrave levemente os joelhos e mantenha a coluna 100% reta.","Empurre o quadril para trás deslizando a barra colada nas pernas.","Suba contraindo forte os glúteos assim que a barra passar do joelho."],
+            mistake:"Afastar a barra das pernas ou arredondar a lombar.",
+            defaultSets:[{w:70,r:8,d:false},{w:76,r:8,d:false},{w:80,r:6,d:false},{w:80,r:6,d:false}] },
+          { id:"d2", name:"2. Mesa Flexora", target:"Isquiotibiais (Posterior)", sets:4, reps:"10-12", rest:90, equip:"Máquina Mesa Flexora",
+            steps:["Mantenha o quadril pressionado contra o banco durante toda a série.","Flexione os joelhos trazendo o rolo em direção ao glúteo e desça em 2s."],
+            mistake:"Levantar o quadril do banco para roubar na subida.",
+            defaultSets:[{w:45,r:12,d:false},{w:45,r:10,d:false},{w:50,r:10,d:false},{w:50,r:10,d:false}] },
+          { id:"d3", name:"3. Avanço / Passada com Halteres", target:"Glúteos & Estabilidade Unilateral", sets:3, reps:"12/perna", rest:90, equip:"Passada Unilateral + Halteres",
+            steps:["Dê uma passada firme mantendo o tronco levemente inclinado à frente.","Desça até o joelho de trás quase tocar o chão e suba pelo calcanhar da frente."],
+            mistake:"Dar passo curto demais empurrando pela ponta do pé.",
+            defaultSets:[{w:16,r:12,d:false},{w:18,r:12,d:false},{w:18,r:12,d:false}] },
+          { id:"d4", name:"4. Panturrilha Sentado", target:"Sóleo (Largura da Panturrilha)", sets:4, reps:"15", rest:60, equip:"Máquina Panturrilha Sentado",
+            steps:["Sente-se com o apoio sobre os joelhos e calcanhares livres.","Alongue tudo embaixo por 1s e suba contraindo ao máximo no topo."],
+            mistake:"Movimento curto e acelerado.",
+            defaultSets:[{w:40,r:15,d:false},{w:40,r:15,d:false},{w:45,r:15,d:false},{w:45,r:15,d:false}] },
+          { id:"d5", name:"5. Prancha Abdominal + Stomach Vacuum", target:"Transverso Abdominal (Cintura Fina)", sets:3, reps:"60s + 30s", rest:60, equip:"Solo / Isometria Core",
+            steps:["Mantenha corpo em linha reta apoiado nos antebraços e sugue o umbigo contra a coluna."],
+            mistake:"Deixar o quadril cair na prancha ou prender o ar estufando a barriga.",
+            defaultSets:[{w:63,r:60,d:false},{w:63,r:60,d:false},{w:63,r:60,d:false}] }
+        ]
+      }
+    };
+
+    // BANCO DE ALIMENTOS TACO & REGIONAIS BR
+    const DEFAULT_FOODS = [
+      { id:"f1", name:"Cuscuz de Milho Cozido", base:100, unit:"g", kcal:113, p:2.2, c:25.3, f:0.7 },
+      { id:"f2", name:"Banana da Terra Cozida", base:100, unit:"g", kcal:128, p:1.0, c:33.5, f:0.2 },
+      { id:"f3", name:"Ovo Inteiro Cozido/Grelhado", base:1, unit:"un", kcal:72, p:6.3, c:0.6, f:4.8 },
+      { id:"f4", name:"Peito de Frango Grelhado", base:100, unit:"g", kcal:159, p:32.0, c:0, f:2.5 },
+      { id:"f5", name:"Patinho / Carne Magra Moída", base:100, unit:"g", kcal:219, p:35.9, c:0, f:7.3 },
+      { id:"f6", name:"Picanha / Fraldinha Grelhada", base:100, unit:"g", kcal:238, p:29.0, c:0, f:13.0 },
+      { id:"f7", name:"Arroz Branco Cozido", base:100, unit:"g", kcal:128, p:2.5, c:28.1, f:0.2 },
+      { id:"f8", name:"Feijão Carioca/Preto Cozido", base:100, unit:"g", kcal:76, p:4.8, c:13.6, f:0.5 },
+      { id:"f9", name:"Aipim / Mandioca Cozida", base:100, unit:"g", kcal:125, p:0.6, c:30.1, f:0.3 },
+      { id:"f10", name:"Goma de Tapioca", base:100, unit:"g", kcal:240, p:0, c:60.0, f:0 },
+      { id:"f11", name:"Queijo Coalho Grelhado", base:100, unit:"g", kcal:330, p:22.0, c:1.5, f:26.0 },
+      { id:"f12", name:"Whey Protein Concentrado (1 Scoop)", base:30, unit:"g", kcal:120, p:24.0, c:3.0, f:1.5 },
+      { id:"f13", name:"Aveia em Flocos", base:30, unit:"g", kcal:118, p:4.3, c:20.0, f:2.2 },
+      { id:"f14", name:"Banana Prata", base:1, unit:"un", kcal:68, p:0.9, c:18.2, f:0.1 },
+      { id:"f15", name:"Pão Francês", base:1, unit:"un", kcal:135, p:4.7, c:28.5, f:0.6 },
+      { id:"f16", name:"Pasta de Amendoim Integral", base:15, unit:"g", kcal:90, p:4.2, c:2.4, f:7.5 },
+      { id:"f17", name:"Salmão / Sushi de Travessa", base:100, unit:"g", kcal:208, p:20.4, c:0, f:13.4 },
+      { id:"f18", name:"Azeite de Oliva Extra Virgem", base:10, unit:"ml", kcal:88, p:0, c:0, f:10.0 }
+    ];
+
+    const MEAL_SLOTS = [
+      { id:"m1", label:"☀️ Café" },
+      { id:"m2", label:"🍛 Almoço" },
+      { id:"m3", label:"⚡ Pré-Treino" },
+      { id:"m4", label:"🥤 Pós-Treino" },
+      { id:"m5", label:"🌙 Jantar" }
+    ];
+
+    // ESTADO DO APP UNIFICADO
+    const STORAGE_KEY = "vtaper_superapp_state_v3";
+    let state = {
+      activeWorkout: "A",
+      sound: true,
+      measures: { weight: 63, height: 170, chest: 98, shoulders: 118, waist: 75 },
+      sets: {},
+      cardio: { A:false, B:false, C:false, D:false },
+      history: [],
+      diet: {
+        age: 25,
+        protPerKg: 2.1,
+        fatPerKg: 1.0,
+        activity: 1.55,
+        goalDelta: 300,
+        activeMeal: "m1",
+        waterMl: 0,
+        meals: { m1:[], m2:[], m3:[], m4:[], m5:[] },
+        customFoods: []
+      }
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = {
+            ...state,
+            ...parsed,
+            measures: { ...state.measures, ...(parsed.measures || {}) },
+            diet: { ...state.diet, ...(parsed.diet || {}), meals: { ...state.diet.meals, ...((parsed.diet && parsed.diet.meals) || {}) } }
+          };
+        }
+      } catch (e) {}
+      Object.keys(WORKOUT_DB).forEach(wk => {
+        WORKOUT_DB[wk].exercises.forEach(ex => {
+          if (!state.sets[ex.id]) {
+            state.sets[ex.id] = JSON.parse(JSON.stringify(ex.defaultSets));
+          }
+        });
+      });
+    }
+
+    function saveState() {
+      const cBox = document.getElementById("cardioDone");
+      if (cBox) state.cardio[state.activeWorkout] = cBox.checked;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateStatsHeader();
+    }
+
+    function playBeep(freq = 880, dur = 0.15) {
+      if (!state.sound) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        gain.gain.value = 0.12;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + dur);
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      state.sound = !state.sound;
+      const btn = document.getElementById("soundBtn");
+      btn.textContent = state.sound ? "🔊" : "🔇";
+      btn.classList.toggle("active", state.sound);
+      saveState();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-view").forEach(el => el.classList.remove("active"));
+      document.getElementById("tab-" + tabId).classList.add("active");
+      document.querySelectorAll(".nav-item").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.tab === tabId);
+      });
+      if (tabId === "vtaper") updateVTaper();
+      if (tabId === "diet") renderDietView();
+      if (tabId === "ai") renderAIAnalytics();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function toggleDrawer(open) {
+      document.getElementById("drawer").classList.toggle("open", open);
+      document.getElementById("drawerBackdrop").classList.toggle("open", open);
+    }
+
+    function selectWorkoutFromDrawer(wk) {
+      state.activeWorkout = wk;
+      saveState();
+      renderWorkoutView();
+      switchTab("workout");
+      toggleDrawer(false);
+    }
+
+    // TREINOS A B C D
+    function renderWorkoutView() {
+      const wkKey = state.activeWorkout;
+      const wk = WORKOUT_DB[wkKey];
+
+      const selHtml = Object.keys(WORKOUT_DB).map(k => {
+        const item = WORKOUT_DB[k];
+        const active = k === wkKey ? "active" : "";
+        return `<button class="wk-btn ${active}" onclick="selectWorkout('${k}')">
+          <div class="wk-btn-tag">${item.tag}</div>
+          <div class="wk-btn-name">${item.name.split("—")[1]}</div>
+          <div class="wk-btn-sub">${item.exercises.length} exercícios</div>
+        </button>`;
+      }).join("");
+      document.getElementById("wkSelector").innerHTML = selHtml;
+
+      document.getElementById("wkBanner").innerHTML = `
+        <span class="badge">${wk.tag}</span>
+        <h2 class="card-title" style="margin-top:6px;">${wk.name}</h2>
+        <p style="font-size:12px; color:var(--muted); margin-top:2px;">${wk.sub}</p>
+        <div style="margin-top:8px; padding:8px 10px; border-radius:8px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); font-size:12px; color:#fbbf24; font-weight:700;">
+          🔥 ${wk.cardio}
+        </div>
+      `;
+
+      document.getElementById("cardioText").textContent = wk.cardio;
+      document.getElementById("cardioDone").checked = !!state.cardio[wkKey];
+
+      const exHtml = wk.exercises.map(ex => {
+        const sets = state.sets[ex.id];
+        let best1RM = 0, exVol = 0, doneCount = 0;
+
+        const rowsHtml = sets.map((s, idx) => {
+          const w = parseFloat(s.w) || 0;
+          const r = parseInt(s.r) || 0;
+          const rm = Math.round(w * (1 + r / 30));
+          if (rm > best1RM) best1RM = rm;
+          if (s.d) { exVol += w * r; doneCount++; }
+
+          return `<div class="set-row">
+            <div class="set-num">#${idx + 1}</div>
+            <input type="number" inputmode="decimal" class="num-input" value="${s.w}" onchange="updateSet('${ex.id}', ${idx}, 'w', this.value)">
+            <input type="number" inputmode="numeric" class="num-input" value="${s.r}" onchange="updateSet('${ex.id}', ${idx}, 'r', this.value)">
+            <button class="check-btn ${s.d ? 'done' : ''}" onclick="toggleSetDone('${ex.id}', ${idx}, ${ex.rest})">✓</button>
+          </div>`;
+        }).join("");
+
+        return `<div class="card">
+          <div class="card-header">
+            <div>
+              <span class="badge">${ex.target}</span>
+              <h3 class="card-title" style="margin-top:5px;">${ex.name}</h3>
+            </div>
+            <span class="badge badge-cyan">${ex.sets}x ${ex.reps}</span>
+          </div>
+          <button class="anim-trigger-btn" onclick="openAnimModal('${wkKey}', '${ex.id}')">
+            🎬 Ver Execução & Biomecânica (${ex.equip})
+          </button>
+          <div class="set-header">
+            <div>Série</div><div>Carga (kg)</div><div>Reps</div><div>Feito</div>
+          </div>
+          ${rowsHtml}
+          <div class="ex-footer">
+            <span>Séries: <strong>${doneCount}/${sets.length}</strong></span>
+            <span>1RM Est.: <strong style="color:var(--cyan);">${best1RM} kg</strong></span>
+            <span>Volume: <strong style="color:var(--emerald);">${exVol} kg</strong></span>
+          </div>
+        </div>`;
+      }).join("");
+
+      document.getElementById("exerciseList").innerHTML = exHtml;
+      updateStatsHeader();
+    }
+
+    function selectWorkout(wk) {
+      state.activeWorkout = wk;
+      saveState();
+      renderWorkoutView();
+    }
+
+    function updateSet(exId, idx, field, val) {
+      state.sets[exId][idx][field] = parseFloat(val) || 0;
+      saveState();
+      renderWorkoutView();
+    }
+
+    function toggleSetDone(exId, idx, restSec) {
+      const current = state.sets[exId][idx].d;
+      state.sets[exId][idx].d = !current;
+      saveState();
+      renderWorkoutView();
+      if (!current) startRest(restSec);
+    }
+
+    function updateStatsHeader() {
+      const wk = WORKOUT_DB[state.activeWorkout];
+      let totalVol = 0, doneSets = 0, totalSets = 0;
+      wk.exercises.forEach(ex => {
+        state.sets[ex.id].forEach(s => {
+          totalSets++;
+          if (s.d) {
+            doneSets++;
+            totalVol += (parseFloat(s.w) || 0) * (parseInt(s.r) || 0);
+          }
+        });
+      });
+      document.getElementById("sessionVolume").textContent = totalVol.toLocaleString("pt-BR") + " kg";
+      document.getElementById("sessionSets").textContent = `${doneSets} / ${totalSets}`;
+    }
+
+    function resetCurrentChecks() {
+      const wk = WORKOUT_DB[state.activeWorkout];
+      wk.exercises.forEach(ex => {
+        state.sets[ex.id].forEach(s => s.d = false);
+      });
+      state.cardio[state.activeWorkout] = false;
+      saveState();
+      renderWorkoutView();
+    }
+
+    function finishWorkoutSession() {
+      const wk = WORKOUT_DB[state.activeWorkout];
+      let vol = 0, setsDone = 0;
+      wk.exercises.forEach(ex => {
+        state.sets[ex.id].forEach(s => {
+          if (s.d) { setsDone++; vol += (parseFloat(s.w)||0)*(parseInt(s.r)||0); }
+        });
+      });
+      const entry = {
+        date: new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" }),
+        workout: wk.tag + " - " + wk.name.split("—")[1],
+        volume: vol,
+        sets: setsDone,
+        cardio: !!state.cardio[state.activeWorkout]
+      };
+      state.history.unshift(entry);
+      saveState();
+      playBeep(1040, 0.25);
+      alert("Sessão salva no histórico! Volume total: " + vol + " kg.");
+      switchTab("ai");
+    }
+
+    // CRONÔMETRO DE DESCANSO
+    let restInterval = null;
+    let restRemaining = 0;
+    function startRest(seconds) {
+      clearInterval(restInterval);
+      restRemaining = seconds;
+      renderRestTime();
+      restInterval = setInterval(() => {
+        restRemaining--;
+        renderRestTime();
+        if (restRemaining <= 0) {
+          clearInterval(restInterval);
+          playBeep(920, 0.35);
+        }
+      }, 1000);
+    }
+    function stopRest() {
+      clearInterval(restInterval);
+      restRemaining = 0;
+      renderRestTime();
+    }
+    function renderRestTime() {
+      const m = String(Math.floor(restRemaining / 60)).padStart(2, "0");
+      const s = String(restRemaining % 60).padStart(2, "0");
+      document.getElementById("restDisplay").textContent = `${m}:${s}`;
+    }
+
+    // SIMULADOR DE PROPORÇÃO ÁUREA V-TAPER
+    function updateVTaper() {
+      const w = parseFloat(document.getElementById("mWeight").value) || 63;
+      const h = parseFloat(document.getElementById("mHeight").value) || 170;
+      const c = parseFloat(document.getElementById("mChest").value) || 98;
+      const sh = parseFloat(document.getElementById("sShoulders").value) || 118;
+      const wa = parseFloat(document.getElementById("sWaist").value) || 75;
+
+      state.measures = { weight: w, height: h, chest: c, shoulders: sh, waist: wa };
+      saveState();
+
+      document.getElementById("valShoulders").textContent = sh + " cm";
+      document.getElementById("valWaist").textContent = wa + " cm";
+
+      const ratio = sh / wa;
+      document.getElementById("vtaperRatioText").innerHTML = `${ratio.toFixed(3)} <span style="font-size:12px; color:var(--muted);">/ 1.618</span>`;
+
+      const targetSh = (wa * 1.618).toFixed(1);
+      const diffSh = (targetSh - sh).toFixed(1);
+      const diagEl = document.getElementById("vtaperDiagnosis");
+
+      if (ratio >= 1.618) {
+        diagEl.innerHTML = `<strong style="color:var(--emerald);">🏆 Proporção Áurea Atingida!</strong> Seu índice (${ratio.toFixed(3)}) está no padrão clássico em V. Mantenha a cintura compacta (${wa} cm) com Stomach Vacuum e progrida cargas.`;
+      } else {
+        diagEl.innerHTML = `<strong style="color:var(--cyan);">Diagnóstico para bater 1.618:</strong> Ganhar <strong>+${diffSh} cm</strong> de ombros/dorsal (meta: ${targetSh} cm) focando em Barra Fixa, Puxada Aberta e Elevação Lateral.`;
+      }
+
+      const shWidth = Math.min(180, Math.max(90, sh * 1.15));
+      const waWidth = Math.min(140, Math.max(55, wa * 1.05));
+      const idealShWidth = Math.min(185, waWidth * 1.618);
+      const cx = 110;
+
+      document.getElementById("vtaperSvg").innerHTML = `
+        <polygon points="${cx - idealShWidth/2},20 ${cx + idealShWidth/2},20 ${cx + waWidth/2},125 ${cx - waWidth/2},125"
+          fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 4" />
+        <polygon points="${cx - shWidth/2},20 ${cx + shWidth/2},20 ${cx + waWidth/2},125 ${cx - waWidth/2},125"
+          fill="rgba(16,185,129,0.22)" stroke="#10b981" stroke-width="3" />
+        <line x1="${cx}" y1="20" x2="${cx}" y2="125" stroke="rgba(255,255,255,0.15)" stroke-dasharray="3 3" />
+      `;
+    }
+
+    function resetDefaultMeasures() {
+      document.getElementById("mWeight").value = 63;
+      document.getElementById("mHeight").value = 170;
+      document.getElementById("mChest").value = 98;
+      document.getElementById("sShoulders").value = 118;
+      document.getElementById("sWaist").value = 75;
+      updateVTaper();
+    }
+
+    // MÓDULO DE DIETA & MACRONUTRIENTES (ABA 3)
+    function getAllFoods() {
+      return [...DEFAULT_FOODS, ...(state.diet.customFoods || [])];
+    }
+
+    function populateFoodSelect() {
+      const sel = document.getElementById("foodSelect");
+      if (!sel) return;
+      const foods = getAllFoods();
+      sel.innerHTML = foods.map(f => `<option value="${f.id}">${f.name} (${f.base}${f.unit} = ${f.kcal} kcal | P:${f.p}g C:${f.c}g G:${f.f}g)</option>`).join("");
+      updateFoodUnitHint();
+    }
+
+    function updateFoodUnitHint() {
+      const selId = document.getElementById("foodSelect").value;
+      const food = getAllFoods().find(f => f.id === selId);
+      if (!food) return;
+      document.getElementById("foodAmount").value = food.base;
+      document.getElementById("foodHint").textContent = `Informe a quantidade em ${food.unit === 'un' ? 'unidades (un)' : food.unit} (porção padrão: ${food.base}${food.unit}).`;
+    }
+
+    function updateDietConfig() {
+      state.diet.age = parseInt(document.getElementById("dAge").value) || 25;
+      state.diet.protPerKg = parseFloat(document.getElementById("dProtKg").value) || 2.1;
+      state.diet.fatPerKg = parseFloat(document.getElementById("dFatKg").value) || 1.0;
+      state.diet.activity = parseFloat(document.getElementById("dActivity").value) || 1.55;
+      state.diet.goalDelta = parseInt(document.getElementById("dGoal").value) || 0;
+      saveState();
+      renderDietView();
+    }
+
+    function calcDietTargets() {
+      const w = state.measures.weight || 63;
+      const h = state.measures.height || 170;
+      const age = state.diet.age || 25;
+      // Mifflin-St Jeor Masculino
+      const tmb = Math.round(10 * w + 6.25 * h - 5 * age + 5);
+      const tdee = Math.round(tmb * state.diet.activity);
+      const targetKcal = tdee + state.diet.goalDelta;
+
+      const targetP = Math.round(w * state.diet.protPerKg);
+      const targetF = Math.round(w * state.diet.fatPerKg);
+      const remKcal = Math.max(0, targetKcal - (targetP * 4 + targetF * 9));
+      const targetC = Math.round(remKcal / 4);
+      const waterTarget = Math.round(w * 42);
+
+      return { tmb, tdee, targetKcal, targetP, targetC, targetF, waterTarget };
+    }
+
+    function calcConsumedTotals() {
+      let kcal = 0, p = 0, c = 0, f = 0;
+      Object.values(state.diet.meals).forEach(list => {
+        list.forEach(item => {
+          kcal += item.kcal;
+          p += item.p;
+          c += item.c;
+          f += item.f;
+        });
+      });
+      return { kcal: Math.round(kcal), p: Math.round(p), c: Math.round(c), f: Math.round(f) };
+    }
+
+    function renderDietView() {
+      const targets = calcDietTargets();
+      const consumed = calcConsumedTotals();
+      const w = state.measures.weight || 63;
+
+      document.getElementById("dTmbTdee").textContent = `${targets.tmb} / ${targets.tdee} kcal`;
+      document.getElementById("dCalBalance").textContent = `${consumed.kcal} / ${targets.targetKcal} kcal`;
+
+      const pctKcal = Math.min(100, Math.round((consumed.kcal / targets.targetKcal) * 100));
+      const pctP = Math.min(100, Math.round((consumed.p / targets.targetP) * 100));
+      const pctC = Math.min(100, Math.round((consumed.c / targets.targetC) * 100));
+      const pctF = Math.min(100, Math.round((consumed.f / targets.targetF) * 100));
+
+      document.getElementById("lblKcal").textContent = `${consumed.kcal} / ${targets.targetKcal} kcal (${pctKcal}%)`;
+      document.getElementById("barKcal").style.width = pctKcal + "%";
+
+      document.getElementById("lblProtGkg").textContent = (consumed.p / w).toFixed(1);
+      document.getElementById("lblProt").textContent = `${consumed.p}g / ${targets.targetP}g`;
+      document.getElementById("barProt").style.width = pctP + "%";
+
+      document.getElementById("lblCarb").textContent = `${consumed.c}g / ${targets.targetC}g`;
+      document.getElementById("barCarb").style.width = pctC + "%";
+
+      document.getElementById("lblFatGkg").textContent = (consumed.f / w).toFixed(1);
+      document.getElementById("lblFat").textContent = `${consumed.f}g / ${targets.targetF}g`;
+      document.getElementById("barFat").style.width = pctF + "%";
+
+      // Hidratação
+      const wPct = Math.min(100, Math.round((state.diet.waterMl / targets.waterTarget) * 100));
+      document.getElementById("waterText").textContent = `${state.diet.waterMl} ml / ${targets.waterTarget} ml (${wPct}%)`;
+      document.getElementById("barWater").style.width = wPct + "%";
+
+      // Abas das 5 Refeições
+      const activeM = state.diet.activeMeal || "m1";
+      document.getElementById("mealTabs").innerHTML = MEAL_SLOTS.map(slot => {
+        const count = (state.diet.meals[slot.id] || []).length;
+        return `<button class="meal-tab ${slot.id === activeM ? 'active' : ''}" onclick="selectMealSlot('${slot.id}')">
+          ${slot.label} (${count})
+        </button>`;
+      }).join("");
+
+      // Lista de alimentos da refeição ativa
+      const items = state.diet.meals[activeM] || [];
+      const listEl = document.getElementById("mealFoodList");
+      if (!items.length) {
+        listEl.innerHTML = `<p style="font-size:12px; color:var(--muted); text-align:center; padding:10px 0;">Nenhum alimento lançado nesta refeição.</p>`;
+      } else {
+        listEl.innerHTML = items.map((item, idx) => `
+          <div class="food-item">
+            <div>
+              <strong style="color:var(--text);">${item.name}</strong> <span style="color:var(--emerald);">(${item.amount}${item.unit})</span><br>
+              <span style="color:var(--muted);">${Math.round(item.kcal)} kcal • P:${item.p.toFixed(1)}g • C:${item.c.toFixed(1)}g • G:${item.f.toFixed(1)}g</span>
+            </div>
+            <button class="del-btn" onclick="removeFoodFromMeal('${activeM}', ${idx})">✕</button>
+          </div>
+        `).join("");
+      }
+    }
+
+    function selectMealSlot(mealId) {
+      state.diet.activeMeal = mealId;
+      saveState();
+      renderDietView();
+    }
+
+    function addFoodToMeal() {
+      const selId = document.getElementById("foodSelect").value;
+      const amount = parseFloat(document.getElementById("foodAmount").value) || 0;
+      if (amount <= 0) return;
+      const food = getAllFoods().find(f => f.id === selId);
+      if (!food) return;
+
+      const factor = amount / food.base;
+      const entry = {
+        name: food.name,
+        amount: amount,
+        unit: food.unit,
+        kcal: food.kcal * factor,
+        p: food.p * factor,
+        c: food.c * factor,
+        f: food.f * factor
+      };
+      const mId = state.diet.activeMeal || "m1";
+      state.diet.meals[mId].push(entry);
+      saveState();
+      playBeep(880, 0.1);
+      renderDietView();
+    }
+
+    function removeFoodFromMeal(mealId, idx) {
+      state.diet.meals[mealId].splice(idx, 1);
+      saveState();
+      renderDietView();
+    }
+
+    function clearAllMeals() {
+      if (confirm("Zerar todos os alimentos e água registrados hoje?")) {
+        state.diet.meals = { m1:[], m2:[], m3:[], m4:[], m5:[] };
+        state.diet.waterMl = 0;
+        saveState();
+        renderDietView();
+      }
+    }
+
+    function addWater(ml) {
+      state.diet.waterMl = Math.max(0, (state.diet.waterMl || 0) + ml);
+      saveState();
+      renderDietView();
+    }
+
+    function saveCustomFood() {
+      const name = document.getElementById("cFoodName").value.trim();
+      const base = parseFloat(document.getElementById("cFoodBase").value) || 100;
+      const kcal = parseFloat(document.getElementById("cFoodKcal").value) || 0;
+      const p = parseFloat(document.getElementById("cFoodP").value) || 0;
+      const c = parseFloat(document.getElementById("cFoodC").value) || 0;
+      const f = parseFloat(document.getElementById("cFoodF").value) || 0;
+      if (!name) { alert("Digite o nome do alimento."); return; }
+
+      const newFood = { id: "cust_" + Date.now(), name, base, unit: "g", kcal, p, c, f };
+      state.diet.customFoods.push(newFood);
+      document.getElementById("cFoodName").value = "";
+      saveState();
+      populateFoodSelect();
+      alert(`Alimento "${name}" adicionado ao seletor!`);
+    }
+
+    function loadSampleDiet() {
+      state.diet.meals = {
+        m1: [
+          { name:"Cuscuz de Milho Cozido", amount:180, unit:"g", kcal:203.4, p:3.9, c:45.5, f:1.2 },
+          { name:"Banana da Terra Cozida", amount:100, unit:"g", kcal:128, p:1.0, c:33.5, f:0.2 },
+          { name:"Ovo Inteiro Cozido/Grelhado", amount:3, unit:"un", kcal:216, p:18.9, c:1.8, f:14.4 }
+        ],
+        m2: [
+          { name:"Arroz Branco Cozido", amount:250, unit:"g", kcal:320, p:6.2, c:70.2, f:0.5 },
+          { name:"Feijão Carioca/Preto Cozido", amount:150, unit:"g", kcal:114, p:7.2, c:20.4, f:0.7 },
+          { name:"Peito de Frango Grelhado", amount:150, unit:"g", kcal:238.5, p:48.0, c:0, f:3.7 }
+        ],
+        m3: [
+          { name:"Banana Prata", amount:2, unit:"un", kcal:136, p:1.8, c:36.4, f:0.2 },
+          { name:"Aveia em Flocos", amount:40, unit:"g", kcal:157, p:5.7, c:26.6, f:2.9 },
+          { name:"Pasta de Amendoim Integral", amount:20, unit:"g", kcal:120, p:5.6, c:3.2, f:10.0 }
+        ],
+        m4: [
+          { name:"Whey Protein Concentrado (1 Scoop)", amount:30, unit:"g", kcal:120, p:24.0, c:3.0, f:1.5 },
+          { name:"Goma de Tapioca", amount:100, unit:"g", kcal:240, p:0, c:60.0, f:0 }
+        ],
+        m5: [
+          { name:"Aipim / Mandioca Cozida", amount:220, unit:"g", kcal:275, p:1.3, c:66.2, f:0.6 },
+          { name:"Patinho / Carne Magra Moída", amount:140, unit:"g", kcal:306.6, p:50.2, c:0, f:10.2 },
+          { name:"Azeite de Oliva Extra Virgem", amount:10, unit:"ml", kcal:88, p:0, c:0, f:10.0 }
+        ]
+      };
+      state.diet.waterMl = 2500;
+      saveState();
+      renderDietView();
+    }
+
+    // STOMACH VACUUM TIMER
+    let coreMode = "vacuum";
+    let vacTimer = null;
+    let vacRunning = false;
+    let vacStepIdx = 0;
+    let vacSeries = 1;
+    let vacSec = 30;
+
+    const VAC_STEPS = [
+      { label: "1. INSPIRAR FUNDO", sec: 3 },
+      { label: "2. EXPIRAR TUDO", sec: 4 },
+      { label: "3. SUGAR ABDÔMEN (VACUUM)", sec: 30 },
+      { label: "4. DESCANSAR", sec: 20 }
+    ];
+
+    function setCoreMode(mode) {
+      coreMode = mode;
+      resetVacuumTimer();
+      document.getElementById("modeVacBtn").classList.toggle("active", mode === "vacuum");
+      document.getElementById("modePlankBtn").classList.toggle("active", mode === "plank");
+      document.getElementById("vacTimerDisplay").textContent = mode === "vacuum" ? "30s" : "60s";
+    }
+
+    function toggleVacuumTimer() {
+      if (vacRunning) {
+        clearInterval(vacTimer);
+        vacRunning = false;
+        document.getElementById("vacStartBtn").textContent = "▶ Continuar";
+        return;
+      }
+      vacRunning = true;
+      document.getElementById("vacStartBtn").textContent = "⏸ Pausar";
+
+      if (coreMode === "plank") {
+        vacSec = 60;
+        document.getElementById("vacPhaseLabel").textContent = "PRANCHA ISOMÉTRICA";
+        vacTimer = setInterval(() => {
+          vacSec--;
+          document.getElementById("vacTimerDisplay").textContent = vacSec + "s";
+          if (vacSec <= 0) {
+            playBeep(950, 0.3);
+            clearInterval(vacTimer);
+            vacRunning = false;
+            document.getElementById("vacStartBtn").textContent = "▶ Iniciar Prancha";
+          }
+        }, 1000);
+      } else {
+        vacStepIdx = 0;
+        vacSec = VAC_STEPS[0].sec;
+        updateVacUI();
+        vacTimer = setInterval(() => {
+          vacSec--;
+          if (vacSec <= 0) {
+            playBeep(880, 0.18);
+            vacStepIdx++;
+            if (vacStepIdx >= VAC_STEPS.length) {
+              vacStepIdx = 0;
+              vacSeries++;
+              if (vacSeries > 3) {
+                resetVacuumTimer();
+                alert("3 séries de Stomach Vacuum concluídas!");
+                return;
+              }
+            }
+            vacSec = VAC_STEPS[vacStepIdx].sec;
+          }
+          updateVacUI();
+        }, 1000);
+      }
+    }
+
+    function updateVacUI() {
+      document.getElementById("vacPhaseLabel").textContent = VAC_STEPS[vacStepIdx].label;
+      document.getElementById("vacTimerDisplay").textContent = vacSec + "s";
+      document.getElementById("vacSeriesDisplay").textContent = `Série ${vacSeries} de 3`;
+    }
+
+    function resetVacuumTimer() {
+      clearInterval(vacTimer);
+      vacRunning = false;
+      vacStepIdx = 0;
+      vacSeries = 1;
+      document.getElementById("vacPhaseLabel").textContent = "PRONTO";
+      document.getElementById("vacTimerDisplay").textContent = coreMode === "vacuum" ? "30s" : "60s";
+      document.getElementById("vacSeriesDisplay").textContent = "Série 1 de 3";
+      document.getElementById("vacStartBtn").textContent = "▶ Iniciar Ciclo Guiado";
+    }
+
+    // MOTOR DE ANIMAÇÃO BIOMECÂNICA 60 FPS (23 EXERCÍCIOS ÚNICOS)
+    let animFrame = null;
+    let animExId = "a1";
+    let animSpeed = 1;
+    let animPaused = false;
+    let animTick = 0;
+
+    function openAnimModal(wkKey, exId) {
+      const ex = WORKOUT_DB[wkKey].exercises.find(e => e.id === exId);
+      if (!ex) return;
+
+      document.getElementById("animTargetBadge").textContent = ex.target;
+      document.getElementById("animExTitle").textContent = ex.name;
+      document.getElementById("animEquipText").textContent = ex.equip || "Simulação 60 FPS";
+      document.getElementById("animSteps").innerHTML = ex.steps.map(s => `<li>${s}</li>`).join("");
+      document.getElementById("animMistake").textContent = ex.mistake;
+      document.getElementById("animYtLink").href = "https://www.youtube.com/results?search_query=como+fazer+" + encodeURIComponent(ex.name);
+
+      animExId = ex.id;
+      animPaused = false;
+      document.getElementById("animModal").classList.add("open");
+      cancelAnimationFrame(animFrame);
+      loopBiomechanics();
+    }
+
+    function closeAnimModal() {
+      document.getElementById("animModal").classList.remove("open");
+      cancelAnimationFrame(animFrame);
+    }
+
+    function setAnimSpeed(spd) {
+      animSpeed = spd;
+      document.getElementById("spd1Btn").style.borderColor = spd === 1 ? "var(--emerald)" : "var(--border)";
+      document.getElementById("spd05Btn").style.borderColor = spd < 1 ? "var(--emerald)" : "var(--border)";
+    }
+
+    function toggleAnimPause() {
+      animPaused = !animPaused;
+    }
+
+    function loopBiomechanics() {
+      if (!animPaused) animTick += 0.035 * animSpeed;
+      const t = (Math.sin(animTick) + 1) / 2;
+      const isConcentric = Math.cos(animTick) > 0;
+
+      const phaseEl = document.getElementById("animPhaseText");
+      phaseEl.textContent = isConcentric ? "Fase Concêntrica (Força)" : "Fase Excêntrica (Controle 2s)";
+      phaseEl.style.color = isConcentric ? "#10b981" : "#38bdf8";
+
+      document.getElementById("biomechSvg").innerHTML = drawExerciseSVG(animExId, t, animTick);
+      animFrame = requestAnimationFrame(loopBiomechanics);
+    }
+
+    function drawExerciseSVG(id, t, tick) {
+      const floor = `<line x1="15" y1="180" x2="235" y2="180" stroke="#334155" stroke-width="4"/>`;
+
+      switch (id) {
+        case "a1": {
+          const barY = 108 - t * 38;
+          return `${floor}
+            <rect x="45" y="132" width="125" height="10" rx="4" fill="#475569"/>
+            <line x1="65" y1="142" x2="65" y2="180" stroke="#475569" stroke-width="6"/>
+            <line x1="150" y1="142" x2="150" y2="180" stroke="#475569" stroke-width="6"/>
+            <circle cx="65" cy="118" r="11" fill="#e2e8f0"/>
+            <line x1="78" y1="124" x2="148" y2="124" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
+            <line x1="148" y1="124" x2="172" y2="148" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>
+            <line x1="172" y1="148" x2="175" y2="180" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>
+            <line x1="95" y1="122" x2="88" y2="${barY + 18}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="88" y1="${barY + 18}" x2="95" y2="${barY}" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round"/>
+            <line x1="58" y1="${barY}" x2="135" y2="${barY}" stroke="#f8fafc" stroke-width="4"/>
+            <rect x="54" y="${barY - 12}" width="8" height="24" rx="2" fill="#10b981"/>
+            <rect x="131" y="${barY - 12}" width="8" height="24" rx="2" fill="#10b981"/>`;
+        }
+        case "a2": {
+          const bodyY = 88 - t * 38;
+          return `${floor}
+            <line x1="45" y1="26" x2="205" y2="26" stroke="#94a3b8" stroke-width="5"/>
+            <circle cx="125" cy="${bodyY}" r="12" fill="#e2e8f0"/>
+            <polygon points="100,${bodyY+14} 150,${bodyY+14} 135,${bodyY+64} 115,${bodyY+64}" fill="#10b981"/>
+            <line x1="102" y1="${bodyY+18}" x2="76" y2="${bodyY - 6}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="76" y1="${bodyY - 6}" x2="86" y2="26" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <line x1="148" y1="${bodyY+18}" x2="174" y2="${bodyY - 6}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="174" y1="${bodyY - 6}" x2="164" y2="26" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <line x1="118" y1="${bodyY+64}" x2="118" y2="${bodyY+104}" stroke="#64748b" stroke-width="6" stroke-linecap="round"/>
+            <line x1="132" y1="${bodyY+64}" x2="132" y2="${bodyY+104}" stroke="#64748b" stroke-width="6" stroke-linecap="round"/>`;
+        }
+        case "a3": {
+          const handY = 76 - t * 42;
+          const elbowY = 98 - t * 28;
+          return `${floor}
+            <line x1="100" y1="75" x2="100" y2="145" stroke="#475569" stroke-width="6"/>
+            <line x1="100" y1="145" x2="150" y2="145" stroke="#475569" stroke-width="6"/>
+            <line x1="125" y1="145" x2="125" y2="180" stroke="#475569" stroke-width="6"/>
+            <circle cx="125" cy="68" r="12" fill="#e2e8f0"/>
+            <polygon points="103,84 147,84 136,138 114,138" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+            <circle cx="101" cy="88" r="7" fill="#10b981"/>
+            <circle cx="149" cy="88" r="7" fill="#10b981"/>
+            <line x1="101" y1="88" x2="78" y2="${elbowY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="78" y1="${elbowY}" x2="86" y2="${handY}" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <line x1="149" y1="88" x2="172" y2="${elbowY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="172" y1="${elbowY}" x2="164" y2="${handY}" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <rect x="76" y="${handY-4}" width="20" height="8" rx="2" fill="#f59e0b"/>
+            <rect x="154" y="${handY-4}" width="20" height="8" rx="2" fill="#f59e0b"/>`;
+        }
+        case "a4": {
+          const barX = 148 - t * 22;
+          const barY = 138 - t * 28;
+          return `${floor}
+            <circle cx="156" cy="66" r="11" fill="#e2e8f0"/>
+            <line x1="95" y1="112" x2="144" y2="76" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
+            <line x1="95" y1="112" x2="108" y2="145" stroke="#64748b" stroke-width="8" stroke-linecap="round"/>
+            <line x1="108" y1="145" x2="102" y2="180" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>
+            <line x1="136" y1="82" x2="${136 - t*18}" y2="${108 - t*16}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="${136 - t*18}" y1="${108 - t*16}" x2="${barX}" y2="${barY}" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="${barX}" cy="${barY}" r="11" fill="#f59e0b" stroke="#fff" stroke-width="2"/>`;
+        }
+        case "a5": {
+          const handY = 126 - t * 50;
+          const handX = 36 - t * 8;
+          return `${floor}
+            <circle cx="125" cy="54" r="12" fill="#e2e8f0"/>
+            <polygon points="100,72 150,72 136,128 114,128" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+            <circle cx="98" cy="76" r="8" fill="#10b981"/>
+            <circle cx="152" cy="76" r="8" fill="#10b981"/>
+            <line x1="98" y1="76" x2="${98 - handX}" y2="${handY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="152" y1="76" x2="${152 + handX}" y2="${handY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <rect x="${90 - handX}" y="${handY - 4}" width="14" height="8" rx="2" fill="#f59e0b"/>
+            <rect x="${146 + handX}" y="${handY - 4}" width="14" height="8" rx="2" fill="#f59e0b"/>
+            <line x1="117" y1="128" x2="117" y2="180" stroke="#64748b" stroke-width="7"/>
+            <line x1="133" y1="128" x2="133" y2="180" stroke="#64748b" stroke-width="7"/>`;
+        }
+        case "a6": {
+          const curlY = 122 - t * 38;
+          const triY = 82 + t * 38;
+          return `${floor}
+            <line x1="125" y1="20" x2="125" y2="180" stroke="#1e293b" stroke-dasharray="4 4" stroke-width="2"/>
+            <text x="25" y="34" fill="#10b981" font-size="10" font-weight="bold">1. ROSCA DIRETA</text>
+            <circle cx="65" cy="58" r="10" fill="#e2e8f0"/>
+            <line x1="65" y1="70" x2="65" y2="125" stroke="#10b981" stroke-width="9" stroke-linecap="round"/>
+            <line x1="65" y1="125" x2="65" y2="180" stroke="#64748b" stroke-width="7"/>
+            <line x1="65" y1="76" x2="68" y2="104" stroke="#e2e8f0" stroke-width="5"/>
+            <line x1="68" y1="104" x2="92" y2="${curlY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="94" cy="${curlY}" r="6" fill="#f59e0b"/>
+            <text x="140" y="34" fill="#38bdf8" font-size="10" font-weight="bold">2. TRÍCEPS PULLEY</text>
+            <line x1="215" y1="40" x2="215" y2="180" stroke="#475569" stroke-width="4"/>
+            <line x1="215" y1="40" x2="195" y2="${triY}" stroke="#94a3b8" stroke-width="2"/>
+            <circle cx="165" cy="58" r="10" fill="#e2e8f0"/>
+            <line x1="165" y1="70" x2="165" y2="125" stroke="#1e293b" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+            <line x1="165" y1="125" x2="165" y2="180" stroke="#64748b" stroke-width="7"/>
+            <line x1="165" y1="76" x2="170" y2="102" stroke="#e2e8f0" stroke-width="5"/>
+            <line x1="170" y1="102" x2="195" y2="${triY}" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>`;
+        }
+        case "b1": {
+          const depth = (1 - t) * 36;
+          const hipX = 104 - (1 - t) * 10;
+          const hipY = 104 + depth;
+          const shX = 122;
+          const shY = 60 + depth;
+          return `${floor}
+            <circle cx="${shX + 4}" cy="${shY - 14}" r="11" fill="#e2e8f0"/>
+            <line x1="${shX - 24}" y1="${shY}" x2="${shX + 24}" y2="${shY}" stroke="#f8fafc" stroke-width="4"/>
+            <rect x="${shX - 28}" y="${shY - 9}" width="7" height="18" fill="#10b981"/>
+            <rect x="${shX + 21}" y="${shY - 9}" width="7" height="18" fill="#10b981"/>
+            <line x1="${shX}" y1="${shY}" x2="${hipX}" y2="${hipY}" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
+            <line x1="${hipX}" y1="${hipY}" x2="138" y2="140" stroke="#38bdf8" stroke-width="9" stroke-linecap="round"/>
+            <line x1="138" y1="140" x2="122" y2="180" stroke="#94a3b8" stroke-width="7" stroke-linecap="round"/>`;
+        }
+        case "b2": {
+          const sledShift = t * 28;
+          const footX = 135 + sledShift;
+          const footY = 95 - sledShift * 0.75;
+          const kneeX = 102 + sledShift * 0.35;
+          const kneeY = 102 - sledShift * 0.15;
+          return `${floor}
+            <line x1="42" y1="130" x2="72" y2="162" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+            <line x1="72" y1="162" x2="100" y2="155" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+            <line x1="110" y1="125" x2="205" y2="52" stroke="#334155" stroke-width="5"/>
+            <circle cx="52" cy="112" r="10" fill="#e2e8f0"/>
+            <line x1="56" y1="124" x2="76" y2="156" stroke="#64748b" stroke-width="10" stroke-linecap="round"/>
+            <line x1="76" y1="156" x2="${kneeX}" y2="${kneeY}" stroke="#10b981" stroke-width="9" stroke-linecap="round"/>
+            <line x1="${kneeX}" y1="${kneeY}" x2="${footX}" y2="${footY}" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+            <line x1="${footX - 10}" y1="${footY - 16}" x2="${footX + 12}" y2="${footY + 14}" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>`;
+        }
+        case "b3": {
+          const ang = t * 1.15;
+          const kneeX = 142, kneeY = 118;
+          const footX = kneeX + Math.sin(ang) * 48;
+          const footY = kneeY + Math.cos(ang) * 48;
+          return `${floor}
+            <line x1="88" y1="68" x2="88" y2="122" stroke="#475569" stroke-width="7"/>
+            <line x1="88" y1="122" x2="142" y2="122" stroke="#475569" stroke-width="7"/>
+            <line x1="112" y1="122" x2="112" y2="180" stroke="#475569" stroke-width="6"/>
+            <circle cx="98" cy="56" r="11" fill="#e2e8f0"/>
+            <line x1="98" y1="70" x2="98" y2="116" stroke="#64748b" stroke-width="10" stroke-linecap="round"/>
+            <line x1="98" y1="116" x2="${kneeX}" y2="${kneeY}" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
+            <line x1="${kneeX}" y1="${kneeY}" x2="${footX}" y2="${footY}" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="${footX}" cy="${footY}" r="7" fill="#f59e0b"/>`;
+        }
+        case "b4": {
+          const lift = t * 20;
+          return `${floor}
+            <rect x="108" y="166" width="42" height="14" rx="2" fill="#475569"/>
+            <circle cx="122" cy="${54 - lift}" r="11" fill="#e2e8f0"/>
+            <line x1="122" y1="${66 - lift}" x2="122" y2="${116 - lift}" stroke="#64748b" stroke-width="10" stroke-linecap="round"/>
+            <line x1="122" y1="${116 - lift}" x2="122" y2="${162 - lift}" stroke="#10b981" stroke-width="9" stroke-linecap="round"/>
+            <line x1="102" y1="${172 - lift}" x2="132" y2="166" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>`;
+        }
+        case "b5": {
+          const swing = Math.sin(tick * 2) * 16;
+          return `${floor}
+            <circle cx="125" cy="52" r="11" fill="#e2e8f0"/>
+            <polygon points="103,66 147,66 135,122 115,122" fill="#10b981"/>
+            <line x1="125" y1="122" x2="${125 + swing}" y2="178" stroke="#38bdf8" stroke-width="7" stroke-linecap="round"/>
+            <line x1="125" y1="122" x2="${125 - swing}" y2="178" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>
+            <line x1="103" y1="72" x2="96" y2="125" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <line x1="147" y1="72" x2="154" y2="125" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <rect x="84" y="122" width="22" height="12" rx="3" fill="#f59e0b"/>
+            <rect x="144" y="122" width="22" height="12" rx="3" fill="#f59e0b"/>`;
+        }
+        case "c1": {
+          const dbY = 86 - t * 38;
+          return `${floor}
+            <line x1="62" y1="100" x2="122" y2="145" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+            <line x1="122" y1="145" x2="152" y2="138" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+            <line x1="92" y1="124" x2="92" y2="180" stroke="#475569" stroke-width="6"/>
+            <line x1="138" y1="142" x2="138" y2="180" stroke="#475569" stroke-width="6"/>
+            <circle cx="72" cy="86" r="11" fill="#e2e8f0"/>
+            <line x1="82" y1="98" x2="124" y2="134" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
+            <line x1="124" y1="134" x2="162" y2="145" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>
+            <line x1="162" y1="145" x2="166" y2="180" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>
+            <line x1="94" y1="106" x2="90" y2="${dbY + 18}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="90" y1="${dbY + 18}" x2="94" y2="${dbY}" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round"/>
+            <rect x="80" y="${dbY - 5}" width="28" height="10" rx="3" fill="#f59e0b"/>`;
+        }
+        case "c2": {
+          const barY = 48 + t * 38;
+          return `${floor}
+            <line x1="125" y1="15" x2="125" y2="${barY}" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="75" y1="${barY}" x2="175" y2="${barY}" stroke="#f59e0b" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="125" cy="82" r="11" fill="#e2e8f0"/>
+            <polygon points="102,96 148,96 135,144 115,144" fill="#10b981"/>
+            <line x1="102" y1="100" x2="80" y2="${barY + 20}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="80" y1="${barY + 20}" x2="82" y2="${barY}" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <line x1="148" y1="100" x2="170" y2="${barY + 20}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="170" y1="${barY + 20}" x2="168" y2="${barY}" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <rect x="102" y="144" width="46" height="8" rx="2" fill="#475569"/>
+            <line x1="125" y1="152" x2="125" y2="180" stroke="#475569" stroke-width="6"/>`;
+        }
+        case "c3": {
+          const handX = 158 - t * 44;
+          const handY = 66 + t * 54;
+          return `${floor}
+            <line x1="195" y1="25" x2="195" y2="180" stroke="#475569" stroke-width="6"/>
+            <line x1="195" y1="32" x2="${handX}" y2="${handY}" stroke="#38bdf8" stroke-width="2"/>
+            <circle cx="122" cy="64" r="11" fill="#e2e8f0"/>
+            <line x1="86" y1="112" x2="115" y2="74" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
+            <line x1="86" y1="112" x2="92" y2="180" stroke="#64748b" stroke-width="8" stroke-linecap="round"/>
+            <line x1="112" y1="78" x2="${handX}" y2="${handY}" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="${handX}" cy="${handY}" r="6" fill="#f59e0b"/>`;
+        }
+        case "c4": {
+          const handX = 95 + t * 72;
+          const handY = 128 - t * 52;
+          return `${floor}
+            <line x1="52" y1="35" x2="52" y2="180" stroke="#475569" stroke-width="5"/>
+            <line x1="52" y1="170" x2="${handX}" y2="${handY}" stroke="#38bdf8" stroke-width="2"/>
+            <circle cx="115" cy="54" r="11" fill="#e2e8f0"/>
+            <polygon points="94,70 136,70 126,126 104,126" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+            <circle cx="136" cy="74" r="8" fill="#10b981"/>
+            <line x1="136" y1="74" x2="${handX}" y2="${handY}" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="${handX}" cy="${handY}" r="5" fill="#f59e0b"/>
+            <line x1="108" y1="126" x2="108" y2="180" stroke="#64748b" stroke-width="7"/>
+            <line x1="122" y1="126" x2="122" y2="180" stroke="#64748b" stroke-width="7"/>`;
+        }
+        case "c5": {
+          const spread = 18 + t * 56;
+          const armY = 104 - t * 28;
+          return `${floor}
+            <circle cx="125" cy="56" r="11" fill="#e2e8f0"/>
+            <polygon points="100,72 150,72 136,128 114,128" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+            <circle cx="102" cy="76" r="8" fill="#10b981"/>
+            <circle cx="148" cy="76" r="8" fill="#10b981"/>
+            <line x1="102" y1="76" x2="${125 - spread}" y2="${armY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="148" y1="76" x2="${125 + spread}" y2="${armY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="${125 - spread}" cy="${armY}" r="6" fill="#f59e0b"/>
+            <circle cx="${125 + spread}" cy="${armY}" r="6" fill="#f59e0b"/>
+            <line x1="116" y1="128" x2="116" y2="180" stroke="#64748b" stroke-width="7"/>
+            <line x1="134" y1="128" x2="134" y2="180" stroke="#64748b" stroke-width="7"/>`;
+        }
+        case "c6": {
+          const dipY = 76 - t * 28;
+          return `${floor}
+            <line x1="75" y1="110" x2="175" y2="110" stroke="#94a3b8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="85" y1="110" x2="85" y2="180" stroke="#475569" stroke-width="6"/>
+            <line x1="165" y1="110" x2="165" y2="180" stroke="#475569" stroke-width="6"/>
+            <circle cx="128" cy="${dipY - 16}" r="11" fill="#e2e8f0"/>
+            <line x1="124" y1="${dipY - 4}" x2="114" y2="${dipY + 42}" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
+            <line x1="122" y1="${dipY + 2}" x2="102" y2="${dipY + 18}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="102" y1="${dipY + 18}" x2="115" y2="110" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <line x1="114" y1="${dipY + 42}" x2="102" y2="${dipY + 68}" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>`;
+        }
+        case "d1": {
+          const hipX = 88 + t * 18;
+          const shX = 148 - t * 32;
+          const shY = 98 - t * 34;
+          const barY = 142 - t * 32;
+          return `${floor}
+            <circle cx="${shX + 8}" cy="${shY - 10}" r="11" fill="#e2e8f0"/>
+            <line x1="${hipX}" y1="110" x2="${shX}" y2="${shY}" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
+            <line x1="${hipX}" y1="110" x2="108" y2="180" stroke="#38bdf8" stroke-width="9" stroke-linecap="round"/>
+            <line x1="${shX - 4}" y1="${shY + 4}" x2="116" y2="${barY}" stroke="#e2e8f0" stroke-width="5"/>
+            <circle cx="116" cy="${barY}" r="12" fill="#f59e0b" stroke="#fff" stroke-width="2"/>`;
+        }
+        case "d2": {
+          const ang = 0.25 + t * 1.35;
+          const kneeX = 158, kneeY = 128;
+          const footX = kneeX + Math.cos(ang) * 44;
+          const footY = kneeY - Math.sin(ang) * 44;
+          return `${floor}
+            <rect x="52" y="128" width="110" height="9" rx="4" fill="#475569"/>
+            <line x1="72" y1="137" x2="72" y2="180" stroke="#475569" stroke-width="6"/>
+            <line x1="145" y1="137" x2="145" y2="180" stroke="#475569" stroke-width="6"/>
+            <circle cx="62" cy="116" r="10" fill="#e2e8f0"/>
+            <line x1="74" y1="122" x2="156" y2="124" stroke="#64748b" stroke-width="10" stroke-linecap="round"/>
+            <line x1="${kneeX}" y1="${kneeY}" x2="${footX}" y2="${footY}" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>
+            <circle cx="${footX}" cy="${footY}" r="7" fill="#f59e0b"/>`;
+        }
+        case "d3": {
+          const drop = (1 - t) * 28;
+          const hipY = 98 + drop;
+          return `${floor}
+            <circle cx="125" cy="${50 + drop}" r="11" fill="#e2e8f0"/>
+            <line x1="125" y1="${62 + drop}" x2="125" y2="${hipY}" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
+            <line x1="125" y1="${hipY}" x2="158" y2="136" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+            <line x1="158" y1="136" x2="158" y2="180" stroke="#e2e8f0" stroke-width="7" stroke-linecap="round"/>
+            <line x1="125" y1="${hipY}" x2="94" y2="${142 + drop * 0.85}" stroke="#64748b" stroke-width="8" stroke-linecap="round"/>
+            <line x1="94" y1="${142 + drop * 0.85}" x2="66" y2="180" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>
+            <line x1="125" y1="${68 + drop}" x2="125" y2="${112 + drop}" stroke="#e2e8f0" stroke-width="5"/>
+            <rect x="115" y="${110 + drop}" width="20" height="9" rx="2" fill="#f59e0b"/>`;
+        }
+        case "d4": {
+          const lift = t * 18;
+          const kneeY = 118 - lift;
+          return `${floor}
+            <rect x="70" y="122" width="45" height="8" rx="3" fill="#475569"/>
+            <line x1="92" y1="130" x2="92" y2="180" stroke="#475569" stroke-width="6"/>
+            <rect x="142" y="168" width="32" height="12" rx="2" fill="#475569"/>
+            <circle cx="88" cy="64" r="11" fill="#e2e8f0"/>
+            <line x1="88" y1="76" x2="88" y2="120" stroke="#64748b" stroke-width="10" stroke-linecap="round"/>
+            <line x1="88" y1="120" x2="144" y2="${kneeY}" stroke="#38bdf8" stroke-width="9" stroke-linecap="round"/>
+            <line x1="144" y1="${kneeY}" x2="144" y2="${166 - lift}" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>
+            <line x1="132" y1="${172 - lift}" x2="158" y2="168" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round"/>
+            <rect x="132" y="${kneeY - 12}" width="24" height="10" rx="3" fill="#f59e0b"/>`;
+        }
+        default: {
+          const vacIn = t * 9;
+          return `${floor}
+            <circle cx="176" cy="128" r="10" fill="#e2e8f0"/>
+            <path d="M 65 148 L 164 128 L 160 ${140 - vacIn} L 68 154 Z" fill="#10b981"/>
+            <line x1="160" y1="132" x2="160" y2="176" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="160" y1="176" x2="182" y2="176" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="65" y1="150" x2="58" y2="178" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round"/>`;
+        }
+      }
+    }
+
+    // IA ANALYTICS & HISTÓRICO
+    function renderAIAnalytics() {
+      const m = state.measures;
+      const ratio = (m.shoulders / m.waist).toFixed(3);
+      const getMaxRM = (exId) => {
+        return Math.max(...state.sets[exId].map(s => Math.round((parseFloat(s.w)||0)*(1+(parseInt(s.r)||0)/30))));
+      };
+      const benchRM = getMaxRM("a1");
+      const squatRM = getMaxRM("b1");
+      const rdlRM = getMaxRM("d1");
+      const targets = calcDietTargets();
+      const consumed = calcConsumedTotals();
+
+      document.getElementById("aiReportBox").innerHTML = `
+        <div style="padding:10px; background:var(--card-2); border-radius:10px; border-left:3px solid var(--emerald);">
+          <strong>1. Proporção Áurea Atual (${ratio} / 1.618):</strong>
+          Com ${m.weight} kg e ${m.height} cm, sua relação Cintura/Altura é de <strong>${((m.waist/m.height)*100).toFixed(1)}%</strong> (excelente abaixo de 45%).
+        </div>
+        <div style="padding:10px; background:var(--card-2); border-radius:10px; border-left:3px solid var(--cyan);">
+          <strong>2. Força Relativa nos Compostos:</strong>
+          Supino: <strong>${(benchRM/m.weight).toFixed(2)}x</strong> peso corporal (${benchRM} kg) • Agachamento: <strong>${(squatRM/m.weight).toFixed(2)}x</strong> (${squatRM} kg).
+        </div>
+        <div style="padding:10px; background:var(--card-2); border-radius:10px; border-left:3px solid var(--amber);">
+          <strong>3. Status Nutricional Hoje:</strong>
+          Ingerido: <strong>${consumed.kcal} / ${targets.targetKcal} kcal</strong> • Proteína: <strong>${consumed.p}g / ${targets.targetP}g</strong> • Água: <strong>${state.diet.waterMl} ml</strong>.
+        </div>
+      `;
+
+      const chartItems = [
+        { name: "Supino Reto", rm: benchRM, max: 110 },
+        { name: "Agachamento Livre", rm: squatRM, max: 140 },
+        { name: "Terra Romeno / Stiff", rm: rdlRM, max: 140 },
+        { name: "Puxada Aberta", rm: getMaxRM("c2"), max: 100 }
+      ];
+
+      document.getElementById("rmChartBox").innerHTML = chartItems.map(item => {
+        const pct = Math.min(100, Math.round((item.rm / item.max) * 100));
+        return `<div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:4px;">
+            <span>${item.name}</span><span style="color:var(--emerald);">${item.rm} kg (1RM)</span>
+          </div>
+          <div style="height:8px; background:var(--card-2); border-radius:99px; overflow:hidden;">
+            <div style="width:${pct}%; height:100%; background:linear-gradient(90deg, var(--emerald), var(--cyan));"></div>
+          </div>
+        </div>`;
+      }).join("");
+
+      const hList = document.getElementById("historyList");
+      if (!state.history.length) {
+        hList.innerHTML = "<p>Nenhuma sessão salva ainda. Finalize um treino na aba 'Treinos'.</p>";
+      } else {
+        hList.innerHTML = state.history.map(h => `
+          <div style="padding:8px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
+            <div><strong style="color:var(--text);">${h.workout}</strong><br><span>${h.date} ${h.cardio ? '• 🔥 Cardio OK' : ''}</span></div>
+            <div style="text-align:right; color:var(--emerald); font-weight:800;">${h.volume} kg<br><span style="color:var(--muted); font-weight:400;">${h.sets} séries</span></div>
+          </div>
+        `).join("");
+      }
+    }
+
+    function clearHistory() {
+      if (confirm("Limpar todo o histórico de sessões?")) {
+        state.history = [];
+        saveState();
+        renderAIAnalytics();
+      }
+    }
+
+    function exportBackup() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+      const a = document.createElement("a");
+      a.href = dataStr;
+      a.download = "vtaper_nutri_backup.json";
+      a.click();
+    }
+
+    // PWA INSTALL HANDLER & SERVICE WORKER
+    let deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById("installAppBtn").style.display = "flex";
+    });
+
+    async function installPWA() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      document.getElementById("installAppBtn").style.display = "none";
+    }
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+
+    // INIT
+    loadState();
+    document.getElementById("mWeight").value = state.measures.weight;
+    document.getElementById("mHeight").value = state.measures.height;
+    document.getElementById("mChest").value = state.measures.chest;
+    document.getElementById("sShoulders").value = state.measures.shoulders;
+    document.getElementById("sWaist").value = state.measures.waist;
+    document.getElementById("dAge").value = state.diet.age;
+    document.getElementById("dProtKg").value = state.diet.protPerKg;
+    document.getElementById("dFatKg").value = state.diet.fatPerKg;
+    document.getElementById("dActivity").value = state.diet.activity;
+    document.getElementById("dGoal").value = state.diet.goalDelta;
+
+    populateFoodSelect();
+    renderWorkoutView();
+    updateVTaper();
+    renderDietView();
+  </script>
+</body>
+</html>
