@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#090d16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>V-Taper Protocol & NutriBR</title>
+  <title>V-Taper Protocol V4 Pro</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <style>
@@ -38,32 +38,32 @@
     /* TOPBAR */
     .topbar {
       position: fixed; top: 0; left: 0; right: 0; height: 60px;
-      background: rgba(9, 13, 22, 0.92); backdrop-filter: blur(12px);
+      background: rgba(9, 13, 22, 0.94); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 14px; z-index: 100;
+      padding: 0 12px; z-index: 100;
     }
-    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 9px; }
     .brand-logo {
       width: 34px; height: 34px; border-radius: 9px;
       background: var(--emerald-dim); border: 1px solid var(--emerald);
       display: flex; align-items: center; justify-content: center;
       font-weight: 900; color: var(--emerald); font-size: 16px;
     }
-    .brand-title { font-size: 15px; font-weight: 800; letter-spacing: 0.4px; }
-    .brand-sub { font-size: 11px; color: var(--muted); }
-    .top-actions { display: flex; gap: 8px; align-items: center; }
+    .brand-title { font-size: 14px; font-weight: 800; letter-spacing: 0.4px; }
+    .brand-sub { font-size: 10px; color: var(--muted); }
+    .top-actions { display: flex; gap: 6px; align-items: center; }
     .icon-btn {
       background: var(--card-2); border: 1px solid var(--border);
-      height: 36px; padding: 0 11px; border-radius: 9px;
+      height: 34px; padding: 0 10px; border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 13px; font-weight: 700; cursor: pointer;
+      font-size: 12px; font-weight: 700; cursor: pointer;
     }
     .icon-btn.active { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-dim); }
 
     /* SIDEBAR DRAWER */
     .drawer-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.65);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.68);
       z-index: 200; display: none;
     }
     .drawer-backdrop.open { display: block; }
@@ -74,13 +74,12 @@
       padding: 18px 14px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto;
     }
     .drawer.open { transform: translateX(0); }
-    .drawer-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-top: 8px; font-weight: 700; }
+    .drawer-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-top: 8px; font-weight: 700; }
     .drawer-btn {
       width: 100%; text-align: left; padding: 11px 12px; border-radius: 10px;
       background: var(--card-2); border: 1px solid var(--border);
       font-size: 13px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
     }
-    .drawer-btn:active { border-color: var(--emerald); }
 
     /* CONTAINER & CARDS */
     .container { max-width: 540px; margin: 0 auto; padding: 12px; }
@@ -100,7 +99,7 @@
       border: 1px solid rgba(16,185,129,0.3); letter-spacing: 0.5px;
     }
     .badge-cyan { background: rgba(6,182,212,0.15); color: var(--cyan); border-color: rgba(6,182,212,0.3); }
-    .badge-amber { background: rgba(245,158,11,0.15); color: var(--amber); border-color: rgba(245,158,11,0.3); }
+    .badge-amber { background: rgba(245,158,11,0.15); color: var(--amber); border-color: rgba(245,158,11,0.35); }
 
     /* WORKOUT SELECTOR GRID */
     .wk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
@@ -119,11 +118,22 @@
     .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
     .stat-val { font-size: 18px; font-weight: 900; margin-top: 2px; color: var(--emerald); }
 
-    /* EXERCISE SETS */
+    /* EXERCISE SETS & PR BANNER */
+    .ex-btn-row { display: flex; gap: 6px; margin-bottom: 10px; }
     .anim-trigger-btn {
-      width: 100%; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.35);
-      color: #38bdf8; border-radius: 9px; padding: 8px 12px; font-size: 12px; font-weight: 700;
-      margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+      flex: 1; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #38bdf8; border-radius: 9px; padding: 8px 10px; font-size: 12px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .plate-trigger-btn {
+      background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.38);
+      color: #fbbf24; border-radius: 9px; padding: 8px 10px; font-size: 12px; font-weight: 700;
+      cursor: pointer; white-space: nowrap;
+    }
+    .pr-banner {
+      background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #fbbf24; border-radius: 9px; padding: 7px 10px; font-size: 11px; font-weight: 800;
+      margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
     }
     .set-header, .set-row {
       display: grid; grid-template-columns: 36px 1fr 1fr 44px; gap: 8px; align-items: center;
@@ -168,7 +178,9 @@
       border-radius: 11px; padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
     }
 
-    /* DIET & MACROS STYLES */
+    /* RINGS & DIET */
+    .rings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; text-align: center; }
+    .ring-box { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 8px 4px; }
     .macro-bar-wrap { margin-bottom: 10px; }
     .macro-bar-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
     .macro-track { height: 9px; background: var(--card-2); border-radius: 99px; overflow: hidden; }
@@ -188,6 +200,16 @@
       background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.35);
       color: #f87171; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 700; cursor: pointer;
     }
+
+    /* SUPPLEMENT STACK */
+    .supp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .supp-btn {
+      background: var(--card-2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 8px 10px; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    }
+    .supp-btn.done { border-color: var(--emerald); background: var(--emerald-dim); }
+    .supp-name { font-size: 12px; font-weight: 800; }
+    .supp-time { font-size: 10px; color: var(--muted); }
 
     /* REST TIMER BAR */
     .rest-bar {
@@ -218,9 +240,9 @@
     .nav-item.active { color: var(--emerald); }
     .nav-icon { font-size: 17px; }
 
-    /* MODAL BIOMECÂNICA */
+    /* MODAIS */
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.82);
+      position: fixed; inset: 0; background: rgba(0,0,0,0.84);
       z-index: 300; display: none; align-items: center; justify-content: center; padding: 14px;
     }
     .modal-backdrop.open { display: flex; }
@@ -254,12 +276,13 @@
       <button class="icon-btn" onclick="toggleDrawer(true)" aria-label="Menu">☰</button>
       <div class="brand-logo">V</div>
       <div>
-        <div class="brand-title">V-TAPER & NUTRI</div>
-        <div class="brand-sub">Treino 4 Dias • 1.618 • Macros</div>
+        <div class="brand-title">V-TAPER PRO V4</div>
+        <div class="brand-sub">68kg • 1.618 • Auto-Next</div>
       </div>
     </div>
     <div class="top-actions">
-      <button class="icon-btn" id="installAppBtn" style="display:none; border-color:var(--emerald); color:var(--emerald);" onclick="installPWA()">📲 Instalar</button>
+      <button class="icon-btn" id="installAppBtn" style="display:none; border-color:var(--emerald); color:var(--emerald);" onclick="installPWA()">📲</button>
+      <button class="icon-btn" id="wakeBtn" onclick="toggleWakeLock()" title="Manter Tela Acesa">💡 Tela</button>
       <button class="icon-btn active" id="soundBtn" onclick="toggleSound()">🔊</button>
     </div>
   </header>
@@ -271,20 +294,21 @@
       <strong style="font-size:15px; color:var(--emerald);">Menu de Navegação</strong>
       <button class="icon-btn" onclick="toggleDrawer(false)">✕</button>
     </div>
-    <div class="drawer-title">Fichas de Treino</div>
+    <div class="drawer-title">Fichas de Treino (Rotação Automática)</div>
     <button class="drawer-btn" onclick="selectWorkoutFromDrawer('A')"><span>Treino A • Superiores Força</span><span>→</span></button>
     <button class="drawer-btn" onclick="selectWorkoutFromDrawer('B')"><span>Treino B • Inferiores Base</span><span>→</span></button>
     <button class="drawer-btn" onclick="selectWorkoutFromDrawer('C')"><span>Treino C • Hipertrofia V-Taper</span><span>→</span></button>
     <button class="drawer-btn" onclick="selectWorkoutFromDrawer('D')"><span>Treino D • Posterior & Core</span><span>→</span></button>
 
-    <div class="drawer-title">Módulos do App</div>
-    <button class="drawer-btn" onclick="switchTab('diet'); toggleDrawer(false);"><span>🍽️ Calculadora de Dieta & Macros</span><span>→</span></button>
+    <div class="drawer-title">Ferramentas</div>
+    <button class="drawer-btn" onclick="openPlateModal(60); toggleDrawer(false);"><span>🏋️ Calculadora de Anilhas</span><span>→</span></button>
+    <button class="drawer-btn" onclick="switchTab('diet'); toggleDrawer(false);"><span>🍽️ Dieta (2.165 kcal) & Suplementos</span><span>→</span></button>
     <button class="drawer-btn" onclick="switchTab('vtaper'); toggleDrawer(false);"><span>📐 Simulador Áureo 1.618</span><span>→</span></button>
     <button class="drawer-btn" onclick="switchTab('vacuum'); toggleDrawer(false);"><span>🌬️ Guiador Stomach Vacuum</span><span>→</span></button>
     <button class="drawer-btn" onclick="switchTab('ai'); toggleDrawer(false);"><span>📈 Evolução & IA Analytics</span><span>→</span></button>
 
     <div class="drawer-title">Gerenciamento</div>
-    <button class="drawer-btn" onclick="resetCurrentChecks(); toggleDrawer(false);"><span>🔄 Nova Semana (Manter Cargas)</span></button>
+    <button class="drawer-btn" onclick="resetCurrentChecks(); toggleDrawer(false);"><span>🔄 Desmarcar Ficha Atual</span></button>
     <button class="drawer-btn" onclick="exportBackup()"><span>💾 Exportar Backup Completo</span></button>
   </aside>
 
@@ -312,14 +336,14 @@
           <input type="checkbox" id="cardioDone" style="width:20px; height:20px; accent-color:var(--emerald);" onchange="saveState()">
           <span id="cardioText">Cardio Pós-Treino Concluído</span>
         </label>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-          <button class="btn-outline" onclick="resetCurrentChecks()">Desmarcar Séries</button>
-          <button class="btn-primary" onclick="finishWorkoutSession()">✓ Salvar no Histórico</button>
+        <div style="display:grid; grid-template-columns:1fr 1.3fr; gap:8px;">
+          <button class="btn-outline" onclick="resetCurrentChecks()">Desmarcar</button>
+          <button class="btn-primary" onclick="finishWorkoutSession()">✓ Salvar & Ir p/ Próximo</button>
         </div>
       </div>
     </section>
 
-    <!-- ABA 2: PROPORÇÃO ÁUREA V-TAPER -->
+    <!-- ABA 2: PROPORÇÃO ÁUREA V-TAPER (68kg / 109cm / 82cm) -->
     <section id="tab-vtaper" class="tab-view">
       <div class="card">
         <div class="card-header">
@@ -327,13 +351,13 @@
             <span class="badge">Geometria Corporal</span>
             <h2 class="card-title" style="margin-top:4px;">Simulador de Proporção Áurea (1.618)</h2>
           </div>
-          <button class="icon-btn" onclick="resetDefaultMeasures()">Padrão</button>
+          <button class="icon-btn" onclick="resetDefaultMeasures()">Padrão (68kg)</button>
         </div>
 
         <div class="grid-3">
           <div class="field-box">
             <label>Peso (kg)</label>
-            <input type="number" id="mWeight" value="63" step="0.5" oninput="updateVTaper()">
+            <input type="number" id="mWeight" value="68" step="0.5" oninput="updateVTaper()">
           </div>
           <div class="field-box">
             <label>Altura (cm)</label>
@@ -341,46 +365,74 @@
           </div>
           <div class="field-box">
             <label>Peitoral (cm)</label>
-            <input type="number" id="mChest" value="98" oninput="updateVTaper()">
+            <input type="number" id="mChest" value="94" oninput="updateVTaper()">
           </div>
         </div>
 
         <div class="slider-wrap">
           <div class="slider-head">
             <span>Circunferência de Ombros / Dorsal</span>
-            <span style="color:var(--emerald);" id="valShoulders">118 cm</span>
+            <span style="color:var(--emerald);" id="valShoulders">109 cm</span>
           </div>
-          <input type="range" id="sShoulders" min="95" max="155" step="0.5" value="118" oninput="updateVTaper()">
+          <input type="range" id="sShoulders" min="95" max="155" step="0.5" value="109" oninput="updateVTaper()">
         </div>
 
         <div class="slider-wrap">
           <div class="slider-head">
             <span>Circunferência de Cintura (Umbilical)</span>
-            <span style="color:var(--cyan);" id="valWaist">75 cm</span>
+            <span style="color:var(--cyan);" id="valWaist">82 cm</span>
           </div>
-          <input type="range" id="sWaist" min="60" max="110" step="0.5" value="75" oninput="updateVTaper()">
+          <input type="range" id="sWaist" min="60" max="110" step="0.5" value="82" oninput="updateVTaper()">
         </div>
 
         <div class="svg-stage" style="height:190px; flex-direction:column;">
           <svg id="vtaperSvg" width="220" height="145" viewBox="0 0 220 145"></svg>
-          <div style="font-size:20px; font-weight:900; color:var(--emerald);" id="vtaperRatioText">1.573 <span style="font-size:12px; color:var(--muted);">/ 1.618</span></div>
+          <div style="font-size:20px; font-weight:900; color:var(--emerald);" id="vtaperRatioText">1.329 <span style="font-size:12px; color:var(--muted);">/ 1.618</span></div>
         </div>
 
-        <div id="vtaperDiagnosis" style="font-size:12px; color:var(--muted); background:var(--card-2); padding:10px; border-radius:10px; border:1px solid var(--border);"></div>
-      </div>
-    </section>
+        <div id="vtaperDiagnosis" style="font-size:12px; color:var(--muted); background:var(--card-2); padding:10px; border-radius:10px; border:1px solid var(--border); margin-bottom:10px;"></div>
 
-    <!-- ABA 3: CALCULADORA DE DIETA & MACROS -->
-    <section id="tab-diet" class="tab-view">
-      <!-- Metas Calóricas e Perfil -->
+        <button class="btn-primary" onclick="logBodyMeasure()">📌 Registrar Medição na Linha do Tempo</button>
+      </div>
+
+      <!-- Histórico de Medições Ombros vs Cintura -->
       <div class="card">
         <div class="card-header">
           <div>
-            <span class="badge">NutriPerformance BR</span>
-            <h2 class="card-title" style="margin-top:4px;">Meta Diária & Macronutrientes</h2>
+            <span class="badge badge-cyan">Evolução Estética</span>
+            <h3 class="card-title" style="margin-top:4px;">Linha do Tempo: Ombros vs. Cintura</h3>
           </div>
-          <button class="icon-btn" onclick="loadSampleDiet()">⚡ Cardápio Exemplo</button>
         </div>
+        <div id="measureHistoryList" style="font-size:12px; color:var(--muted);"></div>
+      </div>
+    </section>
+
+    <!-- ABA 3: CALCULADORA DE DIETA (2.165 KCAL) & SUPLEMENTOS -->
+    <section id="tab-diet" class="tab-view">
+      <!-- Stack Diário de Suplementação -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="badge badge-amber">Performance & Hormonal</span>
+            <h2 class="card-title" style="margin-top:4px;">Stack Diário de Suplementos</h2>
+          </div>
+          <button class="icon-btn" onclick="resetSupplements()">Zerar Dia</button>
+        </div>
+        <div class="supp-grid" id="suppGrid"></div>
+      </div>
+
+      <!-- Anéis Neon & Metas Calóricas -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <span class="badge">Recomposição 68 kg</span>
+            <h2 class="card-title" style="margin-top:4px;">Metas Diárias & Anéis de Progresso</h2>
+          </div>
+          <button class="icon-btn" style="border-color:var(--emerald); color:var(--emerald);" onclick="loadSampleDiet()">⚡ Cardápio 2165 kcal</button>
+        </div>
+
+        <!-- 3 Anéis Estilo Apple Fitness -->
+        <div class="rings-grid" id="nutritionRings"></div>
 
         <div class="grid-3">
           <div class="field-box">
@@ -389,11 +441,11 @@
           </div>
           <div class="field-box">
             <label>Prot (g/kg)</label>
-            <input type="number" id="dProtKg" value="2.1" step="0.1" oninput="updateDietConfig()">
+            <input type="number" id="dProtKg" value="2.2" step="0.1" oninput="updateDietConfig()">
           </div>
           <div class="field-box">
             <label>Gord (g/kg)</label>
-            <input type="number" id="dFatKg" value="1.0" step="0.1" oninput="updateDietConfig()">
+            <input type="number" id="dFatKg" value="0.9" step="0.1" oninput="updateDietConfig()">
           </div>
         </div>
 
@@ -409,9 +461,9 @@
           <div class="field-box">
             <label>Objetivo V-Taper</label>
             <select id="dGoal" onchange="updateDietConfig()">
-              <option value="300" selected>Bulking Limpo (+300 kcal)</option>
+              <option value="-350" selected>Recomposição / Afinar (-350 kcal)</option>
               <option value="0">Manutenção (0 kcal)</option>
-              <option value="-350">Cutting Secar (-350 kcal)</option>
+              <option value="235">Bulking Limpo (+235 kcal)</option>
             </select>
           </div>
         </div>
@@ -419,35 +471,26 @@
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
           <div class="stat-box" style="padding:8px 10px;">
             <div class="stat-label">TMB / Gasto Total</div>
-            <div style="font-size:13px; font-weight:800; margin-top:2px;" id="dTmbTdee">1580 / 2450 kcal</div>
+            <div style="font-size:13px; font-weight:800; margin-top:2px;" id="dTmbTdee">1622 / 2515 kcal</div>
           </div>
           <div class="stat-box" style="padding:8px 10px;">
             <div class="stat-label">Saldo Calórico</div>
-            <div style="font-size:13px; font-weight:800; margin-top:2px; color:var(--cyan);" id="dCalBalance">0 / 2750 kcal</div>
+            <div style="font-size:13px; font-weight:800; margin-top:2px; color:var(--cyan);" id="dCalBalance">0 / 2165 kcal</div>
           </div>
-        </div>
-
-        <!-- Barras de Progresso dos Macros -->
-        <div class="macro-bar-wrap">
-          <div class="macro-bar-head">
-            <span>🔥 Calorias Totais</span>
-            <span id="lblKcal">0 / 2750 kcal (0%)</span>
-          </div>
-          <div class="macro-track"><div class="macro-fill" id="barKcal" style="width:0%; background:var(--emerald);"></div></div>
         </div>
 
         <div class="macro-bar-wrap">
           <div class="macro-bar-head">
             <span>🥩 Proteínas (<span id="lblProtGkg">0.0</span>g/kg)</span>
-            <span id="lblProt" style="color:var(--emerald);">0g / 132g</span>
+            <span id="lblProt" style="color:var(--emerald);">0g / 150g</span>
           </div>
           <div class="macro-track"><div class="macro-fill" id="barProt" style="width:0%; background:var(--emerald);"></div></div>
         </div>
 
         <div class="macro-bar-wrap">
           <div class="macro-bar-head">
-            <span>🍚 Carboidratos (Energia)</span>
-            <span id="lblCarb" style="color:var(--cyan);">0g / 390g</span>
+            <span>🍚 Carboidratos (Energia Limpa)</span>
+            <span id="lblCarb" style="color:var(--cyan);">0g / 254g</span>
           </div>
           <div class="macro-track"><div class="macro-fill" id="barCarb" style="width:0%; background:var(--cyan);"></div></div>
         </div>
@@ -455,7 +498,7 @@
         <div class="macro-bar-wrap" style="margin-bottom:0;">
           <div class="macro-bar-head">
             <span>🥑 Gorduras (<span id="lblFatGkg">0.0</span>g/kg)</span>
-            <span id="lblFat" style="color:var(--amber);">0g / 63g</span>
+            <span id="lblFat" style="color:var(--amber);">0g / 61g</span>
           </div>
           <div class="macro-track"><div class="macro-fill" id="barFat" style="width:0%; background:var(--amber);"></div></div>
         </div>
@@ -465,16 +508,13 @@
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <div>
-            <span class="badge badge-cyan">Hidratação Diária (35-45ml/kg)</span>
-            <h3 class="card-title" style="margin-top:3px;" id="waterText">0 ml / 2800 ml</h3>
+            <span class="badge badge-cyan">Hidratação Diária (42ml/kg)</span>
+            <h3 class="card-title" style="margin-top:3px;" id="waterText">0 ml / 2856 ml</h3>
           </div>
           <button class="icon-btn" onclick="addWater(-250)">-250</button>
         </div>
-        <div class="macro-track" style="margin-bottom:10px;">
-          <div class="macro-fill" id="barWater" style="width:0%; background:#38bdf8;"></div>
-        </div>
         <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
-          <button class="rest-btn" onclick="addWater(200)">+200 ml (Copo)</button>
+          <button class="rest-btn" onclick="addWater(200)">+200 ml</button>
           <button class="rest-btn" onclick="addWater(350)">+350 ml</button>
           <button class="rest-btn" style="border-color:var(--cyan); color:var(--cyan);" onclick="addWater(500)">+500 ml (Garrafa)</button>
         </div>
@@ -489,7 +529,6 @@
 
         <div class="meal-tabs" id="mealTabs"></div>
 
-        <!-- Adicionar Alimento do Banco TACO/Regional -->
         <div style="background:var(--card-2); padding:10px; border-radius:10px; border:1px solid var(--border); margin-bottom:12px;">
           <div style="font-size:11px; font-weight:700; color:var(--muted); margin-bottom:6px; text-transform:uppercase;">Adicionar Alimento na Refeição:</div>
           <select id="foodSelect" class="num-input" style="text-align:left; margin-bottom:8px; width:100%;" onchange="updateFoodUnitHint()"></select>
@@ -497,41 +536,17 @@
             <input type="number" id="foodAmount" class="num-input" value="100" step="10" placeholder="Qtd">
             <button class="btn-primary" style="padding:8px;" onclick="addFoodToMeal()">+ Adicionar</button>
           </div>
-          <div style="font-size:11px; color:var(--muted); margin-top:5px;" id="foodHint">Valores calculados proporcionalmente.</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:5px;" id="foodHint"></div>
         </div>
 
-        <!-- Lista de Alimentos da Refeição Ativa -->
         <div id="mealFoodList"></div>
-      </div>
-
-      <!-- Cadastrar Alimento Personalizado -->
-      <div class="card">
-        <span class="badge badge-amber">Personalizado</span>
-        <h3 class="card-title" style="margin:4px 0 8px;">Criar Novo Alimento (por 100g ou 1 un)</h3>
-        <div class="grid-2">
-          <div class="field-box">
-            <label>Nome do Alimento</label>
-            <input type="text" id="cFoodName" placeholder="Ex: Sushi Salmão">
-          </div>
-          <div class="field-box">
-            <label>Porção Base (g ou un)</label>
-            <input type="number" id="cFoodBase" value="100">
-          </div>
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; margin-bottom:10px;">
-          <div class="field-box"><label>Kcal</label><input type="number" id="cFoodKcal" value="150"></div>
-          <div class="field-box"><label>Prot (g)</label><input type="number" id="cFoodP" value="12"></div>
-          <div class="field-box"><label>Carb (g)</label><input type="number" id="cFoodC" value="18"></div>
-          <div class="field-box"><label>Gord (g)</label><input type="number" id="cFoodF" value="4"></div>
-        </div>
-        <button class="btn-outline" onclick="saveCustomFood()">+ Salvar no Banco de Alimentos</button>
       </div>
     </section>
 
     <!-- ABA 4: STOMACH VACUUM & CORE -->
     <section id="tab-vacuum" class="tab-view">
       <div class="card" style="text-align:center;">
-        <span class="badge badge-cyan">Controle de Transverso Abdominal</span>
+        <span class="badge badge-cyan">Redução de Cintura (82 cm → 76 cm)</span>
         <h2 class="card-title" style="margin:6px 0 12px;">Guiador de Stomach Vacuum</h2>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
@@ -551,8 +566,8 @@
           <div style="font-size:11px; color:var(--muted);" id="vacSeriesDisplay">Série 1 de 3</div>
         </div>
 
-        <p style="font-size:12px; color:var(--muted); margin:10px 0 14px;" id="vacInstruction">
-          Expire todo o ar, sugue o umbigo em direção à coluna abrindo as costelas e segure.
+        <p style="font-size:12px; color:var(--muted); margin:10px 0 14px;">
+          Expire todo o ar, sugue o umbigo em direção à coluna abrindo as costelas e segure firme.
         </p>
 
         <div style="display:grid; grid-template-columns:1fr auto; gap:8px;">
@@ -625,6 +640,35 @@
     </div>
   </div>
 
+  <!-- MODAL CALCULADORA DE ANILHAS -->
+  <div class="modal-backdrop" id="plateModal" onclick="if(event.target===this) closePlateModal()">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span class="badge badge-amber">Montagem da Barra</span>
+        <button class="icon-btn" onclick="closePlateModal()">✕ Fechar</button>
+      </div>
+      <h3 class="card-title" style="margin-bottom:10px;">Calculadora Visual de Anilhas</h3>
+      <div class="grid-2">
+        <div class="field-box">
+          <label>Carga Total (kg)</label>
+          <input type="number" id="plateTotalInput" value="60" step="2" oninput="renderPlateCalc()">
+        </div>
+        <div class="field-box">
+          <label>Peso da Barra (kg)</label>
+          <select id="plateBarSelect" onchange="renderPlateCalc()">
+            <option value="20" selected>Olímpica (20 kg)</option>
+            <option value="12">Padrão Academia (12 kg)</option>
+            <option value="10">Barra Curta / W (10 kg)</option>
+            <option value="0">Máquina Sem Barra (0 kg)</option>
+          </select>
+        </div>
+      </div>
+      <div class="svg-stage" style="height:130px; flex-direction:column;" id="plateVisualStage"></div>
+      <div id="plateTextResult" style="font-size:13px; color:var(--text); text-align:center; margin:10px 0; font-weight:700;"></div>
+      <button class="btn-primary" onclick="closePlateModal()">Pronto</button>
+    </div>
+  </div>
+
   <!-- BARRA FLUTUANTE CRONÔMETRO DE DESCANSO -->
   <div class="rest-bar">
     <div class="rest-inner">
@@ -661,33 +705,33 @@
   </nav>
 
   <script>
-    // BANCO DE DADOS DOS 23 EXERCÍCIOS COM ID EXCLUSIVO DE ANIMAÇÃO
+    // BANCO DE DADOS DOS 23 EXERCÍCIOS
     const WORKOUT_DB = {
       A: {
         tag: "TREINO A", name: "Superiores — Força & Expansão", sub: "Peitoral, Largura de Dorsal e Topo de Ombro",
         cardio: "15 min HIIT Pós-Treino (30s Sprint Forte / 60s Leve)",
         exercises: [
-          { id:"a1", name:"1. Supino Reto (Barra ou Halteres)", target:"Peitoral Maior & Tríceps", sets:4, reps:"6-8", rest:90, equip:"Banco Reto + Barra",
+          { id:"a1", name:"1. Supino Reto (Barra ou Halteres)", target:"Peitoral Maior & Tríceps", sets:4, reps:"6-8", topRep:8, bar:true, rest:90, equip:"Banco Reto + Barra",
             steps:["Retraia as escápulas e crave os pés no chão.","Desça a barra controladamente por 2 segundos até tocar a linha inferior do peito.","Empurre explosivo mantendo os cotovelos a ~45° do tronco."],
             mistake:"Abrir os cotovelos a 90° alinhados ao pescoço (sobrecarrega o ombro).",
             defaultSets:[{w:60,r:8,d:false},{w:60,r:8,d:false},{w:64,r:6,d:false},{w:64,r:6,d:false}] },
-          { id:"a2", name:"2. Barra Fixa / Pull-up Pronada", target:"Largura de Dorsal (Asa V-Taper)", sets:4, reps:"Falha", rest:90, equip:"Barra Fixa Suspensa",
+          { id:"a2", name:"2. Barra Fixa / Pull-up Pronada", target:"Largura de Dorsal (Asa V-Taper)", sets:4, reps:"8-10", topRep:10, bar:false, rest:90, equip:"Barra Fixa Suspensa",
             steps:["Segure a barra com pegada aberta (além da largura dos ombros).","Inicie o movimento deprimindo as escápulas e puxando os cotovelos para baixo.","Suba até o queixo ultrapassar a barra e desça controlando tudo."],
             mistake:"Dar impulso com as pernas (kipping) ou encolher os ombros nas orelhas.",
-            defaultSets:[{w:63,r:10,d:false},{w:63,r:9,d:false},{w:63,r:8,d:false},{w:63,r:7,d:false}] },
-          { id:"a3", name:"3. Desenvolvimento com Halteres", target:"Deltoide Anterior & Lateral", sets:4, reps:"8-10", rest:90, equip:"Banco 85° + Halteres",
+            defaultSets:[{w:68,r:10,d:false},{w:68,r:9,d:false},{w:68,r:8,d:false},{w:68,r:7,d:false}] },
+          { id:"a3", name:"3. Desenvolvimento com Halteres", target:"Deltoide Anterior & Lateral", sets:4, reps:"8-10", topRep:10, bar:false, rest:90, equip:"Banco 85° + Halteres",
             steps:["Sente-se com a lombar apoiada e halteres na altura do queixo.","Mantenha os cotovelos levemente à frente da linha dos ombros (plano escapular).","Empurre acima da cabeça sem bater os halteres no topo."],
             mistake:"Arquear excessivamente a lombar para subir a carga.",
             defaultSets:[{w:18,r:10,d:false},{w:18,r:10,d:false},{w:20,r:8,d:false},{w:20,r:8,d:false}] },
-          { id:"a4", name:"4. Remada Curvada Pronada", target:"Espessura de Costas & Romboides", sets:4, reps:"8-10", rest:90, equip:"Barra Livre (Tronco 45°)",
+          { id:"a4", name:"4. Remada Curvada Pronada", target:"Espessura de Costas & Romboides", sets:4, reps:"8-10", topRep:10, bar:true, rest:90, equip:"Barra Livre (Tronco 45°)",
             steps:["Incline o tronco a ~45° mantendo a coluna neutra e abdômen travado.","Puxe a barra em direção à linha umbilical esmagando as costas no topo.","Desça alongando as escápulas sem arredondar a lombar."],
             mistake:"Dar tranco subindo o tronco para roubar na subida.",
             defaultSets:[{w:50,r:10,d:false},{w:50,r:10,d:false},{w:54,r:8,d:false},{w:54,r:8,d:false}] },
-          { id:"a5", name:"5. Elevação Lateral com Halteres", target:"Deltoide Lateral (Largura V-Taper)", sets:4, reps:"12", rest:60, equip:"Par de Halteres",
+          { id:"a5", name:"5. Elevação Lateral com Halteres", target:"Deltoide Lateral (Largura V-Taper)", sets:4, reps:"12", topRep:12, bar:false, rest:60, equip:"Par de Halteres",
             steps:["Incline milimetricamente o tronco à frente com cotovelos semiflexionados.","Lance os halteres para longe do corpo (para os lados), não para cima.","Pare na linha dos ombros e desça segurando o peso em 2 segundos."],
             mistake:"Encolher o trapézio ou balançar o quadril para jogar o peso.",
             defaultSets:[{w:10,r:12,d:false},{w:10,r:12,d:false},{w:12,r:12,d:false},{w:12,r:12,d:false}] },
-          { id:"a6", name:"6. Bi-set: Rosca Direta + Tríceps Pulley", target:"Bíceps & Tríceps Completo", sets:3, reps:"10-12", rest:60, equip:"Barra W + Polia Alta",
+          { id:"a6", name:"6. Bi-set: Rosca Direta + Tríceps Pulley", target:"Bíceps & Tríceps Completo", sets:3, reps:"10-12", topRep:12, bar:true, rest:60, equip:"Barra W + Polia Alta",
             steps:["Crave os cotovelos ao lado das costelas na Rosca Direta.","Sem descanso, vá à polia alta e estenda o tríceps travando tudo embaixo.","Controle a volta sem deixar o cotovelo subir."],
             mistake:"Mover o cotovelo para frente e para trás usando o ombro.",
             defaultSets:[{w:28,r:12,d:false},{w:30,r:10,d:false},{w:30,r:10,d:false}] }
@@ -697,23 +741,23 @@
         tag: "TREINO B", name: "Inferiores — Força & Base", sub: "Quadríceps, Panturrilha e Pegada Tática",
         cardio: "20 min Cardio Moderado (Caminhada Inclinada ou Bike)",
         exercises: [
-          { id:"b1", name:"1. Agachamento Livre com Barra", target:"Quadríceps, Glúteos & Core", sets:4, reps:"6-8", rest:120, equip:"Gaiola + Barra Olímpica",
+          { id:"b1", name:"1. Agachamento Livre com Barra", target:"Quadríceps, Glúteos & Core", sets:4, reps:"6-8", topRep:8, bar:true, rest:120, equip:"Gaiola + Barra Olímpica",
             steps:["Inspire fundo travando o abdômen (bracing) antes de descer.","Desça flexionando quadril e joelhos alinhados à ponta dos pés até quebrar a paralela.","Empurre o chão com o pé inteiro subindo com explosão."],
             mistake:"Deixar os joelhos fecharem para dentro (valgo dinâmico) na subida.",
             defaultSets:[{w:70,r:8,d:false},{w:70,r:8,d:false},{w:76,r:6,d:false},{w:76,r:6,d:false}] },
-          { id:"b2", name:"2. Leg Press 45°", target:"Volume de Quadríceps", sets:3, reps:"10-12", rest:90, equip:"Máquina Leg Press 45°",
+          { id:"b2", name:"2. Leg Press 45°", target:"Volume de Quadríceps", sets:3, reps:"10-12", topRep:12, bar:true, rest:90, equip:"Máquina Leg Press 45°",
             steps:["Posicione os pés na largura dos ombros no centro da plataforma.","Desça até ~90° mantendo o quadril e a lombar 100% colados no banco.","Empurre sem trancar totalmente a articulação do joelho no topo."],
             mistake:"Tirar o quadril do banco no fundo do movimento.",
             defaultSets:[{w:160,r:12,d:false},{w:180,r:10,d:false},{w:180,r:10,d:false}] },
-          { id:"b3", name:"3. Cadeira Extensora (Pico 1s)", target:"Reto Femoral & Vasto", sets:3, reps:"12-15", rest:60, equip:"Máquina Cadeira Extensora",
+          { id:"b3", name:"3. Cadeira Extensora (Pico 1s)", target:"Reto Femoral & Vasto", sets:3, reps:"12-15", topRep:15, bar:false, rest:60, equip:"Máquina Cadeira Extensora",
             steps:["Ajuste o encosto para que a dobra do joelho fique alinhada ao eixo da máquina.","Estenda totalmente os joelhos e segure 1 segundo cheio no topo.","Desça controlando o peso sem deixar as placas baterem."],
             mistake:"Chutar o peso rápido e soltar na descida.",
             defaultSets:[{w:55,r:15,d:false},{w:60,r:12,d:false},{w:60,r:12,d:false}] },
-          { id:"b4", name:"4. Panturrilha em Pé / Máquina", target:"Gastrocnêmio", sets:4, reps:"15", rest:60, equip:"Bloco / Máquina em Pé",
+          { id:"b4", name:"4. Panturrilha em Pé / Máquina", target:"Gastrocnêmio", sets:4, reps:"15", topRep:15, bar:false, rest:60, equip:"Bloco / Máquina em Pé",
             steps:["Desça o calcanhar ao máximo sentindo alongar a panturrilha por 1s.","Suba na ponta dos pés até o limite máximo e contraia forte no topo."],
             mistake:"Fazer repetições curtas e rápidas quicando no tendão.",
             defaultSets:[{w:70,r:15,d:false},{w:70,r:15,d:false},{w:75,r:15,d:false},{w:75,r:15,d:false}] },
-          { id:"b5", name:"5. Farmer's Walk (Caminhada Fazendeiro)", target:"Antebraço, Trapézio & Core", sets:3, reps:"40m", rest:90, equip:"Halteres Pesados em Movimento",
+          { id:"b5", name:"5. Farmer's Walk (Caminhada Fazendeiro)", target:"Antebraço, Trapézio & Core", sets:3, reps:"40m", topRep:40, bar:false, rest:90, equip:"Halteres Pesados em Movimento",
             steps:["Segure um par de halteres pesados ao lado do corpo.","Mantenha postura alta, ombros encaixados para trás e abdômen firme.","Caminhe 40 metros em passos firmes e controlados."],
             mistake:"Deixar os ombros caírem para frente ou inclinar o tronco.",
             defaultSets:[{w:28,r:40,d:false},{w:28,r:40,d:false},{w:30,r:40,d:false}] }
@@ -723,59 +767,69 @@
         tag: "TREINO C", name: "Superiores — Hipertrofia V-Taper", sub: "Peitoral Clavicular, Dorsal e Ombros 3D",
         cardio: "15 min HIIT Pós-Treino (Esteira ou Bike)",
         exercises: [
-          { id:"c1", name:"1. Supino Inclinado com Halteres (30°)", target:"Peitoral Superior (Clavicular)", sets:4, reps:"8-12", rest:90, equip:"Banco Inclinado 30° + Halteres",
+          { id:"c1", name:"1. Supino Inclinado com Halteres (30°)", target:"Peitoral Superior (Clavicular)", sets:4, reps:"8-12", topRep:12, bar:false, rest:90, equip:"Banco Inclinado 30° + Halteres",
             steps:["Ajuste o banco em 30° (não passe de 45° para não virar ombro).","Desça os halteres alongando bem as fibras superiores do peitoral.","Suba convergindo levemente sem encostar os pesos."],
             mistake:"Banco alto demais ou descer apenas até a metade.",
             defaultSets:[{w:22,r:12,d:false},{w:24,r:10,d:false},{w:24,r:10,d:false},{w:26,r:8,d:false}] },
-          { id:"c2", name:"2. Puxada Aberta no Pulley", target:"Expansão de Dorsal em V", sets:4, reps:"10-12", rest:90, equip:"Polia Alta + Barra Longa",
+          { id:"c2", name:"2. Puxada Aberta no Pulley", target:"Expansão de Dorsal em V", sets:4, reps:"10-12", topRep:12, bar:false, rest:90, equip:"Polia Alta + Barra Longa",
             steps:["Estufe o peito e incline levemente o tronco para trás (~15°).","Puxe a barra em direção ao topo do peito apontando os cotovelos para o chão.","Alongue tudo na subida mantendo as escápulas ativas."],
             mistake:"Jogar o corpo todo para trás transformando a puxada em remada.",
             defaultSets:[{w:50,r:12,d:false},{w:55,r:10,d:false},{w:55,r:10,d:false},{w:60,r:10,d:false}] },
-          { id:"c3", name:"3. Pullover na Polia Alta com Corda", target:"Isolamento de Grande Dorsal", sets:3, reps:"12-15", rest:60, equip:"Polia Alta + Corda/Barra",
+          { id:"c3", name:"3. Pullover na Polia Alta com Corda", target:"Isolamento de Grande Dorsal", sets:3, reps:"12-15", topRep:15, bar:false, rest:60, equip:"Polia Alta + Corda/Barra",
             steps:["Incline o tronco a 45° com braços quase estendidos.","Traga a corda em arco até a coxa contraindo exclusivamente a dorsal.","Suba alongando a asa até a linha da cabeça."],
             mistake:"Dobrar e esticar o cotovelo transformando em tríceps pulley.",
             defaultSets:[{w:25,r:15,d:false},{w:28,r:12,d:false},{w:28,r:12,d:false}] },
-          { id:"c4", name:"4. Elevação Lateral na Polia / Halter", target:"Deltoide Lateral (Ombro 3D)", sets:4, reps:"12-15", rest:60, equip:"Polia Baixa / Halteres",
+          { id:"c4", name:"4. Elevação Lateral na Polia / Halter", target:"Deltoide Lateral (Ombro 3D)", sets:4, reps:"12-15", topRep:15, bar:false, rest:60, equip:"Polia Baixa / Halteres",
             steps:["Eleve o braço no plano escapular até a altura do ombro sob tensão constante.","Segure meio segundo no topo e desça em 2 segundos controlados."],
             mistake:"Perder a tensão descansando o peso colado na coxa embaixo.",
             defaultSets:[{w:10,r:15,d:false},{w:10,r:15,d:false},{w:12,r:12,d:false},{w:12,r:12,d:false}] },
-          { id:"c5", name:"5. Crucifixo Inverso (Máquina ou Halter)", target:"Deltoide Posterior & Postura", sets:3, reps:"15", rest:60, equip:"Peck Deck Inverso / Halter",
+          { id:"c5", name:"5. Crucifixo Inverso (Máquina ou Halter)", target:"Deltoide Posterior & Postura", sets:3, reps:"15", topRep:15, bar:false, rest:60, equip:"Peck Deck Inverso / Halter",
             steps:["Mantenha os ombros baixos (longe das orelhas).","Abra os braços para trás focando apenas na parte de trás do ombro.","Não junte as escápulas no final para não roubar com o trapézio."],
             mistake:"Encolher o pescoço e puxar com o meio das costas.",
             defaultSets:[{w:40,r:15,d:false},{w:45,r:15,d:false},{w:45,r:15,d:false}] },
-          { id:"c6", name:"6. Paralelas / Mergulho (Dips)", target:"Peitoral Inferior & Tríceps", sets:3, reps:"Falha", rest:60, equip:"Barras Paralelas",
+          { id:"c6", name:"6. Paralelas / Mergulho (Dips)", target:"Peitoral Inferior & Tríceps", sets:3, reps:"10-12", topRep:12, bar:false, rest:60, equip:"Barras Paralelas",
             steps:["Incline levemente o tronco à frente e desça até o cotovelo formar 90°.","Empurre até estender os braços mantendo os ombros firmes."],
             mistake:"Descer além do limite articular jogando o ombro para frente.",
-            defaultSets:[{w:63,r:12,d:false},{w:63,r:10,d:false},{w:63,r:10,d:false}] }
+            defaultSets:[{w:68,r:12,d:false},{w:68,r:10,d:false},{w:68,r:10,d:false}] }
         ]
       },
       D: {
         tag: "TREINO D", name: "Inferiores — Posterior & Core", sub: "Posterior de Coxa, Glúteos e Cintura Compacta",
         cardio: "20 min Cardio Moderado (Esteira Inclinada ou Escada)",
         exercises: [
-          { id:"d1", name:"1. Levantamento Terra Romeno / Stiff", target:"Posterior de Coxa, Glúteos & Lombar", sets:4, reps:"6-8", rest:120, equip:"Barra Olímpica (Dobradiça)",
+          { id:"d1", name:"1. Levantamento Terra Romeno / Stiff", target:"Posterior de Coxa, Glúteos & Lombar", sets:4, reps:"6-8", topRep:8, bar:true, rest:120, equip:"Barra Olímpica (Dobradiça)",
             steps:["Destrave levemente os joelhos e mantenha a coluna 100% reta.","Empurre o quadril para trás deslizando a barra colada nas pernas.","Suba contraindo forte os glúteos assim que a barra passar do joelho."],
             mistake:"Afastar a barra das pernas ou arredondar a lombar.",
             defaultSets:[{w:70,r:8,d:false},{w:76,r:8,d:false},{w:80,r:6,d:false},{w:80,r:6,d:false}] },
-          { id:"d2", name:"2. Mesa Flexora", target:"Isquiotibiais (Posterior)", sets:4, reps:"10-12", rest:90, equip:"Máquina Mesa Flexora",
+          { id:"d2", name:"2. Mesa Flexora", target:"Isquiotibiais (Posterior)", sets:4, reps:"10-12", topRep:12, bar:false, rest:90, equip:"Máquina Mesa Flexora",
             steps:["Mantenha o quadril pressionado contra o banco durante toda a série.","Flexione os joelhos trazendo o rolo em direção ao glúteo e desça em 2s."],
             mistake:"Levantar o quadril do banco para roubar na subida.",
             defaultSets:[{w:45,r:12,d:false},{w:45,r:10,d:false},{w:50,r:10,d:false},{w:50,r:10,d:false}] },
-          { id:"d3", name:"3. Avanço / Passada com Halteres", target:"Glúteos & Estabilidade Unilateral", sets:3, reps:"12/perna", rest:90, equip:"Passada Unilateral + Halteres",
+          { id:"d3", name:"3. Avanço / Passada com Halteres", target:"Glúteos & Estabilidade Unilateral", sets:3, reps:"12/perna", topRep:12, bar:false, rest:90, equip:"Passada Unilateral + Halteres",
             steps:["Dê uma passada firme mantendo o tronco levemente inclinado à frente.","Desça até o joelho de trás quase tocar o chão e suba pelo calcanhar da frente."],
             mistake:"Dar passo curto demais empurrando pela ponta do pé.",
             defaultSets:[{w:16,r:12,d:false},{w:18,r:12,d:false},{w:18,r:12,d:false}] },
-          { id:"d4", name:"4. Panturrilha Sentado", target:"Sóleo (Largura da Panturrilha)", sets:4, reps:"15", rest:60, equip:"Máquina Panturrilha Sentado",
+          { id:"d4", name:"4. Panturrilha Sentado", target:"Sóleo (Largura da Panturrilha)", sets:4, reps:"15", topRep:15, bar:false, rest:60, equip:"Máquina Panturrilha Sentado",
             steps:["Sente-se com o apoio sobre os joelhos e calcanhares livres.","Alongue tudo embaixo por 1s e suba contraindo ao máximo no topo."],
             mistake:"Movimento curto e acelerado.",
             defaultSets:[{w:40,r:15,d:false},{w:40,r:15,d:false},{w:45,r:15,d:false},{w:45,r:15,d:false}] },
-          { id:"d5", name:"5. Prancha Abdominal + Stomach Vacuum", target:"Transverso Abdominal (Cintura Fina)", sets:3, reps:"60s + 30s", rest:60, equip:"Solo / Isometria Core",
+          { id:"d5", name:"5. Prancha Abdominal + Stomach Vacuum", target:"Transverso Abdominal (Cintura Fina)", sets:3, reps:"60s + 30s", topRep:60, bar:false, rest:60, equip:"Solo / Isometria Core",
             steps:["Mantenha corpo em linha reta apoiado nos antebraços e sugue o umbigo contra a coluna."],
             mistake:"Deixar o quadril cair na prancha ou prender o ar estufando a barriga.",
-            defaultSets:[{w:63,r:60,d:false},{w:63,r:60,d:false},{w:63,r:60,d:false}] }
+            defaultSets:[{w:68,r:60,d:false},{w:68,r:60,d:false},{w:68,r:60,d:false}] }
         ]
       }
     };
+
+    // STACK DIÁRIO DE SUPLEMENTOS
+    const SUPPLEMENTS_DB = [
+      { id:"s1", name:"Creatina (5g)", time:"Pós-Treino / Qualquer horário" },
+      { id:"s2", name:"Vitamina D3 + K2", time:"Manhã / Almoço (c/ gordura)" },
+      { id:"s3", name:"Ômega 3", time:"Almoço ou Jantar" },
+      { id:"s4", name:"Maca Peruana", time:"Manhã / Pré-Treino" },
+      { id:"s5", name:"Ashwagandha", time:"Fim de Tarde / Noite" },
+      { id:"s6", name:"Zinco + Magnésio Malato", time:"Antes de Dormir / Manhã" }
+    ];
 
     // BANCO DE ALIMENTOS TACO & REGIONAIS BR
     const DEFAULT_FOODS = [
@@ -796,7 +850,7 @@
       { id:"f15", name:"Pão Francês", base:1, unit:"un", kcal:135, p:4.7, c:28.5, f:0.6 },
       { id:"f16", name:"Pasta de Amendoim Integral", base:15, unit:"g", kcal:90, p:4.2, c:2.4, f:7.5 },
       { id:"f17", name:"Salmão / Sushi de Travessa", base:100, unit:"g", kcal:208, p:20.4, c:0, f:13.4 },
-      { id:"f18", name:"Azeite de Oliva Extra Virgem", base:10, unit:"ml", kcal:88, p:0, c:0, f:10.0 }
+      { id:"f18", name:"Azeite de Oliva Extra Virgem", base:8, unit:"ml", kcal:70, p:0, c:0, f:8.0 }
     ];
 
     const MEAL_SLOTS = [
@@ -807,21 +861,25 @@
       { id:"m5", label:"🌙 Jantar" }
     ];
 
-    // ESTADO DO APP UNIFICADO
-    const STORAGE_KEY = "vtaper_superapp_state_v3";
+    // ESTADO DO APP UNIFICADO V4 (ATUALIZADO PARA 68KG, 109 OMBROS, 82 CINTURA)
+    const STORAGE_KEY = "vtaper_superapp_state_v4";
     let state = {
       activeWorkout: "A",
       sound: true,
-      measures: { weight: 63, height: 170, chest: 98, shoulders: 118, waist: 75 },
+      measures: { weight: 68, height: 170, chest: 94, shoulders: 109, waist: 82 },
+      measureLogs: [
+        { date: "Inicial", weight: 68, shoulders: 109, waist: 82, ratio: "1.329" }
+      ],
       sets: {},
       cardio: { A:false, B:false, C:false, D:false },
       history: [],
+      supplements: { s1:false, s2:false, s3:false, s4:false, s5:false, s6:false },
       diet: {
         age: 25,
-        protPerKg: 2.1,
-        fatPerKg: 1.0,
+        protPerKg: 2.2,
+        fatPerKg: 0.9,
         activity: 1.55,
-        goalDelta: 300,
+        goalDelta: -350,
         activeMeal: "m1",
         waterMl: 0,
         meals: { m1:[], m2:[], m3:[], m4:[], m5:[] },
@@ -838,6 +896,7 @@
             ...state,
             ...parsed,
             measures: { ...state.measures, ...(parsed.measures || {}) },
+            supplements: { ...state.supplements, ...(parsed.supplements || {}) },
             diet: { ...state.diet, ...(parsed.diet || {}), meals: { ...state.diet.meals, ...((parsed.diet && parsed.diet.meals) || {}) } }
           };
         }
@@ -856,6 +915,13 @@
       if (cBox) state.cardio[state.activeWorkout] = cBox.checked;
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
       updateStatsHeader();
+    }
+
+    // VIBRAÇÃO TÁTIL + BEEP
+    function vibrate(pattern = 35) {
+      if (navigator.vibrate) {
+        try { navigator.vibrate(pattern); } catch (e) {}
+      }
     }
 
     function playBeep(freq = 880, dur = 0.15) {
@@ -879,6 +945,27 @@
       btn.textContent = state.sound ? "🔊" : "🔇";
       btn.classList.toggle("active", state.sound);
       saveState();
+    }
+
+    // WAKE LOCK (MANTER TELA ACESA NA ACADEMIA)
+    let wakeLockSentinel = null;
+    async function toggleWakeLock() {
+      const btn = document.getElementById("wakeBtn");
+      if (!("wakeLock" in navigator)) {
+        alert("Seu navegador não suporta bloqueio de tela ativo.");
+        return;
+      }
+      try {
+        if (wakeLockSentinel) {
+          await wakeLockSentinel.release();
+          wakeLockSentinel = null;
+          btn.classList.remove("active");
+        } else {
+          wakeLockSentinel = await navigator.wakeLock.request("screen");
+          btn.classList.add("active");
+          vibrate(40);
+        }
+      } catch (e) {}
     }
 
     function switchTab(tabId) {
@@ -906,7 +993,7 @@
       toggleDrawer(false);
     }
 
-    // TREINOS A B C D
+    // TREINOS A B C D + SOBRECARGA PROGRESSIVA
     function renderWorkoutView() {
       const wkKey = state.activeWorkout;
       const wk = WORKOUT_DB[wkKey];
@@ -923,7 +1010,7 @@
       document.getElementById("wkSelector").innerHTML = selHtml;
 
       document.getElementById("wkBanner").innerHTML = `
-        <span class="badge">${wk.tag}</span>
+        <span class="badge">${wk.tag} • ATIVO HOJE</span>
         <h2 class="card-title" style="margin-top:6px;">${wk.name}</h2>
         <p style="font-size:12px; color:var(--muted); margin-top:2px;">${wk.sub}</p>
         <div style="margin-top:8px; padding:8px 10px; border-radius:8px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); font-size:12px; color:#fbbf24; font-weight:700;">
@@ -936,7 +1023,7 @@
 
       const exHtml = wk.exercises.map(ex => {
         const sets = state.sets[ex.id];
-        let best1RM = 0, exVol = 0, doneCount = 0;
+        let best1RM = 0, exVol = 0, doneCount = 0, hitTopRepsAll = true;
 
         const rowsHtml = sets.map((s, idx) => {
           const w = parseFloat(s.w) || 0;
@@ -944,6 +1031,7 @@
           const rm = Math.round(w * (1 + r / 30));
           if (rm > best1RM) best1RM = rm;
           if (s.d) { exVol += w * r; doneCount++; }
+          if (!s.d || r < (ex.topRep || 10)) hitTopRepsAll = false;
 
           return `<div class="set-row">
             <div class="set-num">#${idx + 1}</div>
@@ -953,6 +1041,15 @@
           </div>`;
         }).join("");
 
+        const prHtml = hitTopRepsAll ? `
+          <div class="pr-banner">
+            <span>🏆 Topo da faixa atingido! Subir +2 kg na próxima sessão.</span>
+            <button class="rest-btn" style="padding:3px 7px; font-size:11px; border-color:var(--amber); color:var(--amber);" onclick="bumpExerciseWeight('${ex.id}', 2)">+2 kg</button>
+          </div>` : "";
+
+        const firstWeight = sets[0] ? sets[0].w : 60;
+        const plateBtnHtml = ex.bar ? `<button class="plate-trigger-btn" onclick="openPlateModal(${firstWeight})">🏋️ Anilhas</button>` : "";
+
         return `<div class="card">
           <div class="card-header">
             <div>
@@ -961,9 +1058,13 @@
             </div>
             <span class="badge badge-cyan">${ex.sets}x ${ex.reps}</span>
           </div>
-          <button class="anim-trigger-btn" onclick="openAnimModal('${wkKey}', '${ex.id}')">
-            🎬 Ver Execução & Biomecânica (${ex.equip})
-          </button>
+          ${prHtml}
+          <div class="ex-btn-row">
+            <button class="anim-trigger-btn" onclick="openAnimModal('${wkKey}', '${ex.id}')">
+              🎬 Execução & Biomecânica
+            </button>
+            ${plateBtnHtml}
+          </div>
           <div class="set-header">
             <div>Série</div><div>Carga (kg)</div><div>Reps</div><div>Feito</div>
           </div>
@@ -978,6 +1079,13 @@
 
       document.getElementById("exerciseList").innerHTML = exHtml;
       updateStatsHeader();
+    }
+
+    function bumpExerciseWeight(exId, delta) {
+      state.sets[exId].forEach(s => { s.w = (parseFloat(s.w) || 0) + delta; });
+      vibrate(50);
+      saveState();
+      renderWorkoutView();
     }
 
     function selectWorkout(wk) {
@@ -995,6 +1103,7 @@
     function toggleSetDone(exId, idx, restSec) {
       const current = state.sets[exId][idx].d;
       state.sets[exId][idx].d = !current;
+      vibrate(35);
       saveState();
       renderWorkoutView();
       if (!current) startRest(restSec);
@@ -1026,26 +1135,116 @@
       renderWorkoutView();
     }
 
+    // FINALIZAR TREINO E AVANÇAR AUTOMATICAMENTE (A -> B -> C -> D -> A)
     function finishWorkoutSession() {
-      const wk = WORKOUT_DB[state.activeWorkout];
+      const currentKey = state.activeWorkout;
+      const wk = WORKOUT_DB[currentKey];
       let vol = 0, setsDone = 0;
+
       wk.exercises.forEach(ex => {
         state.sets[ex.id].forEach(s => {
-          if (s.d) { setsDone++; vol += (parseFloat(s.w)||0)*(parseInt(s.r)||0); }
+          if (s.d) {
+            setsDone++;
+            vol += (parseFloat(s.w) || 0) * (parseInt(s.r) || 0);
+          }
         });
       });
+
+      if (setsDone === 0) {
+        alert("Marque pelo menos uma série concluída (✓) antes de salvar o treino!");
+        return;
+      }
+
       const entry = {
         date: new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" }),
         workout: wk.tag + " - " + wk.name.split("—")[1],
         volume: vol,
         sets: setsDone,
-        cardio: !!state.cardio[state.activeWorkout]
+        cardio: !!state.cardio[currentKey]
       };
       state.history.unshift(entry);
+
+      // Limpar checks do treino concluído (mantendo as cargas para a próxima semana)
+      wk.exercises.forEach(ex => {
+        state.sets[ex.id].forEach(s => s.d = false);
+      });
+      state.cardio[currentKey] = false;
+
+      // Avançar automaticamente para o próximo treino (A -> B -> C -> D -> A)
+      const order = ["A", "B", "C", "D"];
+      const nextKey = order[(order.indexOf(currentKey) + 1) % order.length];
+      state.activeWorkout = nextKey;
+
       saveState();
+      renderWorkoutView();
       playBeep(1040, 0.25);
-      alert("Sessão salva no histórico! Volume total: " + vol + " kg.");
+      vibrate([60, 50, 80]);
+
+      alert(`✅ ${wk.tag} salvo (${vol} kg)!\nO aplicativo já avançou automaticamente para o TREINO ${nextKey} do seu próximo treino.`);
       switchTab("ai");
+    }
+
+    // CALCULADORA DE ANILHAS
+    function openPlateModal(weight) {
+      document.getElementById("plateTotalInput").value = weight || 60;
+      document.getElementById("plateModal").classList.add("open");
+      renderPlateCalc();
+    }
+    function closePlateModal() {
+      document.getElementById("plateModal").classList.remove("open");
+    }
+    function renderPlateCalc() {
+      const total = parseFloat(document.getElementById("plateTotalInput").value) || 0;
+      const bar = parseFloat(document.getElementById("plateBarSelect").value) || 0;
+      const stage = document.getElementById("plateVisualStage");
+      const txt = document.getElementById("plateTextResult");
+
+      if (total <= bar) {
+        stage.innerHTML = `<div style="color:var(--muted); font-size:12px;">Apenas a barra (${bar} kg)</div>`;
+        txt.textContent = "Sem anilhas adicionais.";
+        return;
+      }
+
+      let perSide = (total - bar) / 2;
+      const available = [
+        { w: 20, h: 86, c: "#ef4444" },
+        { w: 15, h: 76, c: "#f59e0b" },
+        { w: 10, h: 66, c: "#10b981" },
+        { w: 5,  h: 52, c: "#06b6d4" },
+        { w: 2,  h: 40, c: "#94a3b8" },
+        { w: 1,  h: 32, c: "#cbd5e1" }
+      ];
+
+      let chosen = [];
+      let rem = perSide;
+      available.forEach(p => {
+        while (rem >= p.w - 0.01) {
+          chosen.push(p);
+          rem -= p.w;
+        }
+      });
+
+      let x = 75;
+      const platesSvg = chosen.map(p => {
+        const y = 65 - p.h / 2;
+        const rect = `<rect x="${x}" y="${y}" width="14" height="${p.h}" rx="3" fill="${p.c}" stroke="#090d16" stroke-width="1.5"/>
+                      <text x="${x+7}" y="69" fill="#090d16" font-size="8" font-weight="900" text-anchor="middle">${p.w}</text>`;
+        x += 16;
+        return rect;
+      }).join("");
+
+      stage.innerHTML = `
+        <svg width="240" height="120" viewBox="0 0 240 120">
+          <rect x="20" y="59" width="200" height="12" rx="3" fill="#64748b"/>
+          <rect x="64" y="48" width="9" height="34" rx="2" fill="#94a3b8"/>
+          ${platesSvg}
+        </svg>
+      `;
+
+      const counts = {};
+      chosen.forEach(p => counts[p.w] = (counts[p.w] || 0) + 1);
+      const summary = Object.keys(counts).sort((a,b)=>b-a).map(w => `${counts[w]}x ${w}kg`).join(" + ");
+      txt.innerHTML = `Por lado (<span style="color:var(--emerald);">${perSide.toFixed(1)} kg</span>): ${summary || "Nenhuma"}`;
     }
 
     // CRONÔMETRO DE DESCANSO
@@ -1061,6 +1260,7 @@
         if (restRemaining <= 0) {
           clearInterval(restInterval);
           playBeep(920, 0.35);
+          vibrate([120, 70, 150]);
         }
       }, 1000);
     }
@@ -1075,13 +1275,13 @@
       document.getElementById("restDisplay").textContent = `${m}:${s}`;
     }
 
-    // SIMULADOR DE PROPORÇÃO ÁUREA V-TAPER
+    // SIMULADOR DE PROPORÇÃO ÁUREA V-TAPER + HISTÓRICO DE MEDIÇÕES
     function updateVTaper() {
-      const w = parseFloat(document.getElementById("mWeight").value) || 63;
+      const w = parseFloat(document.getElementById("mWeight").value) || 68;
       const h = parseFloat(document.getElementById("mHeight").value) || 170;
-      const c = parseFloat(document.getElementById("mChest").value) || 98;
-      const sh = parseFloat(document.getElementById("sShoulders").value) || 118;
-      const wa = parseFloat(document.getElementById("sWaist").value) || 75;
+      const c = parseFloat(document.getElementById("mChest").value) || 94;
+      const sh = parseFloat(document.getElementById("sShoulders").value) || 109;
+      const wa = parseFloat(document.getElementById("sWaist").value) || 82;
 
       state.measures = { weight: w, height: h, chest: c, shoulders: sh, waist: wa };
       saveState();
@@ -1093,13 +1293,18 @@
       document.getElementById("vtaperRatioText").innerHTML = `${ratio.toFixed(3)} <span style="font-size:12px; color:var(--muted);">/ 1.618</span>`;
 
       const targetSh = (wa * 1.618).toFixed(1);
-      const diffSh = (targetSh - sh).toFixed(1);
+      const idealWaist = Math.round(h * 0.445); // ~75.6 cm para 170cm
+      const shAtIdealWaist = (idealWaist * 1.618).toFixed(1);
       const diagEl = document.getElementById("vtaperDiagnosis");
 
       if (ratio >= 1.618) {
-        diagEl.innerHTML = `<strong style="color:var(--emerald);">🏆 Proporção Áurea Atingida!</strong> Seu índice (${ratio.toFixed(3)}) está no padrão clássico em V. Mantenha a cintura compacta (${wa} cm) com Stomach Vacuum e progrida cargas.`;
+        diagEl.innerHTML = `<strong style="color:var(--emerald);">🏆 Proporção Áurea Atingida!</strong> Seu índice (${ratio.toFixed(3)}) está no padrão clássico em V.`;
       } else {
-        diagEl.innerHTML = `<strong style="color:var(--cyan);">Diagnóstico para bater 1.618:</strong> Ganhar <strong>+${diffSh} cm</strong> de ombros/dorsal (meta: ${targetSh} cm) focando em Barra Fixa, Puxada Aberta e Elevação Lateral.`;
+        diagEl.innerHTML = `
+          <strong style="color:var(--cyan);">Plano Duplo Recomposição (68 kg):</strong><br>
+          • Mantendo ${wa} cm de cintura, seriam necessários <strong>${targetSh} cm</strong> de ombros.<br>
+          • Reduzindo a cintura para <strong>${idealWaist} cm</strong> (com déficit de 2.165 kcal + Vacuum), você bate o <strong>1.618</strong> com apenas <strong>${shAtIdealWaist} cm</strong> de ombros!
+        `;
       }
 
       const shWidth = Math.min(180, Math.max(90, sh * 1.15));
@@ -1114,18 +1319,82 @@
           fill="rgba(16,185,129,0.22)" stroke="#10b981" stroke-width="3" />
         <line x1="${cx}" y1="20" x2="${cx}" y2="125" stroke="rgba(255,255,255,0.15)" stroke-dasharray="3 3" />
       `;
+
+      renderMeasureLogs();
+    }
+
+    function logBodyMeasure() {
+      const m = state.measures;
+      const ratio = (m.shoulders / m.waist).toFixed(3);
+      const dateStr = new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit" });
+      state.measureLogs = state.measureLogs || [];
+      state.measureLogs.unshift({
+        date: dateStr,
+        weight: m.weight,
+        shoulders: m.shoulders,
+        waist: m.waist,
+        ratio: ratio
+      });
+      vibrate(40);
+      saveState();
+      renderMeasureLogs();
+    }
+
+    function renderMeasureLogs() {
+      const box = document.getElementById("measureHistoryList");
+      if (!box) return;
+      const logs = state.measureLogs || [];
+      if (!logs.length) {
+        box.innerHTML = "<p>Nenhuma medição salva ainda.</p>";
+        return;
+      }
+      box.innerHTML = logs.map(l => `
+        <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--border);">
+          <span><strong>${l.date}</strong> • ${l.weight} kg</span>
+          <span>Ombro: <strong style="color:var(--emerald);">${l.shoulders}cm</strong> | Cintura: <strong style="color:var(--cyan);">${l.waist}cm</strong></span>
+          <strong style="color:var(--amber);">${l.ratio}</strong>
+        </div>
+      `).join("");
     }
 
     function resetDefaultMeasures() {
-      document.getElementById("mWeight").value = 63;
+      document.getElementById("mWeight").value = 68;
       document.getElementById("mHeight").value = 170;
-      document.getElementById("mChest").value = 98;
-      document.getElementById("sShoulders").value = 118;
-      document.getElementById("sWaist").value = 75;
+      document.getElementById("mChest").value = 94;
+      document.getElementById("sShoulders").value = 109;
+      document.getElementById("sWaist").value = 82;
       updateVTaper();
     }
 
-    // MÓDULO DE DIETA & MACRONUTRIENTES (ABA 3)
+    // MÓDULO DE DIETA, ANÉIS NEON & SUPLEMENTOS (ABA 3)
+    function renderSupplements() {
+      const grid = document.getElementById("suppGrid");
+      if (!grid) return;
+      grid.innerHTML = SUPPLEMENTS_DB.map(s => {
+        const done = !!state.supplements[s.id];
+        return `<button class="supp-btn ${done ? 'done' : ''}" onclick="toggleSupp('${s.id}')">
+          <div>
+            <div class="supp-name">${s.name}</div>
+            <div class="supp-time">${s.time}</div>
+          </div>
+          <span style="font-weight:900; color:${done ? 'var(--emerald)' : 'var(--muted)'};">${done ? '✓' : '○'}</span>
+        </button>`;
+      }).join("");
+    }
+
+    function toggleSupp(id) {
+      state.supplements[id] = !state.supplements[id];
+      vibrate(30);
+      saveState();
+      renderSupplements();
+    }
+
+    function resetSupplements() {
+      Object.keys(state.supplements).forEach(k => state.supplements[k] = false);
+      saveState();
+      renderSupplements();
+    }
+
     function getAllFoods() {
       return [...DEFAULT_FOODS, ...(state.diet.customFoods || [])];
     }
@@ -1148,8 +1417,8 @@
 
     function updateDietConfig() {
       state.diet.age = parseInt(document.getElementById("dAge").value) || 25;
-      state.diet.protPerKg = parseFloat(document.getElementById("dProtKg").value) || 2.1;
-      state.diet.fatPerKg = parseFloat(document.getElementById("dFatKg").value) || 1.0;
+      state.diet.protPerKg = parseFloat(document.getElementById("dProtKg").value) || 2.2;
+      state.diet.fatPerKg = parseFloat(document.getElementById("dFatKg").value) || 0.9;
       state.diet.activity = parseFloat(document.getElementById("dActivity").value) || 1.55;
       state.diet.goalDelta = parseInt(document.getElementById("dGoal").value) || 0;
       saveState();
@@ -1157,10 +1426,9 @@
     }
 
     function calcDietTargets() {
-      const w = state.measures.weight || 63;
+      const w = state.measures.weight || 68;
       const h = state.measures.height || 170;
       const age = state.diet.age || 25;
-      // Mifflin-St Jeor Masculino
       const tmb = Math.round(10 * w + 6.25 * h - 5 * age + 5);
       const tdee = Math.round(tmb * state.diet.activity);
       const targetKcal = tdee + state.diet.goalDelta;
@@ -1178,19 +1446,34 @@
       let kcal = 0, p = 0, c = 0, f = 0;
       Object.values(state.diet.meals).forEach(list => {
         list.forEach(item => {
-          kcal += item.kcal;
-          p += item.p;
-          c += item.c;
-          f += item.f;
+          kcal += item.kcal; p += item.p; c += item.c; f += item.f;
         });
       });
       return { kcal: Math.round(kcal), p: Math.round(p), c: Math.round(c), f: Math.round(f) };
     }
 
+    function buildRingSVG(pct, color, label, sub) {
+      const r = 26;
+      const circ = 2 * Math.PI * r;
+      const offset = circ - (Math.min(100, pct) / 100) * circ;
+      return `<div class="ring-box">
+        <svg width="68" height="68" viewBox="0 0 68 68">
+          <circle cx="34" cy="34" r="${r}" fill="none" stroke="#090d16" stroke-width="6"/>
+          <circle cx="34" cy="34" r="${r}" fill="none" stroke="${color}" stroke-width="6"
+            stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round"
+            transform="rotate(-90 34 34)"/>
+          <text x="34" y="38" fill="#f8fafc" font-size="12" font-weight="900" text-anchor="middle">${pct}%</text>
+        </svg>
+        <div style="font-size:11px; font-weight:800;">${label}</div>
+        <div style="font-size:10px; color:var(--muted);">${sub}</div>
+      </div>`;
+    }
+
     function renderDietView() {
+      renderSupplements();
       const targets = calcDietTargets();
       const consumed = calcConsumedTotals();
-      const w = state.measures.weight || 63;
+      const w = state.measures.weight || 68;
 
       document.getElementById("dTmbTdee").textContent = `${targets.tmb} / ${targets.tdee} kcal`;
       document.getElementById("dCalBalance").textContent = `${consumed.kcal} / ${targets.targetKcal} kcal`;
@@ -1199,9 +1482,13 @@
       const pctP = Math.min(100, Math.round((consumed.p / targets.targetP) * 100));
       const pctC = Math.min(100, Math.round((consumed.c / targets.targetC) * 100));
       const pctF = Math.min(100, Math.round((consumed.f / targets.targetF) * 100));
+      const wPct = Math.min(100, Math.round((state.diet.waterMl / targets.waterTarget) * 100));
 
-      document.getElementById("lblKcal").textContent = `${consumed.kcal} / ${targets.targetKcal} kcal (${pctKcal}%)`;
-      document.getElementById("barKcal").style.width = pctKcal + "%";
+      // Renderizar os 3 Anéis Estilo Apple Fitness
+      document.getElementById("nutritionRings").innerHTML =
+        buildRingSVG(pctKcal, "#10b981", "Calorias", `${consumed.kcal}/${targets.targetKcal}`) +
+        buildRingSVG(pctP, "#06b6d4", "Proteína", `${consumed.p}/${targets.targetP}g`) +
+        buildRingSVG(wPct, "#38bdf8", "Água", `${state.diet.waterMl}ml`);
 
       document.getElementById("lblProtGkg").textContent = (consumed.p / w).toFixed(1);
       document.getElementById("lblProt").textContent = `${consumed.p}g / ${targets.targetP}g`;
@@ -1214,12 +1501,8 @@
       document.getElementById("lblFat").textContent = `${consumed.f}g / ${targets.targetF}g`;
       document.getElementById("barFat").style.width = pctF + "%";
 
-      // Hidratação
-      const wPct = Math.min(100, Math.round((state.diet.waterMl / targets.waterTarget) * 100));
       document.getElementById("waterText").textContent = `${state.diet.waterMl} ml / ${targets.waterTarget} ml (${wPct}%)`;
-      document.getElementById("barWater").style.width = wPct + "%";
 
-      // Abas das 5 Refeições
       const activeM = state.diet.activeMeal || "m1";
       document.getElementById("mealTabs").innerHTML = MEAL_SLOTS.map(slot => {
         const count = (state.diet.meals[slot.id] || []).length;
@@ -1228,11 +1511,10 @@
         </button>`;
       }).join("");
 
-      // Lista de alimentos da refeição ativa
       const items = state.diet.meals[activeM] || [];
       const listEl = document.getElementById("mealFoodList");
       if (!items.length) {
-        listEl.innerHTML = `<p style="font-size:12px; color:var(--muted); text-align:center; padding:10px 0;">Nenhum alimento lançado nesta refeição.</p>`;
+        listEl.innerHTML = `<p style="font-size:12px; color:var(--muted); text-align:center; padding:10px 0;">Toque em "⚡ Cardápio 2165 kcal" acima para carregar a dieta de recomposição para 68 kg.</p>`;
       } else {
         listEl.innerHTML = items.map((item, idx) => `
           <div class="food-item">
@@ -1293,67 +1575,46 @@
 
     function addWater(ml) {
       state.diet.waterMl = Math.max(0, (state.diet.waterMl || 0) + ml);
+      vibrate(25);
       saveState();
       renderDietView();
     }
 
-    function saveCustomFood() {
-      const name = document.getElementById("cFoodName").value.trim();
-      const base = parseFloat(document.getElementById("cFoodBase").value) || 100;
-      const kcal = parseFloat(document.getElementById("cFoodKcal").value) || 0;
-      const p = parseFloat(document.getElementById("cFoodP").value) || 0;
-      const c = parseFloat(document.getElementById("cFoodC").value) || 0;
-      const f = parseFloat(document.getElementById("cFoodF").value) || 0;
-      if (!name) { alert("Digite o nome do alimento."); return; }
-
-      const newFood = { id: "cust_" + Date.now(), name, base, unit: "g", kcal, p, c, f };
-      state.diet.customFoods.push(newFood);
-      document.getElementById("cFoodName").value = "";
-      saveState();
-      populateFoodSelect();
-      alert(`Alimento "${name}" adicionado ao seletor!`);
-    }
-
+    // CARDÁPIO DE RECOMPOSIÇÃO CALIBRADO PARA 68 KG (~2.165 KCAL / 150G PROT)
     function loadSampleDiet() {
       state.diet.meals = {
         m1: [
-          { name:"Cuscuz de Milho Cozido", amount:180, unit:"g", kcal:203.4, p:3.9, c:45.5, f:1.2 },
-          { name:"Banana da Terra Cozida", amount:100, unit:"g", kcal:128, p:1.0, c:33.5, f:0.2 },
+          { name:"Cuscuz de Milho Cozido", amount:150, unit:"g", kcal:169.5, p:3.3, c:38.0, f:1.1 },
           { name:"Ovo Inteiro Cozido/Grelhado", amount:3, unit:"un", kcal:216, p:18.9, c:1.8, f:14.4 }
         ],
         m2: [
-          { name:"Arroz Branco Cozido", amount:250, unit:"g", kcal:320, p:6.2, c:70.2, f:0.5 },
-          { name:"Feijão Carioca/Preto Cozido", amount:150, unit:"g", kcal:114, p:7.2, c:20.4, f:0.7 },
-          { name:"Peito de Frango Grelhado", amount:150, unit:"g", kcal:238.5, p:48.0, c:0, f:3.7 }
+          { name:"Arroz Branco Cozido", amount:180, unit:"g", kcal:230.4, p:4.5, c:50.6, f:0.4 },
+          { name:"Feijão Carioca/Preto Cozido", amount:120, unit:"g", kcal:91.2, p:5.8, c:16.3, f:0.6 },
+          { name:"Peito de Frango Grelhado", amount:160, unit:"g", kcal:254.4, p:51.2, c:0, f:4.0 },
+          { name:"Azeite de Oliva Extra Virgem", amount:8, unit:"ml", kcal:70, p:0, c:0, f:8.0 }
         ],
         m3: [
           { name:"Banana Prata", amount:2, unit:"un", kcal:136, p:1.8, c:36.4, f:0.2 },
-          { name:"Aveia em Flocos", amount:40, unit:"g", kcal:157, p:5.7, c:26.6, f:2.9 },
-          { name:"Pasta de Amendoim Integral", amount:20, unit:"g", kcal:120, p:5.6, c:3.2, f:10.0 }
+          { name:"Aveia em Flocos", amount:30, unit:"g", kcal:118, p:4.3, c:20.0, f:2.2 },
+          { name:"Pasta de Amendoim Integral", amount:15, unit:"g", kcal:90, p:4.2, c:2.4, f:7.5 }
         ],
         m4: [
           { name:"Whey Protein Concentrado (1 Scoop)", amount:30, unit:"g", kcal:120, p:24.0, c:3.0, f:1.5 },
-          { name:"Goma de Tapioca", amount:100, unit:"g", kcal:240, p:0, c:60.0, f:0 }
+          { name:"Goma de Tapioca", amount:75, unit:"g", kcal:180, p:0, c:45.0, f:0 }
         ],
         m5: [
-          { name:"Aipim / Mandioca Cozida", amount:220, unit:"g", kcal:275, p:1.3, c:66.2, f:0.6 },
-          { name:"Patinho / Carne Magra Moída", amount:140, unit:"g", kcal:306.6, p:50.2, c:0, f:10.2 },
-          { name:"Azeite de Oliva Extra Virgem", amount:10, unit:"ml", kcal:88, p:0, c:0, f:10.0 }
+          { name:"Aipim / Mandioca Cozida", amount:160, unit:"g", kcal:200, p:1.0, c:48.2, f:0.5 },
+          { name:"Patinho / Carne Magra Moída", amount:135, unit:"g", kcal:295.6, p:48.5, c:0, f:9.8 }
         ]
       };
-      state.diet.waterMl = 2500;
+      state.diet.waterMl = 2850;
+      vibrate(45);
       saveState();
       renderDietView();
     }
 
     // STOMACH VACUUM TIMER
-    let coreMode = "vacuum";
-    let vacTimer = null;
-    let vacRunning = false;
-    let vacStepIdx = 0;
-    let vacSeries = 1;
-    let vacSec = 30;
-
+    let coreMode = "vacuum", vacTimer = null, vacRunning = false, vacStepIdx = 0, vacSeries = 1, vacSec = 30;
     const VAC_STEPS = [
       { label: "1. INSPIRAR FUNDO", sec: 3 },
       { label: "2. EXPIRAR TUDO", sec: 4 },
@@ -1387,6 +1648,7 @@
           document.getElementById("vacTimerDisplay").textContent = vacSec + "s";
           if (vacSec <= 0) {
             playBeep(950, 0.3);
+            vibrate([100, 60, 100]);
             clearInterval(vacTimer);
             vacRunning = false;
             document.getElementById("vacStartBtn").textContent = "▶ Iniciar Prancha";
@@ -1400,6 +1662,7 @@
           vacSec--;
           if (vacSec <= 0) {
             playBeep(880, 0.18);
+            vibrate(50);
             vacStepIdx++;
             if (vacStepIdx >= VAC_STEPS.length) {
               vacStepIdx = 0;
@@ -1425,9 +1688,7 @@
 
     function resetVacuumTimer() {
       clearInterval(vacTimer);
-      vacRunning = false;
-      vacStepIdx = 0;
-      vacSeries = 1;
+      vacRunning = false; vacStepIdx = 0; vacSeries = 1;
       document.getElementById("vacPhaseLabel").textContent = "PRONTO";
       document.getElementById("vacTimerDisplay").textContent = coreMode === "vacuum" ? "30s" : "60s";
       document.getElementById("vacSeriesDisplay").textContent = "Série 1 de 3";
@@ -1435,11 +1696,7 @@
     }
 
     // MOTOR DE ANIMAÇÃO BIOMECÂNICA 60 FPS (23 EXERCÍCIOS ÚNICOS)
-    let animFrame = null;
-    let animExId = "a1";
-    let animSpeed = 1;
-    let animPaused = false;
-    let animTick = 0;
+    let animFrame = null, animExId = "a1", animSpeed = 1, animPaused = false, animTick = 0;
 
     function openAnimModal(wkKey, exId) {
       const ex = WORKOUT_DB[wkKey].exercises.find(e => e.id === exId);
@@ -1470,9 +1727,7 @@
       document.getElementById("spd05Btn").style.borderColor = spd < 1 ? "var(--emerald)" : "var(--border)";
     }
 
-    function toggleAnimPause() {
-      animPaused = !animPaused;
-    }
+    function toggleAnimPause() { animPaused = !animPaused; }
 
     function loopBiomechanics() {
       if (!animPaused) animTick += 0.035 * animSpeed;
@@ -1590,8 +1845,7 @@
           const depth = (1 - t) * 36;
           const hipX = 104 - (1 - t) * 10;
           const hipY = 104 + depth;
-          const shX = 122;
-          const shY = 60 + depth;
+          const shX = 122, shY = 60 + depth;
           return `${floor}
             <circle cx="${shX + 4}" cy="${shY - 14}" r="11" fill="#e2e8f0"/>
             <line x1="${shX - 24}" y1="${shY}" x2="${shX + 24}" y2="${shY}" stroke="#f8fafc" stroke-width="4"/>
@@ -1812,19 +2066,20 @@
       const rdlRM = getMaxRM("d1");
       const targets = calcDietTargets();
       const consumed = calcConsumedTotals();
+      const suppDone = Object.values(state.supplements).filter(Boolean).length;
 
       document.getElementById("aiReportBox").innerHTML = `
         <div style="padding:10px; background:var(--card-2); border-radius:10px; border-left:3px solid var(--emerald);">
           <strong>1. Proporção Áurea Atual (${ratio} / 1.618):</strong>
-          Com ${m.weight} kg e ${m.height} cm, sua relação Cintura/Altura é de <strong>${((m.waist/m.height)*100).toFixed(1)}%</strong> (excelente abaixo de 45%).
+          Com ${m.weight} kg e ${m.height} cm, sua relação Cintura/Altura é de <strong>${((m.waist/m.height)*100).toFixed(1)}%</strong> (meta estética: descer de 82 cm para ~76 cm).
         </div>
         <div style="padding:10px; background:var(--card-2); border-radius:10px; border-left:3px solid var(--cyan);">
-          <strong>2. Força Relativa nos Compostos:</strong>
-          Supino: <strong>${(benchRM/m.weight).toFixed(2)}x</strong> peso corporal (${benchRM} kg) • Agachamento: <strong>${(squatRM/m.weight).toFixed(2)}x</strong> (${squatRM} kg).
+          <strong>2. Próximo Treino na Fila Automática:</strong>
+          Ficha ativa: <strong>TREINO ${state.activeWorkout}</strong> • Supino 1RM: <strong>${benchRM} kg</strong> (${(benchRM/m.weight).toFixed(2)}x BW) • Agachamento 1RM: <strong>${squatRM} kg</strong>.
         </div>
         <div style="padding:10px; background:var(--card-2); border-radius:10px; border-left:3px solid var(--amber);">
-          <strong>3. Status Nutricional Hoje:</strong>
-          Ingerido: <strong>${consumed.kcal} / ${targets.targetKcal} kcal</strong> • Proteína: <strong>${consumed.p}g / ${targets.targetP}g</strong> • Água: <strong>${state.diet.waterMl} ml</strong>.
+          <strong>3. Nutrição & Stack Hoje:</strong>
+          Calorias: <strong>${consumed.kcal} / ${targets.targetKcal} kcal</strong> • Proteína: <strong>${consumed.p}g / ${targets.targetP}g</strong> • Suplementos: <strong>${suppDone}/6</strong>.
         </div>
       `;
 
@@ -1872,7 +2127,7 @@
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
       const a = document.createElement("a");
       a.href = dataStr;
-      a.download = "vtaper_nutri_backup.json";
+      a.download = "vtaper_v4_backup.json";
       a.click();
     }
 
