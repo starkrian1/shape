@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#090d16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>V-Taper Protocol V4 Pro</title>
+  <title>V-Taper Protocol V5 Pro</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <style>
@@ -34,7 +34,7 @@
       line-height: 1.4;
     }
     button, input, select { font-family: inherit; color: inherit; }
-    
+
     /* TOPBAR */
     .topbar {
       position: fixed; top: 0; left: 0; right: 0; height: 60px;
@@ -101,59 +101,171 @@
     .badge-cyan { background: rgba(6,182,212,0.15); color: var(--cyan); border-color: rgba(6,182,212,0.3); }
     .badge-amber { background: rgba(245,158,11,0.15); color: var(--amber); border-color: rgba(245,158,11,0.35); }
 
-    /* WORKOUT SELECTOR GRID */
-    .wk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-    .wk-btn {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 10px 12px; text-align: left; cursor: pointer;
+    /* MEMORY BANNER & MODE SWITCHER */
+    .memory-pill {
+      background: rgba(6,182,212,0.1); border: 1px solid rgba(6,182,212,0.3);
+      border-radius: 10px; padding: 8px 12px; margin-bottom: 10px;
+      font-size: 11px; color: #bae6fd; display: flex; align-items: center; justify-content: space-between; gap: 8px;
     }
-    .wk-btn.active { border-color: var(--emerald); background: var(--emerald-dim); }
-    .wk-btn-tag { font-size: 10px; font-weight: 800; color: var(--emerald); text-transform: uppercase; }
-    .wk-btn-name { font-size: 13px; font-weight: 800; margin-top: 2px; }
-    .wk-btn-sub { font-size: 11px; color: var(--muted); }
+    .mode-switch {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 4px; margin-bottom: 12px;
+    }
+    .mode-btn {
+      background: transparent; border: none; border-radius: 9px;
+      padding: 9px 8px; font-size: 12px; font-weight: 800; color: var(--muted); cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .mode-btn.active { background: var(--emerald); color: #042f2e; }
 
-    /* STATS SUMMARY */
-    .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-    .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
-    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
-    .stat-val { font-size: 18px; font-weight: 900; margin-top: 2px; color: var(--emerald); }
+    /* WORKOUT SELECTOR COMPACT */
+    .wk-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+    .wk-chip {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 8px 4px; text-align: center; cursor: pointer;
+    }
+    .wk-chip.active { border-color: var(--emerald); background: var(--emerald-dim); }
+    .wk-chip-letter { font-size: 14px; font-weight: 900; color: var(--emerald); }
+    .wk-chip-label { font-size: 9px; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-top: 1px; }
 
-    /* EXERCISE SETS & PR BANNER */
-    .ex-btn-row { display: flex; gap: 6px; margin-bottom: 10px; }
-    .anim-trigger-btn {
-      flex: 1; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.35);
-      color: #38bdf8; border-radius: 9px; padding: 8px 10px; font-size: 12px; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
+    /* PROGRESS BAR */
+    .wk-progress-wrap {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 12px; margin-bottom: 12px;
+    }
+    .wk-progress-top { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+    .macro-track { height: 9px; background: var(--card-2); border-radius: 99px; overflow: hidden; }
+    .macro-fill { height: 100%; border-radius: 99px; transition: width 0.25s ease; }
+
+    /* MODO 1: PLAYER IMERSIVO */
+    .player-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; gap: 8px;
+    }
+    .player-dots { display: flex; gap: 5px; justify-content: center; flex: 1; }
+    .p-dot {
+      height: 7px; flex: 1; max-width: 34px; border-radius: 99px;
+      background: var(--card-2); border: 1px solid var(--border); cursor: pointer;
+    }
+    .p-dot.done { background: var(--emerald); border-color: var(--emerald); }
+    .p-dot.current { background: var(--cyan); border-color: var(--cyan); box-shadow: 0 0 8px rgba(6,182,212,0.5); }
+
+    .player-stage {
+      width: 100%; height: 195px; background: #070a12; border: 1px solid var(--border);
+      border-radius: 12px; margin: 8px 0 12px; display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .phase-pill {
+      position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: 800;
+      padding: 3px 8px; border-radius: 6px; background: rgba(16,185,129,0.2); color: var(--emerald);
+    }
+    .equip-pill {
+      position: absolute; bottom: 8px; right: 8px; font-size: 10px; font-weight: 700;
+      padding: 3px 7px; border-radius: 5px; background: rgba(255,255,255,0.06); color: var(--muted);
+    }
+    .stage-tools {
+      position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;
+    }
+    .mini-pill-btn {
+      background: rgba(30,41,59,0.9); border: 1px solid var(--border); border-radius: 6px;
+      padding: 3px 7px; font-size: 10px; font-weight: 800; color: var(--text); cursor: pointer;
+    }
+
+    /* SET BUBBLES (USADO NOS DOIS MODOS) */
+    .bubbles-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(66px, 1fr));
+      gap: 7px; margin: 10px 0 12px;
+    }
+    .set-bubble {
+      background: var(--card-2); border: 2px solid var(--border);
+      border-radius: 14px; padding: 9px 4px; text-align: center; cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+    .set-bubble:active { transform: scale(0.95); }
+    .set-bubble.selected { border-color: var(--cyan); box-shadow: 0 0 12px rgba(6,182,212,0.28); }
+    .set-bubble.done {
+      background: var(--emerald); border-color: var(--emerald); color: #042f2e;
+      box-shadow: 0 0 14px rgba(16,185,129,0.35);
+    }
+    .bubble-top { font-size: 9px; font-weight: 900; text-transform: uppercase; opacity: 0.8; }
+    .bubble-main { font-size: 13px; font-weight: 900; margin-top: 2px; }
+    .bubble-sub { font-size: 10px; font-weight: 700; opacity: 0.85; }
+
+    /* STEPPER CONTROLS (- / +) */
+    .stepper-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .stepper-box {
+      background: var(--card-2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 8px; text-align: center;
+    }
+    .stepper-label { font-size: 10px; color: var(--muted); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+    .stepper-controls { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+    .step-btn {
+      width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--text); font-size: 18px; font-weight: 900; cursor: pointer;
+    }
+    .step-input {
+      width: 56px; background: transparent; border: none; text-align: center;
+      font-size: 18px; font-weight: 900; color: var(--emerald); outline: none;
+    }
+
+    /* REST OVERLAY BANNER INSIDE PLAYER */
+    .player-rest-banner {
+      display: none; background: rgba(6,182,212,0.16); border: 1px solid var(--cyan);
+      border-radius: 12px; padding: 10px 12px; margin-bottom: 10px;
+      align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .player-rest-banner.active { display: flex; }
+
+    /* MODO 2: ACORDEÃO INTELIGENTE */
+    .acc-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; margin-bottom: 10px; overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+    .acc-card.open { border-color: var(--cyan); }
+    .acc-card.all-done { border-color: rgba(16,185,129,0.5); opacity: 0.92; }
+    .acc-head {
+      padding: 13px 14px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; cursor: pointer; background: rgba(255,255,255,0.015);
+    }
+    .acc-body { padding: 0 14px 14px; border-top: 1px solid rgba(255,255,255,0.05); }
+    .acc-status {
+      font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 8px;
+      background: var(--card-2); color: var(--muted); white-space: nowrap;
+    }
+    .acc-status.done { background: var(--emerald-dim); color: var(--emerald); }
+
+    /* BUTTONS & PR BANNER */
+    .pr-banner {
+      background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #fbbf24; border-radius: 9px; padding: 7px 10px; font-size: 11px; font-weight: 800;
+      margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    }
+    .btn-giant {
+      width: 100%; background: linear-gradient(135deg, #10b981, #059669); color: #022c22;
+      border: none; border-radius: 13px; padding: 15px 12px; font-size: 15px; font-weight: 900;
+      cursor: pointer; letter-spacing: 0.3px; box-shadow: 0 6px 18px rgba(16,185,129,0.28);
+    }
+    .btn-giant:active { transform: scale(0.98); }
+    .btn-primary {
+      width: 100%; background: var(--emerald); color: #042f2e; border: none;
+      border-radius: 11px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer;
+    }
+    .btn-outline {
+      width: 100%; background: var(--card-2); color: var(--text); border: 1px solid var(--border);
+      border-radius: 11px; padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
     }
     .plate-trigger-btn {
       background: rgba(245, 158, 11, 0.14); border: 1px solid rgba(245, 158, 11, 0.38);
       color: #fbbf24; border-radius: 9px; padding: 8px 10px; font-size: 12px; font-weight: 700;
       cursor: pointer; white-space: nowrap;
     }
-    .pr-banner {
-      background: rgba(245, 158, 11, 0.16); border: 1px solid rgba(245, 158, 11, 0.45);
-      color: #fbbf24; border-radius: 9px; padding: 7px 10px; font-size: 11px; font-weight: 800;
-      margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+    .anim-trigger-btn {
+      flex: 1; background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #38bdf8; border-radius: 9px; padding: 8px 10px; font-size: 12px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;
     }
-    .set-header, .set-row {
-      display: grid; grid-template-columns: 36px 1fr 1fr 44px; gap: 8px; align-items: center;
-    }
-    .set-header { font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; padding-bottom: 6px; text-align: center; }
-    .set-row { padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.05); }
-    .set-num { font-size: 12px; font-weight: 800; color: var(--muted); text-align: center; }
-    .num-input {
-      width: 100%; background: var(--bg); border: 1px solid var(--border);
-      border-radius: 8px; padding: 7px 6px; text-align: center; font-size: 14px; font-weight: 800;
-    }
-    .check-btn {
-      width: 40px; height: 34px; border-radius: 8px; border: 1px solid var(--border);
-      background: var(--card-2); color: var(--muted); font-weight: 900; cursor: pointer;
-    }
-    .check-btn.done { background: var(--emerald); border-color: var(--emerald); color: #052e16; }
-    .ex-footer {
-      display: flex; justify-content: space-between; font-size: 11px; color: var(--muted);
-      margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border);
-    }
+    .ex-btn-row { display: flex; gap: 6px; margin-top: 8px; }
 
     /* INPUTS & SLIDERS */
     .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px; }
@@ -167,24 +279,18 @@
     .slider-wrap { margin-bottom: 12px; }
     .slider-head { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
     input[type="range"] { width: 100%; accent-color: var(--emerald); height: 6px; }
-
-    /* PRIMARY BUTTON */
-    .btn-primary {
-      width: 100%; background: var(--emerald); color: #042f2e; border: none;
-      border-radius: 11px; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer;
-    }
-    .btn-outline {
-      width: 100%; background: var(--card-2); color: var(--text); border: 1px solid var(--border);
-      border-radius: 11px; padding: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+    .num-input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 6px; text-align: center; font-size: 14px; font-weight: 800;
     }
 
-    /* RINGS & DIET */
+    /* RINGS, DIET & SUPPLEMENTS */
     .rings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; text-align: center; }
     .ring-box { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 8px 4px; }
+    .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; }
+    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; font-weight: 700; }
     .macro-bar-wrap { margin-bottom: 10px; }
     .macro-bar-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
-    .macro-track { height: 9px; background: var(--card-2); border-radius: 99px; overflow: hidden; }
-    .macro-fill { height: 100%; border-radius: 99px; transition: width 0.25s ease; }
     .meal-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 10px; scrollbar-width: none; }
     .meal-tabs::-webkit-scrollbar { display: none; }
     .meal-tab {
@@ -200,8 +306,6 @@
       background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.35);
       color: #f87171; border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: 700; cursor: pointer;
     }
-
-    /* SUPPLEMENT STACK */
     .supp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
     .supp-btn {
       background: var(--card-2); border: 1px solid var(--border); border-radius: 10px;
@@ -226,7 +330,7 @@
     }
     .rest-btn.stop { border-color: rgba(239,68,68,0.4); color: #f87171; }
 
-    /* BOTTOM NAV (5 ABAS) */
+    /* BOTTOM NAV */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0; height: 64px;
       background: #090d16; border-top: 1px solid var(--border);
@@ -252,20 +356,19 @@
       max-height: 90vh; overflow-y: auto;
     }
     .svg-stage {
-      width: 100%; height: 225px; background: #070a12; border: 1px solid var(--border);
+      width: 100%; height: 220px; background: #070a12; border: 1px solid var(--border);
       border-radius: 12px; margin: 10px 0; display: flex; align-items: center; justify-content: center; position: relative;
-    }
-    .phase-pill {
-      position: absolute; top: 8px; left: 8px; font-size: 11px; font-weight: 800;
-      padding: 4px 8px; border-radius: 6px; background: rgba(16,185,129,0.2); color: var(--emerald);
-    }
-    .equip-pill {
-      position: absolute; bottom: 8px; right: 8px; font-size: 10px; font-weight: 700;
-      padding: 3px 7px; border-radius: 5px; background: rgba(255,255,255,0.06); color: var(--muted);
     }
     .step-list { list-style: none; margin: 8px 0 12px; font-size: 12px; color: var(--muted); }
     .step-list li { margin-bottom: 5px; padding-left: 14px; position: relative; }
     .step-list li::before { content: "•"; color: var(--emerald); position: absolute; left: 0; font-weight: bold; }
+    .wk-btn {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 12px; text-align: left; cursor: pointer;
+    }
+    .wk-btn.active { border-color: var(--emerald); background: var(--emerald-dim); }
+    .wk-btn-name { font-size: 13px; font-weight: 800; }
+    .wk-btn-sub { font-size: 11px; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -276,8 +379,8 @@
       <button class="icon-btn" onclick="toggleDrawer(true)" aria-label="Menu">☰</button>
       <div class="brand-logo">V</div>
       <div>
-        <div class="brand-title">V-TAPER PRO V4</div>
-        <div class="brand-sub">68kg • 1.618 • Auto-Next</div>
+        <div class="brand-title">V-TAPER PRO V5</div>
+        <div class="brand-sub">Player • Bolinhas • Auto-Next</div>
       </div>
     </div>
     <div class="top-actions">
@@ -308,42 +411,54 @@
     <button class="drawer-btn" onclick="switchTab('ai'); toggleDrawer(false);"><span>📈 Evolução & IA Analytics</span><span>→</span></button>
 
     <div class="drawer-title">Gerenciamento</div>
-    <button class="drawer-btn" onclick="resetCurrentChecks(); toggleDrawer(false);"><span>🔄 Desmarcar Ficha Atual</span></button>
+    <button class="drawer-btn" onclick="resetCurrentChecks(); toggleDrawer(false);"><span>🔄 Reiniciar Séries da Ficha Atual</span></button>
     <button class="drawer-btn" onclick="exportBackup()"><span>💾 Exportar Backup Completo</span></button>
   </aside>
 
   <main class="container">
 
-    <!-- ABA 1: TREINOS -->
+    <!-- ABA 1: TREINOS (PLAYER + ACORDEÃO COM BOLINHAS) -->
     <section id="tab-workout" class="tab-view active">
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="stat-label">Tonelagem da Sessão</div>
-          <div class="stat-val" id="sessionVolume">0 kg</div>
+      <!-- Memória do Último Treino -->
+      <div class="memory-pill" id="lastWkBanner"></div>
+
+      <!-- Seletor Rápido A B C D -->
+      <div class="wk-strip" id="wkSelector"></div>
+
+      <!-- Barra de Progresso Geral da Sessão -->
+      <div class="wk-progress-wrap">
+        <div class="wk-progress-top">
+          <span id="wkTitleLine" style="color:var(--text);">TREINO A • Superiores Força</span>
+          <span><strong id="sessionSets" style="color:var(--emerald);">0/0</strong> • <strong id="sessionVolume" style="color:var(--cyan);">0 kg</strong></span>
         </div>
-        <div class="stat-box">
-          <div class="stat-label">Séries Concluídas</div>
-          <div class="stat-val" id="sessionSets">0 / 0</div>
+        <div class="macro-track">
+          <div class="macro-fill" id="sessionProgressBar" style="width:0%; background:linear-gradient(90deg, var(--emerald), var(--cyan));"></div>
         </div>
       </div>
 
-      <div class="wk-grid" id="wkSelector"></div>
-      <div class="card" id="wkBanner"></div>
-      <div id="exerciseList"></div>
+      <!-- Alternador: Modo Player vs Modo Bolinhas -->
+      <div class="mode-switch">
+        <button class="mode-btn active" id="modePlayerBtn" onclick="setViewMode('player')">🎬 Modo Player (Foco)</button>
+        <button class="mode-btn" id="modeAccBtn" onclick="setViewMode('accordion')">🫧 Modo Bolinhas (Lista)</button>
+      </div>
 
+      <!-- Área Dinâmica do Treino -->
+      <div id="workoutContentArea"></div>
+
+      <!-- Cardio & Finalização com Auto-Next -->
       <div class="card">
-        <label style="display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700; cursor:pointer; margin-bottom:12px;">
+        <label style="display:flex; align-items:center; gap:10px; font-size:12px; font-weight:700; cursor:pointer; margin-bottom:12px;">
           <input type="checkbox" id="cardioDone" style="width:20px; height:20px; accent-color:var(--emerald);" onchange="saveState()">
           <span id="cardioText">Cardio Pós-Treino Concluído</span>
         </label>
-        <div style="display:grid; grid-template-columns:1fr 1.3fr; gap:8px;">
-          <button class="btn-outline" onclick="resetCurrentChecks()">Desmarcar</button>
-          <button class="btn-primary" onclick="finishWorkoutSession()">✓ Salvar & Ir p/ Próximo</button>
+        <div style="display:grid; grid-template-columns:1fr 1.5fr; gap:8px;">
+          <button class="btn-outline" onclick="resetCurrentChecks()">Reiniciar</button>
+          <button class="btn-primary" id="finishBtnLabel" onclick="finishWorkoutSession()">✓ Finalizar Treino</button>
         </div>
       </div>
     </section>
 
-    <!-- ABA 2: PROPORÇÃO ÁUREA V-TAPER (68kg / 109cm / 82cm) -->
+    <!-- ABA 2: PROPORÇÃO ÁUREA V-TAPER -->
     <section id="tab-vtaper" class="tab-view">
       <div class="card">
         <div class="card-header">
@@ -391,11 +506,9 @@
         </div>
 
         <div id="vtaperDiagnosis" style="font-size:12px; color:var(--muted); background:var(--card-2); padding:10px; border-radius:10px; border:1px solid var(--border); margin-bottom:10px;"></div>
-
         <button class="btn-primary" onclick="logBodyMeasure()">📌 Registrar Medição na Linha do Tempo</button>
       </div>
 
-      <!-- Histórico de Medições Ombros vs Cintura -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -407,9 +520,8 @@
       </div>
     </section>
 
-    <!-- ABA 3: CALCULADORA DE DIETA (2.165 KCAL) & SUPLEMENTOS -->
+    <!-- ABA 3: DIETA & SUPLEMENTOS -->
     <section id="tab-diet" class="tab-view">
-      <!-- Stack Diário de Suplementação -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -421,7 +533,6 @@
         <div class="supp-grid" id="suppGrid"></div>
       </div>
 
-      <!-- Anéis Neon & Metas Calóricas -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -431,7 +542,6 @@
           <button class="icon-btn" style="border-color:var(--emerald); color:var(--emerald);" onclick="loadSampleDiet()">⚡ Cardápio 2165 kcal</button>
         </div>
 
-        <!-- 3 Anéis Estilo Apple Fitness -->
         <div class="rings-grid" id="nutritionRings"></div>
 
         <div class="grid-3">
@@ -504,7 +614,6 @@
         </div>
       </div>
 
-      <!-- Controle de Hidratação -->
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
           <div>
@@ -520,7 +629,6 @@
         </div>
       </div>
 
-      <!-- Planejador das 5 Refeições -->
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">Diário de Refeições</h3>
@@ -606,7 +714,7 @@
 
   </main>
 
-  <!-- MODAL DE ANIMAÇÃO BIOMECÂNICA -->
+  <!-- MODAL DE ANIMAÇÃO BIOMECÂNICA (PARA O MODO BOLINHAS / DICAS) -->
   <div class="modal-backdrop" id="animModal" onclick="if(event.target===this) closeAnimModal()">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -685,7 +793,7 @@
     </div>
   </div>
 
-  <!-- NAVEGAÇÃO INFERIOR (5 ABAS) -->
+  <!-- NAVEGAÇÃO INFERIOR -->
   <nav class="bottom-nav">
     <button class="nav-item active" data-tab="workout" onclick="switchTab('workout')">
       <span class="nav-icon">🏋️</span><span>Treinos</span>
@@ -705,10 +813,11 @@
   </nav>
 
   <script>
-    // BANCO DE DADOS DOS 23 EXERCÍCIOS
+    const WORKOUT_ORDER = ["A", "B", "C", "D"];
+
     const WORKOUT_DB = {
       A: {
-        tag: "TREINO A", name: "Superiores — Força & Expansão", sub: "Peitoral, Largura de Dorsal e Topo de Ombro",
+        tag: "TREINO A", short: "Sup. Força", name: "Superiores — Força & Expansão", sub: "Peitoral, Largura de Dorsal e Topo de Ombro",
         cardio: "15 min HIIT Pós-Treino (30s Sprint Forte / 60s Leve)",
         exercises: [
           { id:"a1", name:"1. Supino Reto (Barra ou Halteres)", target:"Peitoral Maior & Tríceps", sets:4, reps:"6-8", topRep:8, bar:true, rest:90, equip:"Banco Reto + Barra",
@@ -738,7 +847,7 @@
         ]
       },
       B: {
-        tag: "TREINO B", name: "Inferiores — Força & Base", sub: "Quadríceps, Panturrilha e Pegada Tática",
+        tag: "TREINO B", short: "Inf. Base", name: "Inferiores — Força & Base", sub: "Quadríceps, Panturrilha e Pegada Tática",
         cardio: "20 min Cardio Moderado (Caminhada Inclinada ou Bike)",
         exercises: [
           { id:"b1", name:"1. Agachamento Livre com Barra", target:"Quadríceps, Glúteos & Core", sets:4, reps:"6-8", topRep:8, bar:true, rest:120, equip:"Gaiola + Barra Olímpica",
@@ -764,7 +873,7 @@
         ]
       },
       C: {
-        tag: "TREINO C", name: "Superiores — Hipertrofia V-Taper", sub: "Peitoral Clavicular, Dorsal e Ombros 3D",
+        tag: "TREINO C", short: "V-Taper", name: "Superiores — Hipertrofia V-Taper", sub: "Peitoral Clavicular, Dorsal e Ombros 3D",
         cardio: "15 min HIIT Pós-Treino (Esteira ou Bike)",
         exercises: [
           { id:"c1", name:"1. Supino Inclinado com Halteres (30°)", target:"Peitoral Superior (Clavicular)", sets:4, reps:"8-12", topRep:12, bar:false, rest:90, equip:"Banco Inclinado 30° + Halteres",
@@ -794,7 +903,7 @@
         ]
       },
       D: {
-        tag: "TREINO D", name: "Inferiores — Posterior & Core", sub: "Posterior de Coxa, Glúteos e Cintura Compacta",
+        tag: "TREINO D", short: "Post. & Core", name: "Inferiores — Posterior & Core", sub: "Posterior de Coxa, Glúteos e Cintura Compacta",
         cardio: "20 min Cardio Moderado (Esteira Inclinada ou Escada)",
         exercises: [
           { id:"d1", name:"1. Levantamento Terra Romeno / Stiff", target:"Posterior de Coxa, Glúteos & Lombar", sets:4, reps:"6-8", topRep:8, bar:true, rest:120, equip:"Barra Olímpica (Dobradiça)",
@@ -821,17 +930,15 @@
       }
     };
 
-    // STACK DIÁRIO DE SUPLEMENTOS
     const SUPPLEMENTS_DB = [
-      { id:"s1", name:"Creatina (5g)", time:"Pós-Treino / Qualquer horário" },
-      { id:"s2", name:"Vitamina D3 + K2", time:"Manhã / Almoço (c/ gordura)" },
+      { id:"s1", name:"Creatina (5g)", time:"Pós-Treino / Diário" },
+      { id:"s2", name:"Vitamina D3 + K2", time:"Manhã / Almoço" },
       { id:"s3", name:"Ômega 3", time:"Almoço ou Jantar" },
       { id:"s4", name:"Maca Peruana", time:"Manhã / Pré-Treino" },
       { id:"s5", name:"Ashwagandha", time:"Fim de Tarde / Noite" },
-      { id:"s6", name:"Zinco + Magnésio Malato", time:"Antes de Dormir / Manhã" }
+      { id:"s6", name:"Zinco + Magnésio", time:"Antes de Dormir" }
     ];
 
-    // BANCO DE ALIMENTOS TACO & REGIONAIS BR
     const DEFAULT_FOODS = [
       { id:"f1", name:"Cuscuz de Milho Cozido", base:100, unit:"g", kcal:113, p:2.2, c:25.3, f:0.7 },
       { id:"f2", name:"Banana da Terra Cozida", base:100, unit:"g", kcal:128, p:1.0, c:33.5, f:0.2 },
@@ -861,46 +968,61 @@
       { id:"m5", label:"🌙 Jantar" }
     ];
 
-    // ESTADO DO APP UNIFICADO V4 (ATUALIZADO PARA 68KG, 109 OMBROS, 82 CINTURA)
-    const STORAGE_KEY = "vtaper_superapp_state_v4";
+    const STORAGE_KEY = "vtaper_superapp_state_v5";
+    const LEGACY_KEY_V4 = "vtaper_superapp_state_v4";
+
     let state = {
       activeWorkout: "A",
+      viewMode: "player", // 'player' | 'accordion'
+      activeExIdx: 0,
+      selectedSetIdx: 0,
+      lastCompleted: { workout: null, dateISO: null, dateBR: null },
+      lastActivityDateISO: null,
       sound: true,
       measures: { weight: 68, height: 170, chest: 94, shoulders: 109, waist: 82 },
-      measureLogs: [
-        { date: "Inicial", weight: 68, shoulders: 109, waist: 82, ratio: "1.329" }
-      ],
+      measureLogs: [{ date: "Inicial", weight: 68, shoulders: 109, waist: 82, ratio: "1.329" }],
       sets: {},
       cardio: { A:false, B:false, C:false, D:false },
       history: [],
       supplements: { s1:false, s2:false, s3:false, s4:false, s5:false, s6:false },
       diet: {
-        age: 25,
-        protPerKg: 2.2,
-        fatPerKg: 0.9,
-        activity: 1.55,
-        goalDelta: -350,
-        activeMeal: "m1",
-        waterMl: 0,
+        age: 25, protPerKg: 2.2, fatPerKg: 0.9, activity: 1.55, goalDelta: -350,
+        activeMeal: "m1", waterMl: 0,
         meals: { m1:[], m2:[], m3:[], m4:[], m5:[] },
         customFoods: []
       }
     };
 
+    function getTodayISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    }
+
+    function getNextWorkoutKey(key) {
+      const idx = WORKOUT_ORDER.indexOf(key);
+      return WORKOUT_ORDER[(idx === -1 ? 0 : idx + 1) % WORKOUT_ORDER.length];
+    }
+
+    function hasAnySetDoneInWorkout(wkKey) {
+      return WORKOUT_DB[wkKey].exercises.some(ex => (state.sets[ex.id] || []).some(s => s.d));
+    }
+
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY_V4);
         if (raw) {
           const parsed = JSON.parse(raw);
           state = {
             ...state,
             ...parsed,
+            lastCompleted: { ...state.lastCompleted, ...(parsed.lastCompleted || {}) },
             measures: { ...state.measures, ...(parsed.measures || {}) },
             supplements: { ...state.supplements, ...(parsed.supplements || {}) },
             diet: { ...state.diet, ...(parsed.diet || {}), meals: { ...state.diet.meals, ...((parsed.diet && parsed.diet.meals) || {}) } }
           };
         }
       } catch (e) {}
+
       Object.keys(WORKOUT_DB).forEach(wk => {
         WORKOUT_DB[wk].exercises.forEach(ex => {
           if (!state.sets[ex.id]) {
@@ -908,6 +1030,23 @@
           }
         });
       });
+
+      // MEMÓRIA INTELIGENTE DE PRÓXIMO DIA:
+      // Se já é um novo dia após o último treino salvo e o usuário ainda não iniciou outro hoje,
+      // garante automaticamente o próximo treino da sequência (A -> B -> C -> D -> A).
+      const todayISO = getTodayISO();
+      if (state.lastCompleted && state.lastCompleted.workout && state.lastCompleted.dateISO !== todayISO) {
+        const expectedNext = getNextWorkoutKey(state.lastCompleted.workout);
+        const alreadyStartedToday = state.lastActivityDateISO === todayISO && hasAnySetDoneInWorkout(state.activeWorkout);
+        if (!alreadyStartedToday && state.activeWorkout !== expectedNext) {
+          state.activeWorkout = expectedNext;
+          state.activeExIdx = 0;
+          state.selectedSetIdx = 0;
+        }
+      }
+      // Garante índice válido
+      const maxEx = WORKOUT_DB[state.activeWorkout].exercises.length - 1;
+      if (state.activeExIdx > maxEx || state.activeExIdx < 0) state.activeExIdx = 0;
     }
 
     function saveState() {
@@ -917,11 +1056,8 @@
       updateStatsHeader();
     }
 
-    // VIBRAÇÃO TÁTIL + BEEP
     function vibrate(pattern = 35) {
-      if (navigator.vibrate) {
-        try { navigator.vibrate(pattern); } catch (e) {}
-      }
+      if (navigator.vibrate) { try { navigator.vibrate(pattern); } catch (e) {} }
     }
 
     function playBeep(freq = 880, dur = 0.15) {
@@ -947,12 +1083,11 @@
       saveState();
     }
 
-    // WAKE LOCK (MANTER TELA ACESA NA ACADEMIA)
     let wakeLockSentinel = null;
     async function toggleWakeLock() {
       const btn = document.getElementById("wakeBtn");
       if (!("wakeLock" in navigator)) {
-        alert("Seu navegador não suporta bloqueio de tela ativo.");
+        alert("Seu navegador não suporta trava de tela ativa.");
         return;
       }
       try {
@@ -968,12 +1103,17 @@
       } catch (e) {}
     }
 
+    let currentTab = "workout";
     function switchTab(tabId) {
+      currentTab = tabId;
       document.querySelectorAll(".tab-view").forEach(el => el.classList.remove("active"));
       document.getElementById("tab-" + tabId).classList.add("active");
       document.querySelectorAll(".nav-item").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.tab === tabId);
       });
+      if (tabId === "workout") renderWorkoutView();
+      else stopInlinePlayerAnim();
+
       if (tabId === "vtaper") updateVTaper();
       if (tabId === "diet") renderDietView();
       if (tabId === "ai") renderAIAnalytics();
@@ -986,99 +1126,446 @@
     }
 
     function selectWorkoutFromDrawer(wk) {
-      state.activeWorkout = wk;
-      saveState();
-      renderWorkoutView();
+      selectWorkout(wk);
       switchTab("workout");
       toggleDrawer(false);
     }
 
-    // TREINOS A B C D + SOBRECARGA PROGRESSIVA
+    function setViewMode(mode) {
+      state.viewMode = mode;
+      vibrate(25);
+      saveState();
+      renderWorkoutView();
+    }
+
+    function selectWorkout(wk) {
+      state.activeWorkout = wk;
+      state.activeExIdx = 0;
+      state.selectedSetIdx = getFirstUndoneSetIdx(WORKOUT_DB[wk].exercises[0].id);
+      saveState();
+      renderWorkoutView();
+    }
+
+    function getFirstUndoneSetIdx(exId) {
+      const sets = state.sets[exId] || [];
+      const idx = sets.findIndex(s => !s.d);
+      return idx === -1 ? Math.max(0, sets.length - 1) : idx;
+    }
+
+    function isExerciseAllDone(exId) {
+      const sets = state.sets[exId] || [];
+      return sets.length > 0 && sets.every(s => s.d);
+    }
+
+    // RENDERIZAR ABA TREINOS (MODO PLAYER OU MODO BOLINHAS)
+    let playerTipsOpen = false;
     function renderWorkoutView() {
       const wkKey = state.activeWorkout;
       const wk = WORKOUT_DB[wkKey];
+      const nextKey = getNextWorkoutKey(wkKey);
 
-      const selHtml = Object.keys(WORKOUT_DB).map(k => {
+      // Banner de Memória do Último Treino
+      const memEl = document.getElementById("lastWkBanner");
+      if (state.lastCompleted && state.lastCompleted.workout) {
+        const lastW = state.lastCompleted.workout;
+        const expected = getNextWorkoutKey(lastW);
+        memEl.innerHTML = `
+          <span>🧠 Último concluído: <strong>TREINO ${lastW}</strong> (${state.lastCompleted.dateBR})</span>
+          <span class="badge" style="font-size:9px;">Fila: TREINO ${expected}</span>
+        `;
+      } else {
+        memEl.innerHTML = `
+          <span>🧠 Rotação automática ativa: <strong>A → B → C → D</strong></span>
+          <span class="badge" style="font-size:9px;">Auto-Next ON</span>
+        `;
+      }
+
+      // Faixa A B C D
+      document.getElementById("wkSelector").innerHTML = WORKOUT_ORDER.map(k => {
         const item = WORKOUT_DB[k];
-        const active = k === wkKey ? "active" : "";
-        return `<button class="wk-btn ${active}" onclick="selectWorkout('${k}')">
-          <div class="wk-btn-tag">${item.tag}</div>
-          <div class="wk-btn-name">${item.name.split("—")[1]}</div>
-          <div class="wk-btn-sub">${item.exercises.length} exercícios</div>
+        return `<button class="wk-chip ${k === wkKey ? 'active' : ''}" onclick="selectWorkout('${k}')">
+          <div class="wk-chip-letter">${k}</div>
+          <div class="wk-chip-label">${item.short}</div>
         </button>`;
       }).join("");
-      document.getElementById("wkSelector").innerHTML = selHtml;
 
-      document.getElementById("wkBanner").innerHTML = `
-        <span class="badge">${wk.tag} • ATIVO HOJE</span>
-        <h2 class="card-title" style="margin-top:6px;">${wk.name}</h2>
-        <p style="font-size:12px; color:var(--muted); margin-top:2px;">${wk.sub}</p>
-        <div style="margin-top:8px; padding:8px 10px; border-radius:8px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); font-size:12px; color:#fbbf24; font-weight:700;">
-          🔥 ${wk.cardio}
-        </div>
-      `;
-
+      document.getElementById("wkTitleLine").textContent = `${wk.tag} • ${wk.name.split("—")[1].trim()}`;
       document.getElementById("cardioText").textContent = wk.cardio;
       document.getElementById("cardioDone").checked = !!state.cardio[wkKey];
+      document.getElementById("finishBtnLabel").textContent = `✓ Finalizar ${wkKey} → Próximo: ${nextKey}`;
 
-      const exHtml = wk.exercises.map(ex => {
-        const sets = state.sets[ex.id];
-        let best1RM = 0, exVol = 0, doneCount = 0, hitTopRepsAll = true;
+      document.getElementById("modePlayerBtn").classList.toggle("active", state.viewMode === "player");
+      document.getElementById("modeAccBtn").classList.toggle("active", state.viewMode === "accordion");
 
-        const rowsHtml = sets.map((s, idx) => {
-          const w = parseFloat(s.w) || 0;
-          const r = parseInt(s.r) || 0;
-          const rm = Math.round(w * (1 + r / 30));
-          if (rm > best1RM) best1RM = rm;
-          if (s.d) { exVol += w * r; doneCount++; }
-          if (!s.d || r < (ex.topRep || 10)) hitTopRepsAll = false;
+      if (state.viewMode === "player") {
+        renderPlayerMode(wkKey, wk);
+      } else {
+        stopInlinePlayerAnim();
+        renderAccordionMode(wkKey, wk);
+      }
 
-          return `<div class="set-row">
-            <div class="set-num">#${idx + 1}</div>
-            <input type="number" inputmode="decimal" class="num-input" value="${s.w}" onchange="updateSet('${ex.id}', ${idx}, 'w', this.value)">
-            <input type="number" inputmode="numeric" class="num-input" value="${s.r}" onchange="updateSet('${ex.id}', ${idx}, 'r', this.value)">
-            <button class="check-btn ${s.d ? 'done' : ''}" onclick="toggleSetDone('${ex.id}', ${idx}, ${ex.rest})">✓</button>
-          </div>`;
-        }).join("");
+      updateStatsHeader();
+    }
 
-        const prHtml = hitTopRepsAll ? `
-          <div class="pr-banner">
-            <span>🏆 Topo da faixa atingido! Subir +2 kg na próxima sessão.</span>
-            <button class="rest-btn" style="padding:3px 7px; font-size:11px; border-color:var(--amber); color:var(--amber);" onclick="bumpExerciseWeight('${ex.id}', 2)">+2 kg</button>
-          </div>` : "";
+    // MODO 1: PLAYER IMERSIVO DE FOCO ÚNICO
+    function renderPlayerMode(wkKey, wk) {
+      const exList = wk.exercises;
+      if (state.activeExIdx >= exList.length) state.activeExIdx = 0;
+      const ex = exList[state.activeExIdx];
+      const sets = state.sets[ex.id];
+      if (state.selectedSetIdx >= sets.length || state.selectedSetIdx < 0) {
+        state.selectedSetIdx = getFirstUndoneSetIdx(ex.id);
+      }
+      const curSet = sets[state.selectedSetIdx];
+      const allExDone = isExerciseAllDone(ex.id);
+      const hitTopRepsAll = allExDone && sets.every(s => (parseInt(s.r) || 0) >= (ex.topRep || 10));
+      const allWorkoutDone = exList.every(e => isExerciseAllDone(e.id));
 
-        const firstWeight = sets[0] ? sets[0].w : 60;
-        const plateBtnHtml = ex.bar ? `<button class="plate-trigger-btn" onclick="openPlateModal(${firstWeight})">🏋️ Anilhas</button>` : "";
+      const dotsHtml = exList.map((item, i) => {
+        const cls = i === state.activeExIdx ? "current" : (isExerciseAllDone(item.id) ? "done" : "");
+        return `<div class="p-dot ${cls}" onclick="jumpToExercise(${i})" title="${item.name}"></div>`;
+      }).join("");
 
-        return `<div class="card">
-          <div class="card-header">
-            <div>
-              <span class="badge">${ex.target}</span>
-              <h3 class="card-title" style="margin-top:5px;">${ex.name}</h3>
-            </div>
-            <span class="badge badge-cyan">${ex.sets}x ${ex.reps}</span>
-          </div>
-          ${prHtml}
-          <div class="ex-btn-row">
-            <button class="anim-trigger-btn" onclick="openAnimModal('${wkKey}', '${ex.id}')">
-              🎬 Execução & Biomecânica
-            </button>
-            ${plateBtnHtml}
-          </div>
-          <div class="set-header">
-            <div>Série</div><div>Carga (kg)</div><div>Reps</div><div>Feito</div>
-          </div>
-          ${rowsHtml}
-          <div class="ex-footer">
-            <span>Séries: <strong>${doneCount}/${sets.length}</strong></span>
-            <span>1RM Est.: <strong style="color:var(--cyan);">${best1RM} kg</strong></span>
-            <span>Volume: <strong style="color:var(--emerald);">${exVol} kg</strong></span>
-          </div>
+      const bubblesHtml = sets.map((s, idx) => {
+        const cls = `${s.d ? 'done' : ''} ${idx === state.selectedSetIdx ? 'selected' : ''}`;
+        return `<div class="set-bubble ${cls}" onclick="selectPlayerSet(${idx})">
+          <div class="bubble-top">S${idx + 1} ${s.d ? '✓' : ''}</div>
+          <div class="bubble-main">${s.w}kg</div>
+          <div class="bubble-sub">× ${s.r}</div>
         </div>`;
       }).join("");
 
-      document.getElementById("exerciseList").innerHTML = exHtml;
-      updateStatsHeader();
+      const prHtml = hitTopRepsAll ? `
+        <div class="pr-banner">
+          <span>🏆 Meta batida! Subir +2 kg p/ próxima semana.</span>
+          <button class="rest-btn" style="padding:3px 7px; font-size:11px; border-color:var(--amber); color:var(--amber);" onclick="bumpExerciseWeight('${ex.id}', 2)">+2 kg</button>
+        </div>` : "";
+
+      let actionBtnHtml = "";
+      if (allWorkoutDone) {
+        actionBtnHtml = `<button class="btn-giant" onclick="finishWorkoutSession()">🏆 TREINO COMPLETO! SALVAR & IR P/ ${getNextWorkoutKey(wkKey)}</button>`;
+      } else if (allExDone) {
+        const nextExIdx = (state.activeExIdx + 1) % exList.length;
+        actionBtnHtml = `<button class="btn-giant" style="background:linear-gradient(135deg, #06b6d4, #0284c7); color:#fff;" onclick="jumpToExercise(${nextExIdx})">➡️ EXERCÍCIO CONCLUÍDO! IR PARA O PRÓXIMO</button>`;
+      } else {
+        const nextUndone = getFirstUndoneSetIdx(ex.id);
+        const targetIdx = !curSet.d ? state.selectedSetIdx : nextUndone;
+        actionBtnHtml = `<button class="btn-giant" onclick="completePlayerSet('${ex.id}', ${targetIdx}, ${ex.rest})">
+          🔥 CONCLUIR SÉRIE ${targetIdx + 1} (${sets[targetIdx].w}kg × ${sets[targetIdx].r}) & DESCANSAR ${ex.rest}s
+        </button>`;
+      }
+
+      const tipsHtml = playerTipsOpen ? `
+        <div style="background:var(--card-2); border:1px solid var(--border); border-radius:10px; padding:10px; margin-bottom:10px;">
+          <div style="font-size:11px; font-weight:800; color:var(--emerald); margin-bottom:4px;">Execução Perfeita:</div>
+          <ul class="step-list" style="margin:0 0 6px;">${ex.steps.map(s => `<li>${s}</li>`).join("")}</ul>
+          <div style="font-size:11px; color:#f87171;"><strong>Evitar:</strong> ${ex.mistake}</div>
+          <a href="https://www.youtube.com/results?search_query=como+fazer+${encodeURIComponent(ex.name)}" target="_blank" style="display:inline-block; margin-top:6px; font-size:11px; color:var(--cyan); font-weight:700; text-decoration:none;">▶ Abrir vídeo no YouTube ↗</a>
+        </div>` : "";
+
+      const stepW = ex.bar ? 2 : 1;
+
+      document.getElementById("workoutContentArea").innerHTML = `
+        <div class="card" style="padding:14px;">
+          <div class="player-nav">
+            <button class="icon-btn" onclick="stepExercise(-1)">◀</button>
+            <div class="player-dots">${dotsHtml}</div>
+            <button class="icon-btn" onclick="stepExercise(1)">▶</button>
+          </div>
+
+          <div class="card-header" style="margin-bottom:6px;">
+            <div>
+              <span class="badge">${ex.target}</span>
+              <h3 class="card-title" style="margin-top:4px; font-size:16px;">${ex.name}</h3>
+            </div>
+            <span class="badge badge-cyan">${ex.sets}x ${ex.reps}</span>
+          </div>
+
+          <!-- Palco Biomecânico 60 FPS Ao Vivo -->
+          <div class="player-stage">
+            <div class="phase-pill" id="playerPhasePill">Concêntrica</div>
+            <div class="stage-tools">
+              <button class="mini-pill-btn" onclick="togglePlayerSpeed()">${inlineAnimSpeed === 1 ? '1x' : '0.5x'}</button>
+              <button class="mini-pill-btn" onclick="togglePlayerTips()">${playerTipsOpen ? '▲ Dicas' : 'ℹ️ Dicas'}</button>
+              ${ex.bar ? `<button class="mini-pill-btn" style="color:#fbbf24; border-color:rgba(245,158,11,0.4);" onclick="openPlateModal(${curSet.w})">🏋️ Anilhas</button>` : ''}
+            </div>
+            <div class="equip-pill">${ex.equip}</div>
+            <svg id="playerBiomechSvg" width="240" height="185" viewBox="0 0 250 205"></svg>
+          </div>
+
+          ${tipsHtml}
+          ${prHtml}
+
+          <!-- Cronômetro de Descanso Integrado no Player -->
+          <div class="player-rest-banner ${restRemaining > 0 ? 'active' : ''}" id="playerRestBanner">
+            <div>
+              <div style="font-size:10px; font-weight:800; color:var(--cyan); text-transform:uppercase;">⏳ Descansando para próxima série</div>
+              <div style="font-size:20px; font-weight:900; color:var(--text);" id="playerRestClock">${formatRestClock(restRemaining)}</div>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="rest-btn" onclick="addRestSeconds(15)">+15s</button>
+              <button class="rest-btn stop" onclick="stopRest()">Pular</button>
+            </div>
+          </div>
+
+          <!-- Bolinhas de Séries do Exercício -->
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); font-weight:700;">
+            <span>Séries (toque p/ selecionar ou editar):</span>
+            <span style="color:var(--cyan);">Editando S${state.selectedSetIdx + 1}</span>
+          </div>
+          <div class="bubbles-row">${bubblesHtml}</div>
+
+          <!-- Controles Grandes (- / +) para a Série Selecionada -->
+          <div class="stepper-grid">
+            <div class="stepper-box">
+              <div class="stepper-label">Carga (kg) • S${state.selectedSetIdx + 1}</div>
+              <div class="stepper-controls">
+                <button class="step-btn" onclick="stepSetValue('${ex.id}', ${state.selectedSetIdx}, 'w', -${stepW})">−</button>
+                <input type="number" inputmode="decimal" class="step-input" value="${curSet.w}" onchange="updateSet('${ex.id}', ${state.selectedSetIdx}, 'w', this.value)">
+                <button class="step-btn" onclick="stepSetValue('${ex.id}', ${state.selectedSetIdx}, 'w', ${stepW})">+</button>
+              </div>
+            </div>
+            <div class="stepper-box">
+              <div class="stepper-label">Repetições • S${state.selectedSetIdx + 1}</div>
+              <div class="stepper-controls">
+                <button class="step-btn" onclick="stepSetValue('${ex.id}', ${state.selectedSetIdx}, 'r', -1)">−</button>
+                <input type="number" inputmode="numeric" class="step-input" style="color:var(--cyan);" value="${curSet.r}" onchange="updateSet('${ex.id}', ${state.selectedSetIdx}, 'r', this.value)">
+                <button class="step-btn" onclick="stepSetValue('${ex.id}', ${state.selectedSetIdx}, 'r', 1)">+</button>
+              </div>
+            </div>
+          </div>
+
+          ${actionBtnHtml}
+
+          ${curSet.d ? `<button class="btn-outline" style="margin-top:8px; padding:8px; font-size:12px; color:#f87171;" onclick="uncheckSet('${ex.id}', ${state.selectedSetIdx})">↩ Desmarcar Série ${state.selectedSetIdx + 1}</button>` : ''}
+        </div>
+      `;
+
+      startInlinePlayerAnim(ex.id);
+    }
+
+    // MODO 2: ACORDEÃO INTELIGENTE COM BOLINHAS
+    function renderAccordionMode(wkKey, wk) {
+      const html = wk.exercises.map((ex, idx) => {
+        const sets = state.sets[ex.id];
+        const doneCount = sets.filter(s => s.d).length;
+        const allDone = doneCount === sets.length;
+        const isOpen = idx === state.activeExIdx;
+        const hitTopRepsAll = allDone && sets.every(s => (parseInt(s.r) || 0) >= (ex.topRep || 10));
+
+        let bodyHtml = "";
+        if (isOpen) {
+          const selIdx = (state.selectedSetIdx >= 0 && state.selectedSetIdx < sets.length) ? state.selectedSetIdx : getFirstUndoneSetIdx(ex.id);
+          const curSet = sets[selIdx];
+          const stepW = ex.bar ? 2 : 1;
+
+          const bubblesHtml = sets.map((s, sIdx) => `
+            <div class="set-bubble ${s.d ? 'done' : ''} ${sIdx === selIdx ? 'selected' : ''}" onclick="tapAccordionBubble('${ex.id}', ${idx}, ${sIdx}, ${ex.rest})">
+              <div class="bubble-top">S${sIdx + 1} ${s.d ? '✓' : ''}</div>
+              <div class="bubble-main">${s.w}kg</div>
+              <div class="bubble-sub">× ${s.r}</div>
+            </div>
+          `).join("");
+
+          const prHtml = hitTopRepsAll ? `
+            <div class="pr-banner" style="margin-top:10px;">
+              <span>🏆 Meta batida! Subir +2 kg p/ próxima.</span>
+              <button class="rest-btn" style="padding:3px 7px; font-size:11px; border-color:var(--amber); color:var(--amber);" onclick="bumpExerciseWeight('${ex.id}', 2)">+2 kg</button>
+            </div>` : "";
+
+          bodyHtml = `
+            <div class="acc-body">
+              ${prHtml}
+              <div style="font-size:11px; color:var(--muted); margin-top:10px;">
+                Toque na bolinha para marcar como feita • Ajuste a carga abaixo:
+              </div>
+              <div class="bubbles-row">${bubblesHtml}</div>
+
+              <div class="stepper-grid" style="margin-bottom:8px;">
+                <div class="stepper-box" style="padding:6px;">
+                  <div class="stepper-label">Peso S${selIdx + 1} (kg)</div>
+                  <div class="stepper-controls">
+                    <button class="step-btn" style="width:30px;height:30px;font-size:16px;" onclick="stepSetValue('${ex.id}', ${selIdx}, 'w', -${stepW})">−</button>
+                    <input type="number" inputmode="decimal" class="step-input" style="font-size:16px;width:48px;" value="${curSet.w}" onchange="updateSet('${ex.id}', ${selIdx}, 'w', this.value)">
+                    <button class="step-btn" style="width:30px;height:30px;font-size:16px;" onclick="stepSetValue('${ex.id}', ${selIdx}, 'w', ${stepW})">+</button>
+                  </div>
+                </div>
+                <div class="stepper-box" style="padding:6px;">
+                  <div class="stepper-label">Reps S${selIdx + 1}</div>
+                  <div class="stepper-controls">
+                    <button class="step-btn" style="width:30px;height:30px;font-size:16px;" onclick="stepSetValue('${ex.id}', ${selIdx}, 'r', -1)">−</button>
+                    <input type="number" inputmode="numeric" class="step-input" style="font-size:16px;width:48px;color:var(--cyan);" value="${curSet.r}" onchange="updateSet('${ex.id}', ${selIdx}, 'r', this.value)">
+                    <button class="step-btn" style="width:30px;height:30px;font-size:16px;" onclick="stepSetValue('${ex.id}', ${selIdx}, 'r', 1)">+</button>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex; gap:5px; justify-content:center; margin-bottom:8px;">
+                ${sets.map((_, sIdx) => `<button class="mini-pill-btn" style="${sIdx===selIdx ? 'border-color:var(--cyan);color:var(--cyan);' : ''}" onclick="selectPlayerSet(${sIdx})">Editar S${sIdx+1}</button>`).join("")}
+              </div>
+
+              <div class="ex-btn-row">
+                <button class="anim-trigger-btn" onclick="openAnimModal('${wkKey}', '${ex.id}')">🎬 Ver Biomecânica</button>
+                ${ex.bar ? `<button class="plate-trigger-btn" onclick="openPlateModal(${curSet.w})">🏋️ Anilhas</button>` : ''}
+              </div>
+            </div>
+          `;
+        }
+
+        return `<div class="acc-card ${isOpen ? 'open' : ''} ${allDone ? 'all-done' : ''}">
+          <div class="acc-head" onclick="toggleAccordionExercise(${idx})">
+            <div style="flex:1;">
+              <div style="font-size:10px; font-weight:800; color:${allDone ? 'var(--emerald)' : 'var(--cyan)'}; text-transform:uppercase;">${ex.target}</div>
+              <div style="font-size:14px; font-weight:800; margin-top:2px;">${ex.name}</div>
+            </div>
+            <div class="acc-status ${allDone ? 'done' : ''}">
+              ${allDone ? '✅ FEITO' : `${doneCount}/${sets.length}`} ${isOpen ? '▲' : '▼'}
+            </div>
+          </div>
+          ${bodyHtml}
+        </div>`;
+      }).join("");
+
+      document.getElementById("workoutContentArea").innerHTML = html;
+    }
+
+    // INTERAÇÕES DO PLAYER & BOLINHAS
+    function stepExercise(delta) {
+      const len = WORKOUT_DB[state.activeWorkout].exercises.length;
+      state.activeExIdx = (state.activeExIdx + delta + len) % len;
+      const ex = WORKOUT_DB[state.activeWorkout].exercises[state.activeExIdx];
+      state.selectedSetIdx = getFirstUndoneSetIdx(ex.id);
+      playerTipsOpen = false;
+      vibrate(20);
+      saveState();
+      renderWorkoutView();
+    }
+
+    function jumpToExercise(idx) {
+      state.activeExIdx = idx;
+      const ex = WORKOUT_DB[state.activeWorkout].exercises[idx];
+      state.selectedSetIdx = getFirstUndoneSetIdx(ex.id);
+      playerTipsOpen = false;
+      vibrate(20);
+      saveState();
+      renderWorkoutView();
+    }
+
+    function toggleAccordionExercise(idx) {
+      state.activeExIdx = (state.activeExIdx === idx) ? -1 : idx;
+      if (state.activeExIdx >= 0) {
+        const ex = WORKOUT_DB[state.activeWorkout].exercises[idx];
+        state.selectedSetIdx = getFirstUndoneSetIdx(ex.id);
+      }
+      saveState();
+      renderWorkoutView();
+    }
+
+    function selectPlayerSet(idx) {
+      state.selectedSetIdx = idx;
+      vibrate(18);
+      saveState();
+      renderWorkoutView();
+    }
+
+    function togglePlayerTips() {
+      playerTipsOpen = !playerTipsOpen;
+      renderWorkoutView();
+    }
+
+    function stepSetValue(exId, sIdx, field, delta) {
+      const current = parseFloat(state.sets[exId][sIdx][field]) || 0;
+      const next = Math.max(0, current + delta);
+      state.sets[exId][sIdx][field] = next;
+      // Se ajustou o peso de uma série ainda não feita, replica automaticamente para as próximas séries não feitas para agilizar na academia
+      if (field === 'w') {
+        for (let i = sIdx + 1; i < state.sets[exId].length; i++) {
+          if (!state.sets[exId][i].d) state.sets[exId][i].w = next;
+        }
+      }
+      vibrate(15);
+      saveState();
+      renderWorkoutView();
+    }
+
+    function updateSet(exId, idx, field, val) {
+      state.sets[exId][idx][field] = Math.max(0, parseFloat(val) || 0);
+      saveState();
+      renderWorkoutView();
+    }
+
+    function completePlayerSet(exId, sIdx, restSec) {
+      state.sets[exId][sIdx].d = true;
+      state.lastActivityDateISO = getTodayISO();
+      vibrate(45);
+      playBeep(760, 0.12);
+      startRest(restSec);
+
+      // Avança para a próxima série não feita
+      const nextUndone = state.sets[exId].findIndex(s => !s.d);
+      if (nextUndone !== -1) {
+        state.selectedSetIdx = nextUndone;
+      } else {
+        // Exercício completo! Se houver próximo exercício incompleto, avança após 650ms
+        const exList = WORKOUT_DB[state.activeWorkout].exercises;
+        const nextEx = exList.findIndex((e, i) => i > state.activeExIdx && !isExerciseAllDone(e.id));
+        if (nextEx !== -1) {
+          saveState();
+          renderWorkoutView();
+          setTimeout(() => {
+            state.activeExIdx = nextEx;
+            state.selectedSetIdx = getFirstUndoneSetIdx(exList[nextEx].id);
+            saveState();
+            renderWorkoutView();
+          }, 650);
+          return;
+        }
+      }
+      saveState();
+      renderWorkoutView();
+    }
+
+    function uncheckSet(exId, sIdx) {
+      state.sets[exId][sIdx].d = false;
+      vibrate(25);
+      saveState();
+      renderWorkoutView();
+    }
+
+    function tapAccordionBubble(exId, exIdx, sIdx, restSec) {
+      const wasDone = state.sets[exId][sIdx].d;
+      state.sets[exId][sIdx].d = !wasDone;
+      state.lastActivityDateISO = getTodayISO();
+      vibrate(35);
+
+      if (!wasDone) {
+        playBeep(760, 0.1);
+        startRest(restSec);
+        const nextUndone = state.sets[exId].findIndex(s => !s.d);
+        if (nextUndone !== -1) {
+          state.selectedSetIdx = nextUndone;
+        } else {
+          // Fecha este exercício e abre o próximo automaticamente!
+          const exList = WORKOUT_DB[state.activeWorkout].exercises;
+          const nextEx = exList.findIndex((e, i) => i > exIdx && !isExerciseAllDone(e.id));
+          if (nextEx !== -1) {
+            saveState();
+            renderWorkoutView();
+            setTimeout(() => {
+              state.activeExIdx = nextEx;
+              state.selectedSetIdx = getFirstUndoneSetIdx(exList[nextEx].id);
+              saveState();
+              renderWorkoutView();
+            }, 450);
+            return;
+          }
+        }
+      } else {
+        state.selectedSetIdx = sIdx;
+      }
+
+      saveState();
+      renderWorkoutView();
     }
 
     function bumpExerciseWeight(exId, delta) {
@@ -1086,27 +1573,6 @@
       vibrate(50);
       saveState();
       renderWorkoutView();
-    }
-
-    function selectWorkout(wk) {
-      state.activeWorkout = wk;
-      saveState();
-      renderWorkoutView();
-    }
-
-    function updateSet(exId, idx, field, val) {
-      state.sets[exId][idx][field] = parseFloat(val) || 0;
-      saveState();
-      renderWorkoutView();
-    }
-
-    function toggleSetDone(exId, idx, restSec) {
-      const current = state.sets[exId][idx].d;
-      state.sets[exId][idx].d = !current;
-      vibrate(35);
-      saveState();
-      renderWorkoutView();
-      if (!current) startRest(restSec);
     }
 
     function updateStatsHeader() {
@@ -1122,7 +1588,9 @@
         });
       });
       document.getElementById("sessionVolume").textContent = totalVol.toLocaleString("pt-BR") + " kg";
-      document.getElementById("sessionSets").textContent = `${doneSets} / ${totalSets}`;
+      document.getElementById("sessionSets").textContent = `${doneSets}/${totalSets}`;
+      const pct = totalSets ? Math.round((doneSets / totalSets) * 100) : 0;
+      document.getElementById("sessionProgressBar").style.width = pct + "%";
     }
 
     function resetCurrentChecks() {
@@ -1131,11 +1599,13 @@
         state.sets[ex.id].forEach(s => s.d = false);
       });
       state.cardio[state.activeWorkout] = false;
+      state.activeExIdx = 0;
+      state.selectedSetIdx = 0;
       saveState();
       renderWorkoutView();
     }
 
-    // FINALIZAR TREINO E AVANÇAR AUTOMATICAMENTE (A -> B -> C -> D -> A)
+    // FINALIZAR TREINO E MEMORIZAR PARA AVANÇAR NO PRÓXIMO DIA (A -> B -> C -> D -> A)
     function finishWorkoutSession() {
       const currentKey = state.activeWorkout;
       const wk = WORKOUT_DB[currentKey];
@@ -1151,37 +1621,128 @@
       });
 
       if (setsDone === 0) {
-        alert("Marque pelo menos uma série concluída (✓) antes de salvar o treino!");
+        alert("Conclua pelo menos uma série antes de salvar o treino!");
         return;
       }
 
-      const entry = {
-        date: new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" }),
+      const nowBR = new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
+      const dateShortBR = new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit" });
+
+      state.history.unshift({
+        date: nowBR,
         workout: wk.tag + " - " + wk.name.split("—")[1],
         volume: vol,
         sets: setsDone,
         cardio: !!state.cardio[currentKey]
-      };
-      state.history.unshift(entry);
+      });
 
-      // Limpar checks do treino concluído (mantendo as cargas para a próxima semana)
+      // Grava qual treino foi concluído por último e a data exata
+      state.lastCompleted = {
+        workout: currentKey,
+        dateISO: getTodayISO(),
+        dateBR: dateShortBR
+      };
+
+      // Limpa as marcações do treino finalizado (mantendo pesos para a semana seguinte)
       wk.exercises.forEach(ex => {
         state.sets[ex.id].forEach(s => s.d = false);
       });
       state.cardio[currentKey] = false;
 
-      // Avançar automaticamente para o próximo treino (A -> B -> C -> D -> A)
-      const order = ["A", "B", "C", "D"];
-      const nextKey = order[(order.indexOf(currentKey) + 1) % order.length];
+      // Avança imediatamente para o próximo treino da sequência
+      const nextKey = getNextWorkoutKey(currentKey);
       state.activeWorkout = nextKey;
+      state.activeExIdx = 0;
+      state.selectedSetIdx = 0;
+      stopRest();
 
       saveState();
       renderWorkoutView();
       playBeep(1040, 0.25);
       vibrate([60, 50, 80]);
 
-      alert(`✅ ${wk.tag} salvo (${vol} kg)!\nO aplicativo já avançou automaticamente para o TREINO ${nextKey} do seu próximo treino.`);
+      alert(`✅ ${wk.tag} salvo (${vol} kg)!\nMemória atualizada: amanhã o app já abrirá direto no TREINO ${nextKey}.`);
       switchTab("ai");
+    }
+
+    // MOTOR DE ANIMAÇÃO INLINE DO MODO PLAYER (60 FPS)
+    let inlineAnimFrame = null, inlineAnimExId = "a1", inlineAnimSpeed = 1, inlineAnimTick = 0;
+
+    function startInlinePlayerAnim(exId) {
+      inlineAnimExId = exId;
+      cancelAnimationFrame(inlineAnimFrame);
+      if (currentTab !== "workout" || state.viewMode !== "player") return;
+      loopInlinePlayer();
+    }
+
+    function stopInlinePlayerAnim() {
+      cancelAnimationFrame(inlineAnimFrame);
+      inlineAnimFrame = null;
+    }
+
+    function togglePlayerSpeed() {
+      inlineAnimSpeed = inlineAnimSpeed === 1 ? 0.45 : 1;
+      renderWorkoutView();
+    }
+
+    function loopInlinePlayer() {
+      const svgEl = document.getElementById("playerBiomechSvg");
+      if (!svgEl || currentTab !== "workout" || state.viewMode !== "player") return;
+
+      inlineAnimTick += 0.035 * inlineAnimSpeed;
+      const t = (Math.sin(inlineAnimTick) + 1) / 2;
+      const isConcentric = Math.cos(inlineAnimTick) > 0;
+
+      const pill = document.getElementById("playerPhasePill");
+      if (pill) {
+        pill.textContent = isConcentric ? "Concêntrica (Força)" : "Excêntrica (2s)";
+        pill.style.color = isConcentric ? "#10b981" : "#38bdf8";
+      }
+
+      svgEl.innerHTML = drawExerciseSVG(inlineAnimExId, t, inlineAnimTick);
+      inlineAnimFrame = requestAnimationFrame(loopInlinePlayer);
+    }
+
+    // CRONÔMETRO DE DESCANSO SINCRONIZADO (BARRA INFERIOR + PLAYER)
+    let restInterval = null;
+    let restRemaining = 0;
+    function formatRestClock(sec) {
+      const m = String(Math.floor(sec / 60)).padStart(2, "0");
+      const s = String(sec % 60).padStart(2, "0");
+      return `${m}:${s}`;
+    }
+    function startRest(seconds) {
+      clearInterval(restInterval);
+      restRemaining = seconds;
+      renderRestTime();
+      restInterval = setInterval(() => {
+        restRemaining--;
+        renderRestTime();
+        if (restRemaining <= 0) {
+          clearInterval(restInterval);
+          playBeep(920, 0.35);
+          vibrate([120, 70, 150]);
+        }
+      }, 1000);
+    }
+    function addRestSeconds(extra) {
+      restRemaining += extra;
+      renderRestTime();
+    }
+    function stopRest() {
+      clearInterval(restInterval);
+      restRemaining = 0;
+      renderRestTime();
+    }
+    function renderRestTime() {
+      const formatted = formatRestClock(restRemaining);
+      document.getElementById("restDisplay").textContent = formatted;
+      const pBanner = document.getElementById("playerRestBanner");
+      const pClock = document.getElementById("playerRestClock");
+      if (pBanner && pClock) {
+        pBanner.classList.toggle("active", restRemaining > 0);
+        pClock.textContent = formatted;
+      }
     }
 
     // CALCULADORA DE ANILHAS
@@ -1215,13 +1776,9 @@
         { w: 1,  h: 32, c: "#cbd5e1" }
       ];
 
-      let chosen = [];
-      let rem = perSide;
+      let chosen = [], rem = perSide;
       available.forEach(p => {
-        while (rem >= p.w - 0.01) {
-          chosen.push(p);
-          rem -= p.w;
-        }
+        while (rem >= p.w - 0.01) { chosen.push(p); rem -= p.w; }
       });
 
       let x = 75;
@@ -1247,35 +1804,7 @@
       txt.innerHTML = `Por lado (<span style="color:var(--emerald);">${perSide.toFixed(1)} kg</span>): ${summary || "Nenhuma"}`;
     }
 
-    // CRONÔMETRO DE DESCANSO
-    let restInterval = null;
-    let restRemaining = 0;
-    function startRest(seconds) {
-      clearInterval(restInterval);
-      restRemaining = seconds;
-      renderRestTime();
-      restInterval = setInterval(() => {
-        restRemaining--;
-        renderRestTime();
-        if (restRemaining <= 0) {
-          clearInterval(restInterval);
-          playBeep(920, 0.35);
-          vibrate([120, 70, 150]);
-        }
-      }, 1000);
-    }
-    function stopRest() {
-      clearInterval(restInterval);
-      restRemaining = 0;
-      renderRestTime();
-    }
-    function renderRestTime() {
-      const m = String(Math.floor(restRemaining / 60)).padStart(2, "0");
-      const s = String(restRemaining % 60).padStart(2, "0");
-      document.getElementById("restDisplay").textContent = `${m}:${s}`;
-    }
-
-    // SIMULADOR DE PROPORÇÃO ÁUREA V-TAPER + HISTÓRICO DE MEDIÇÕES
+    // SIMULADOR V-TAPER
     function updateVTaper() {
       const w = parseFloat(document.getElementById("mWeight").value) || 68;
       const h = parseFloat(document.getElementById("mHeight").value) || 170;
@@ -1293,7 +1822,7 @@
       document.getElementById("vtaperRatioText").innerHTML = `${ratio.toFixed(3)} <span style="font-size:12px; color:var(--muted);">/ 1.618</span>`;
 
       const targetSh = (wa * 1.618).toFixed(1);
-      const idealWaist = Math.round(h * 0.445); // ~75.6 cm para 170cm
+      const idealWaist = Math.round(h * 0.445);
       const shAtIdealWaist = (idealWaist * 1.618).toFixed(1);
       const diagEl = document.getElementById("vtaperDiagnosis");
 
@@ -1301,7 +1830,7 @@
         diagEl.innerHTML = `<strong style="color:var(--emerald);">🏆 Proporção Áurea Atingida!</strong> Seu índice (${ratio.toFixed(3)}) está no padrão clássico em V.`;
       } else {
         diagEl.innerHTML = `
-          <strong style="color:var(--cyan);">Plano Duplo Recomposição (68 kg):</strong><br>
+          <strong style="color:var(--cyan);">Plano Duplo Recomposição (${w} kg):</strong><br>
           • Mantendo ${wa} cm de cintura, seriam necessários <strong>${targetSh} cm</strong> de ombros.<br>
           • Reduzindo a cintura para <strong>${idealWaist} cm</strong> (com déficit de 2.165 kcal + Vacuum), você bate o <strong>1.618</strong> com apenas <strong>${shAtIdealWaist} cm</strong> de ombros!
         `;
@@ -1319,7 +1848,6 @@
           fill="rgba(16,185,129,0.22)" stroke="#10b981" stroke-width="3" />
         <line x1="${cx}" y1="20" x2="${cx}" y2="125" stroke="rgba(255,255,255,0.15)" stroke-dasharray="3 3" />
       `;
-
       renderMeasureLogs();
     }
 
@@ -1328,13 +1856,7 @@
       const ratio = (m.shoulders / m.waist).toFixed(3);
       const dateStr = new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit" });
       state.measureLogs = state.measureLogs || [];
-      state.measureLogs.unshift({
-        date: dateStr,
-        weight: m.weight,
-        shoulders: m.shoulders,
-        waist: m.waist,
-        ratio: ratio
-      });
+      state.measureLogs.unshift({ date: dateStr, weight: m.weight, shoulders: m.shoulders, waist: m.waist, ratio });
       vibrate(40);
       saveState();
       renderMeasureLogs();
@@ -1344,11 +1866,7 @@
       const box = document.getElementById("measureHistoryList");
       if (!box) return;
       const logs = state.measureLogs || [];
-      if (!logs.length) {
-        box.innerHTML = "<p>Nenhuma medição salva ainda.</p>";
-        return;
-      }
-      box.innerHTML = logs.map(l => `
+      box.innerHTML = !logs.length ? "<p>Nenhuma medição salva ainda.</p>" : logs.map(l => `
         <div style="display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--border);">
           <span><strong>${l.date}</strong> • ${l.weight} kg</span>
           <span>Ombro: <strong style="color:var(--emerald);">${l.shoulders}cm</strong> | Cintura: <strong style="color:var(--cyan);">${l.waist}cm</strong></span>
@@ -1366,7 +1884,7 @@
       updateVTaper();
     }
 
-    // MÓDULO DE DIETA, ANÉIS NEON & SUPLEMENTOS (ABA 3)
+    // DIETA & SUPLEMENTOS
     function renderSupplements() {
       const grid = document.getElementById("suppGrid");
       if (!grid) return;
@@ -1381,40 +1899,21 @@
         </button>`;
       }).join("");
     }
-
-    function toggleSupp(id) {
-      state.supplements[id] = !state.supplements[id];
-      vibrate(30);
-      saveState();
-      renderSupplements();
-    }
-
-    function resetSupplements() {
-      Object.keys(state.supplements).forEach(k => state.supplements[k] = false);
-      saveState();
-      renderSupplements();
-    }
-
-    function getAllFoods() {
-      return [...DEFAULT_FOODS, ...(state.diet.customFoods || [])];
-    }
-
+    function toggleSupp(id) { state.supplements[id] = !state.supplements[id]; vibrate(30); saveState(); renderSupplements(); }
+    function resetSupplements() { Object.keys(state.supplements).forEach(k => state.supplements[k] = false); saveState(); renderSupplements(); }
+    function getAllFoods() { return [...DEFAULT_FOODS, ...(state.diet.customFoods || [])]; }
     function populateFoodSelect() {
       const sel = document.getElementById("foodSelect");
       if (!sel) return;
-      const foods = getAllFoods();
-      sel.innerHTML = foods.map(f => `<option value="${f.id}">${f.name} (${f.base}${f.unit} = ${f.kcal} kcal | P:${f.p}g C:${f.c}g G:${f.f}g)</option>`).join("");
+      sel.innerHTML = getAllFoods().map(f => `<option value="${f.id}">${f.name} (${f.base}${f.unit} = ${f.kcal} kcal | P:${f.p}g C:${f.c}g G:${f.f}g)</option>`).join("");
       updateFoodUnitHint();
     }
-
     function updateFoodUnitHint() {
-      const selId = document.getElementById("foodSelect").value;
-      const food = getAllFoods().find(f => f.id === selId);
+      const food = getAllFoods().find(f => f.id === document.getElementById("foodSelect").value);
       if (!food) return;
       document.getElementById("foodAmount").value = food.base;
       document.getElementById("foodHint").textContent = `Informe a quantidade em ${food.unit === 'un' ? 'unidades (un)' : food.unit} (porção padrão: ${food.base}${food.unit}).`;
     }
-
     function updateDietConfig() {
       state.diet.age = parseInt(document.getElementById("dAge").value) || 25;
       state.diet.protPerKg = parseFloat(document.getElementById("dProtKg").value) || 2.2;
@@ -1424,67 +1923,45 @@
       saveState();
       renderDietView();
     }
-
     function calcDietTargets() {
-      const w = state.measures.weight || 68;
-      const h = state.measures.height || 170;
-      const age = state.diet.age || 25;
+      const w = state.measures.weight || 68, h = state.measures.height || 170, age = state.diet.age || 25;
       const tmb = Math.round(10 * w + 6.25 * h - 5 * age + 5);
       const tdee = Math.round(tmb * state.diet.activity);
       const targetKcal = tdee + state.diet.goalDelta;
-
       const targetP = Math.round(w * state.diet.protPerKg);
       const targetF = Math.round(w * state.diet.fatPerKg);
-      const remKcal = Math.max(0, targetKcal - (targetP * 4 + targetF * 9));
-      const targetC = Math.round(remKcal / 4);
-      const waterTarget = Math.round(w * 42);
-
-      return { tmb, tdee, targetKcal, targetP, targetC, targetF, waterTarget };
+      const targetC = Math.round(Math.max(0, targetKcal - (targetP * 4 + targetF * 9)) / 4);
+      return { tmb, tdee, targetKcal, targetP, targetC, targetF, waterTarget: Math.round(w * 42) };
     }
-
     function calcConsumedTotals() {
       let kcal = 0, p = 0, c = 0, f = 0;
-      Object.values(state.diet.meals).forEach(list => {
-        list.forEach(item => {
-          kcal += item.kcal; p += item.p; c += item.c; f += item.f;
-        });
-      });
+      Object.values(state.diet.meals).forEach(list => list.forEach(item => { kcal += item.kcal; p += item.p; c += item.c; f += item.f; }));
       return { kcal: Math.round(kcal), p: Math.round(p), c: Math.round(c), f: Math.round(f) };
     }
-
     function buildRingSVG(pct, color, label, sub) {
-      const r = 26;
-      const circ = 2 * Math.PI * r;
-      const offset = circ - (Math.min(100, pct) / 100) * circ;
+      const r = 26, circ = 2 * Math.PI * r, offset = circ - (Math.min(100, pct) / 100) * circ;
       return `<div class="ring-box">
         <svg width="68" height="68" viewBox="0 0 68 68">
           <circle cx="34" cy="34" r="${r}" fill="none" stroke="#090d16" stroke-width="6"/>
           <circle cx="34" cy="34" r="${r}" fill="none" stroke="${color}" stroke-width="6"
-            stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round"
-            transform="rotate(-90 34 34)"/>
+            stroke-dasharray="${circ}" stroke-dashoffset="${offset}" stroke-linecap="round" transform="rotate(-90 34 34)"/>
           <text x="34" y="38" fill="#f8fafc" font-size="12" font-weight="900" text-anchor="middle">${pct}%</text>
         </svg>
         <div style="font-size:11px; font-weight:800;">${label}</div>
         <div style="font-size:10px; color:var(--muted);">${sub}</div>
       </div>`;
     }
-
     function renderDietView() {
       renderSupplements();
-      const targets = calcDietTargets();
-      const consumed = calcConsumedTotals();
-      const w = state.measures.weight || 68;
-
+      const targets = calcDietTargets(), consumed = calcConsumedTotals(), w = state.measures.weight || 68;
       document.getElementById("dTmbTdee").textContent = `${targets.tmb} / ${targets.tdee} kcal`;
       document.getElementById("dCalBalance").textContent = `${consumed.kcal} / ${targets.targetKcal} kcal`;
-
       const pctKcal = Math.min(100, Math.round((consumed.kcal / targets.targetKcal) * 100));
       const pctP = Math.min(100, Math.round((consumed.p / targets.targetP) * 100));
       const pctC = Math.min(100, Math.round((consumed.c / targets.targetC) * 100));
       const pctF = Math.min(100, Math.round((consumed.f / targets.targetF) * 100));
       const wPct = Math.min(100, Math.round((state.diet.waterMl / targets.waterTarget) * 100));
 
-      // Renderizar os 3 Anéis Estilo Apple Fitness
       document.getElementById("nutritionRings").innerHTML =
         buildRingSVG(pctKcal, "#10b981", "Calorias", `${consumed.kcal}/${targets.targetKcal}`) +
         buildRingSVG(pctP, "#06b6d4", "Proteína", `${consumed.p}/${targets.targetP}g`) +
@@ -1493,94 +1970,50 @@
       document.getElementById("lblProtGkg").textContent = (consumed.p / w).toFixed(1);
       document.getElementById("lblProt").textContent = `${consumed.p}g / ${targets.targetP}g`;
       document.getElementById("barProt").style.width = pctP + "%";
-
       document.getElementById("lblCarb").textContent = `${consumed.c}g / ${targets.targetC}g`;
       document.getElementById("barCarb").style.width = pctC + "%";
-
       document.getElementById("lblFatGkg").textContent = (consumed.f / w).toFixed(1);
       document.getElementById("lblFat").textContent = `${consumed.f}g / ${targets.targetF}g`;
       document.getElementById("barFat").style.width = pctF + "%";
-
       document.getElementById("waterText").textContent = `${state.diet.waterMl} ml / ${targets.waterTarget} ml (${wPct}%)`;
 
       const activeM = state.diet.activeMeal || "m1";
       document.getElementById("mealTabs").innerHTML = MEAL_SLOTS.map(slot => {
         const count = (state.diet.meals[slot.id] || []).length;
-        return `<button class="meal-tab ${slot.id === activeM ? 'active' : ''}" onclick="selectMealSlot('${slot.id}')">
-          ${slot.label} (${count})
-        </button>`;
+        return `<button class="meal-tab ${slot.id === activeM ? 'active' : ''}" onclick="selectMealSlot('${slot.id}')">${slot.label} (${count})</button>`;
       }).join("");
 
       const items = state.diet.meals[activeM] || [];
-      const listEl = document.getElementById("mealFoodList");
-      if (!items.length) {
-        listEl.innerHTML = `<p style="font-size:12px; color:var(--muted); text-align:center; padding:10px 0;">Toque em "⚡ Cardápio 2165 kcal" acima para carregar a dieta de recomposição para 68 kg.</p>`;
-      } else {
-        listEl.innerHTML = items.map((item, idx) => `
+      document.getElementById("mealFoodList").innerHTML = !items.length
+        ? `<p style="font-size:12px; color:var(--muted); text-align:center; padding:10px 0;">Toque em "⚡ Cardápio 2165 kcal" acima para carregar a dieta de recomposição.</p>`
+        : items.map((item, idx) => `
           <div class="food-item">
             <div>
               <strong style="color:var(--text);">${item.name}</strong> <span style="color:var(--emerald);">(${item.amount}${item.unit})</span><br>
               <span style="color:var(--muted);">${Math.round(item.kcal)} kcal • P:${item.p.toFixed(1)}g • C:${item.c.toFixed(1)}g • G:${item.f.toFixed(1)}g</span>
             </div>
             <button class="del-btn" onclick="removeFoodFromMeal('${activeM}', ${idx})">✕</button>
-          </div>
-        `).join("");
-      }
+          </div>`).join("");
     }
-
-    function selectMealSlot(mealId) {
-      state.diet.activeMeal = mealId;
-      saveState();
-      renderDietView();
-    }
-
+    function selectMealSlot(mealId) { state.diet.activeMeal = mealId; saveState(); renderDietView(); }
     function addFoodToMeal() {
-      const selId = document.getElementById("foodSelect").value;
+      const food = getAllFoods().find(f => f.id === document.getElementById("foodSelect").value);
       const amount = parseFloat(document.getElementById("foodAmount").value) || 0;
-      if (amount <= 0) return;
-      const food = getAllFoods().find(f => f.id === selId);
-      if (!food) return;
-
+      if (!food || amount <= 0) return;
       const factor = amount / food.base;
-      const entry = {
-        name: food.name,
-        amount: amount,
-        unit: food.unit,
-        kcal: food.kcal * factor,
-        p: food.p * factor,
-        c: food.c * factor,
-        f: food.f * factor
-      };
-      const mId = state.diet.activeMeal || "m1";
-      state.diet.meals[mId].push(entry);
-      saveState();
-      playBeep(880, 0.1);
-      renderDietView();
+      state.diet.meals[state.diet.activeMeal || "m1"].push({
+        name: food.name, amount, unit: food.unit,
+        kcal: food.kcal * factor, p: food.p * factor, c: food.c * factor, f: food.f * factor
+      });
+      saveState(); playBeep(880, 0.1); renderDietView();
     }
-
-    function removeFoodFromMeal(mealId, idx) {
-      state.diet.meals[mealId].splice(idx, 1);
-      saveState();
-      renderDietView();
-    }
-
+    function removeFoodFromMeal(mealId, idx) { state.diet.meals[mealId].splice(idx, 1); saveState(); renderDietView(); }
     function clearAllMeals() {
       if (confirm("Zerar todos os alimentos e água registrados hoje?")) {
-        state.diet.meals = { m1:[], m2:[], m3:[], m4:[], m5:[] };
-        state.diet.waterMl = 0;
-        saveState();
-        renderDietView();
+        state.diet.meals = { m1:[], m2:[], m3:[], m4:[], m5:[] }; state.diet.waterMl = 0; saveState(); renderDietView();
       }
     }
-
-    function addWater(ml) {
-      state.diet.waterMl = Math.max(0, (state.diet.waterMl || 0) + ml);
-      vibrate(25);
-      saveState();
-      renderDietView();
-    }
-
-    // CARDÁPIO DE RECOMPOSIÇÃO CALIBRADO PARA 68 KG (~2.165 KCAL / 150G PROT)
+    function addWater(ml) { state.diet.waterMl = Math.max(0, (state.diet.waterMl || 0) + ml); vibrate(25); saveState(); renderDietView(); }
     function loadSampleDiet() {
       state.diet.meals = {
         m1: [
@@ -1607,10 +2040,7 @@
           { name:"Patinho / Carne Magra Moída", amount:135, unit:"g", kcal:295.6, p:48.5, c:0, f:9.8 }
         ]
       };
-      state.diet.waterMl = 2850;
-      vibrate(45);
-      saveState();
-      renderDietView();
+      state.diet.waterMl = 2850; vibrate(45); saveState(); renderDietView();
     }
 
     // STOMACH VACUUM TIMER
@@ -1621,130 +2051,92 @@
       { label: "3. SUGAR ABDÔMEN (VACUUM)", sec: 30 },
       { label: "4. DESCANSAR", sec: 20 }
     ];
-
     function setCoreMode(mode) {
-      coreMode = mode;
-      resetVacuumTimer();
+      coreMode = mode; resetVacuumTimer();
       document.getElementById("modeVacBtn").classList.toggle("active", mode === "vacuum");
       document.getElementById("modePlankBtn").classList.toggle("active", mode === "plank");
       document.getElementById("vacTimerDisplay").textContent = mode === "vacuum" ? "30s" : "60s";
     }
-
     function toggleVacuumTimer() {
-      if (vacRunning) {
-        clearInterval(vacTimer);
-        vacRunning = false;
-        document.getElementById("vacStartBtn").textContent = "▶ Continuar";
-        return;
-      }
-      vacRunning = true;
-      document.getElementById("vacStartBtn").textContent = "⏸ Pausar";
-
+      if (vacRunning) { clearInterval(vacTimer); vacRunning = false; document.getElementById("vacStartBtn").textContent = "▶ Continuar"; return; }
+      vacRunning = true; document.getElementById("vacStartBtn").textContent = "⏸ Pausar";
       if (coreMode === "plank") {
-        vacSec = 60;
-        document.getElementById("vacPhaseLabel").textContent = "PRANCHA ISOMÉTRICA";
+        vacSec = 60; document.getElementById("vacPhaseLabel").textContent = "PRANCHA ISOMÉTRICA";
         vacTimer = setInterval(() => {
-          vacSec--;
-          document.getElementById("vacTimerDisplay").textContent = vacSec + "s";
-          if (vacSec <= 0) {
-            playBeep(950, 0.3);
-            vibrate([100, 60, 100]);
-            clearInterval(vacTimer);
-            vacRunning = false;
-            document.getElementById("vacStartBtn").textContent = "▶ Iniciar Prancha";
-          }
+          vacSec--; document.getElementById("vacTimerDisplay").textContent = vacSec + "s";
+          if (vacSec <= 0) { playBeep(950, 0.3); vibrate([100,60,100]); clearInterval(vacTimer); vacRunning = false; document.getElementById("vacStartBtn").textContent = "▶ Iniciar Prancha"; }
         }, 1000);
       } else {
-        vacStepIdx = 0;
-        vacSec = VAC_STEPS[0].sec;
-        updateVacUI();
+        vacStepIdx = 0; vacSec = VAC_STEPS[0].sec; updateVacUI();
         vacTimer = setInterval(() => {
           vacSec--;
           if (vacSec <= 0) {
-            playBeep(880, 0.18);
-            vibrate(50);
-            vacStepIdx++;
-            if (vacStepIdx >= VAC_STEPS.length) {
-              vacStepIdx = 0;
-              vacSeries++;
-              if (vacSeries > 3) {
-                resetVacuumTimer();
-                alert("3 séries de Stomach Vacuum concluídas!");
-                return;
-              }
-            }
+            playBeep(880, 0.18); vibrate(50); vacStepIdx++;
+            if (vacStepIdx >= VAC_STEPS.length) { vacStepIdx = 0; vacSeries++; if (vacSeries > 3) { resetVacuumTimer(); alert("3 séries de Stomach Vacuum concluídas!"); return; } }
             vacSec = VAC_STEPS[vacStepIdx].sec;
           }
           updateVacUI();
         }, 1000);
       }
     }
-
     function updateVacUI() {
       document.getElementById("vacPhaseLabel").textContent = VAC_STEPS[vacStepIdx].label;
       document.getElementById("vacTimerDisplay").textContent = vacSec + "s";
       document.getElementById("vacSeriesDisplay").textContent = `Série ${vacSeries} de 3`;
     }
-
     function resetVacuumTimer() {
-      clearInterval(vacTimer);
-      vacRunning = false; vacStepIdx = 0; vacSeries = 1;
+      clearInterval(vacTimer); vacRunning = false; vacStepIdx = 0; vacSeries = 1;
       document.getElementById("vacPhaseLabel").textContent = "PRONTO";
       document.getElementById("vacTimerDisplay").textContent = coreMode === "vacuum" ? "30s" : "60s";
       document.getElementById("vacSeriesDisplay").textContent = "Série 1 de 3";
       document.getElementById("vacStartBtn").textContent = "▶ Iniciar Ciclo Guiado";
     }
 
-    // MOTOR DE ANIMAÇÃO BIOMECÂNICA 60 FPS (23 EXERCÍCIOS ÚNICOS)
+    // MODAL BIOMECÂNICA 60 FPS (USADO NO MODO BOLINHAS)
     let animFrame = null, animExId = "a1", animSpeed = 1, animPaused = false, animTick = 0;
-
     function openAnimModal(wkKey, exId) {
       const ex = WORKOUT_DB[wkKey].exercises.find(e => e.id === exId);
       if (!ex) return;
-
+      stopInlinePlayerAnim();
       document.getElementById("animTargetBadge").textContent = ex.target;
       document.getElementById("animExTitle").textContent = ex.name;
       document.getElementById("animEquipText").textContent = ex.equip || "Simulação 60 FPS";
       document.getElementById("animSteps").innerHTML = ex.steps.map(s => `<li>${s}</li>`).join("");
       document.getElementById("animMistake").textContent = ex.mistake;
       document.getElementById("animYtLink").href = "https://www.youtube.com/results?search_query=como+fazer+" + encodeURIComponent(ex.name);
-
-      animExId = ex.id;
-      animPaused = false;
+      animExId = ex.id; animPaused = false;
       document.getElementById("animModal").classList.add("open");
       cancelAnimationFrame(animFrame);
       loopBiomechanics();
     }
-
     function closeAnimModal() {
       document.getElementById("animModal").classList.remove("open");
       cancelAnimationFrame(animFrame);
+      if (currentTab === "workout" && state.viewMode === "player") {
+        const ex = WORKOUT_DB[state.activeWorkout].exercises[state.activeExIdx];
+        if (ex) startInlinePlayerAnim(ex.id);
+      }
     }
-
     function setAnimSpeed(spd) {
       animSpeed = spd;
       document.getElementById("spd1Btn").style.borderColor = spd === 1 ? "var(--emerald)" : "var(--border)";
       document.getElementById("spd05Btn").style.borderColor = spd < 1 ? "var(--emerald)" : "var(--border)";
     }
-
     function toggleAnimPause() { animPaused = !animPaused; }
-
     function loopBiomechanics() {
       if (!animPaused) animTick += 0.035 * animSpeed;
       const t = (Math.sin(animTick) + 1) / 2;
       const isConcentric = Math.cos(animTick) > 0;
-
       const phaseEl = document.getElementById("animPhaseText");
       phaseEl.textContent = isConcentric ? "Fase Concêntrica (Força)" : "Fase Excêntrica (Controle 2s)";
       phaseEl.style.color = isConcentric ? "#10b981" : "#38bdf8";
-
       document.getElementById("biomechSvg").innerHTML = drawExerciseSVG(animExId, t, animTick);
       animFrame = requestAnimationFrame(loopBiomechanics);
     }
 
+    // MOTOR VETORIAL DOS 23 EXERCÍCIOS
     function drawExerciseSVG(id, t, tick) {
       const floor = `<line x1="15" y1="180" x2="235" y2="180" stroke="#334155" stroke-width="4"/>`;
-
       switch (id) {
         case "a1": {
           const barY = 108 - t * 38;
@@ -1776,16 +2168,14 @@
             <line x1="132" y1="${bodyY+64}" x2="132" y2="${bodyY+104}" stroke="#64748b" stroke-width="6" stroke-linecap="round"/>`;
         }
         case "a3": {
-          const handY = 76 - t * 42;
-          const elbowY = 98 - t * 28;
+          const handY = 76 - t * 42, elbowY = 98 - t * 28;
           return `${floor}
             <line x1="100" y1="75" x2="100" y2="145" stroke="#475569" stroke-width="6"/>
             <line x1="100" y1="145" x2="150" y2="145" stroke="#475569" stroke-width="6"/>
             <line x1="125" y1="145" x2="125" y2="180" stroke="#475569" stroke-width="6"/>
             <circle cx="125" cy="68" r="12" fill="#e2e8f0"/>
             <polygon points="103,84 147,84 136,138 114,138" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
-            <circle cx="101" cy="88" r="7" fill="#10b981"/>
-            <circle cx="149" cy="88" r="7" fill="#10b981"/>
+            <circle cx="101" cy="88" r="7" fill="#10b981"/><circle cx="149" cy="88" r="7" fill="#10b981"/>
             <line x1="101" y1="88" x2="78" y2="${elbowY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
             <line x1="78" y1="${elbowY}" x2="86" y2="${handY}" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
             <line x1="149" y1="88" x2="172" y2="${elbowY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
@@ -1794,8 +2184,7 @@
             <rect x="154" y="${handY-4}" width="20" height="8" rx="2" fill="#f59e0b"/>`;
         }
         case "a4": {
-          const barX = 148 - t * 22;
-          const barY = 138 - t * 28;
+          const barX = 148 - t * 22, barY = 138 - t * 28;
           return `${floor}
             <circle cx="156" cy="66" r="11" fill="#e2e8f0"/>
             <line x1="95" y1="112" x2="144" y2="76" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
@@ -1806,13 +2195,11 @@
             <circle cx="${barX}" cy="${barY}" r="11" fill="#f59e0b" stroke="#fff" stroke-width="2"/>`;
         }
         case "a5": {
-          const handY = 126 - t * 50;
-          const handX = 36 - t * 8;
+          const handY = 126 - t * 50, handX = 36 - t * 8;
           return `${floor}
             <circle cx="125" cy="54" r="12" fill="#e2e8f0"/>
             <polygon points="100,72 150,72 136,128 114,128" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
-            <circle cx="98" cy="76" r="8" fill="#10b981"/>
-            <circle cx="152" cy="76" r="8" fill="#10b981"/>
+            <circle cx="98" cy="76" r="8" fill="#10b981"/><circle cx="152" cy="76" r="8" fill="#10b981"/>
             <line x1="98" y1="76" x2="${98 - handX}" y2="${handY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
             <line x1="152" y1="76" x2="${152 + handX}" y2="${handY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
             <rect x="${90 - handX}" y="${handY - 4}" width="14" height="8" rx="2" fill="#f59e0b"/>
@@ -1821,8 +2208,7 @@
             <line x1="133" y1="128" x2="133" y2="180" stroke="#64748b" stroke-width="7"/>`;
         }
         case "a6": {
-          const curlY = 122 - t * 38;
-          const triY = 82 + t * 38;
+          const curlY = 122 - t * 38, triY = 82 + t * 38;
           return `${floor}
             <line x1="125" y1="20" x2="125" y2="180" stroke="#1e293b" stroke-dasharray="4 4" stroke-width="2"/>
             <text x="25" y="34" fill="#10b981" font-size="10" font-weight="bold">1. ROSCA DIRETA</text>
@@ -1842,10 +2228,7 @@
             <line x1="170" y1="102" x2="195" y2="${triY}" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>`;
         }
         case "b1": {
-          const depth = (1 - t) * 36;
-          const hipX = 104 - (1 - t) * 10;
-          const hipY = 104 + depth;
-          const shX = 122, shY = 60 + depth;
+          const depth = (1 - t) * 36, hipX = 104 - (1 - t) * 10, hipY = 104 + depth, shX = 122, shY = 60 + depth;
           return `${floor}
             <circle cx="${shX + 4}" cy="${shY - 14}" r="11" fill="#e2e8f0"/>
             <line x1="${shX - 24}" y1="${shY}" x2="${shX + 24}" y2="${shY}" stroke="#f8fafc" stroke-width="4"/>
@@ -1856,11 +2239,7 @@
             <line x1="138" y1="140" x2="122" y2="180" stroke="#94a3b8" stroke-width="7" stroke-linecap="round"/>`;
         }
         case "b2": {
-          const sledShift = t * 28;
-          const footX = 135 + sledShift;
-          const footY = 95 - sledShift * 0.75;
-          const kneeX = 102 + sledShift * 0.35;
-          const kneeY = 102 - sledShift * 0.15;
+          const sledShift = t * 28, footX = 135 + sledShift, footY = 95 - sledShift * 0.75, kneeX = 102 + sledShift * 0.35, kneeY = 102 - sledShift * 0.15;
           return `${floor}
             <line x1="42" y1="130" x2="72" y2="162" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
             <line x1="72" y1="162" x2="100" y2="155" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
@@ -1872,10 +2251,7 @@
             <line x1="${footX - 10}" y1="${footY - 16}" x2="${footX + 12}" y2="${footY + 14}" stroke="#f59e0b" stroke-width="7" stroke-linecap="round"/>`;
         }
         case "b3": {
-          const ang = t * 1.15;
-          const kneeX = 142, kneeY = 118;
-          const footX = kneeX + Math.sin(ang) * 48;
-          const footY = kneeY + Math.cos(ang) * 48;
+          const ang = t * 1.15, kneeX = 142, kneeY = 118, footX = kneeX + Math.sin(ang) * 48, footY = kneeY + Math.cos(ang) * 48;
           return `${floor}
             <line x1="88" y1="68" x2="88" y2="122" stroke="#475569" stroke-width="7"/>
             <line x1="88" y1="122" x2="142" y2="122" stroke="#475569" stroke-width="7"/>
@@ -1937,8 +2313,7 @@
             <line x1="125" y1="152" x2="125" y2="180" stroke="#475569" stroke-width="6"/>`;
         }
         case "c3": {
-          const handX = 158 - t * 44;
-          const handY = 66 + t * 54;
+          const handX = 158 - t * 44, handY = 66 + t * 54;
           return `${floor}
             <line x1="195" y1="25" x2="195" y2="180" stroke="#475569" stroke-width="6"/>
             <line x1="195" y1="32" x2="${handX}" y2="${handY}" stroke="#38bdf8" stroke-width="2"/>
@@ -1949,8 +2324,7 @@
             <circle cx="${handX}" cy="${handY}" r="6" fill="#f59e0b"/>`;
         }
         case "c4": {
-          const handX = 95 + t * 72;
-          const handY = 128 - t * 52;
+          const handX = 95 + t * 72, handY = 128 - t * 52;
           return `${floor}
             <line x1="52" y1="35" x2="52" y2="180" stroke="#475569" stroke-width="5"/>
             <line x1="52" y1="170" x2="${handX}" y2="${handY}" stroke="#38bdf8" stroke-width="2"/>
@@ -1963,13 +2337,11 @@
             <line x1="122" y1="126" x2="122" y2="180" stroke="#64748b" stroke-width="7"/>`;
         }
         case "c5": {
-          const spread = 18 + t * 56;
-          const armY = 104 - t * 28;
+          const spread = 18 + t * 56, armY = 104 - t * 28;
           return `${floor}
             <circle cx="125" cy="56" r="11" fill="#e2e8f0"/>
             <polygon points="100,72 150,72 136,128 114,128" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-            <circle cx="102" cy="76" r="8" fill="#10b981"/>
-            <circle cx="148" cy="76" r="8" fill="#10b981"/>
+            <circle cx="102" cy="76" r="8" fill="#10b981"/><circle cx="148" cy="76" r="8" fill="#10b981"/>
             <line x1="102" y1="76" x2="${125 - spread}" y2="${armY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
             <line x1="148" y1="76" x2="${125 + spread}" y2="${armY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
             <circle cx="${125 - spread}" cy="${armY}" r="6" fill="#f59e0b"/>
@@ -1990,10 +2362,7 @@
             <line x1="114" y1="${dipY + 42}" x2="102" y2="${dipY + 68}" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>`;
         }
         case "d1": {
-          const hipX = 88 + t * 18;
-          const shX = 148 - t * 32;
-          const shY = 98 - t * 34;
-          const barY = 142 - t * 32;
+          const hipX = 88 + t * 18, shX = 148 - t * 32, shY = 98 - t * 34, barY = 142 - t * 32;
           return `${floor}
             <circle cx="${shX + 8}" cy="${shY - 10}" r="11" fill="#e2e8f0"/>
             <line x1="${hipX}" y1="110" x2="${shX}" y2="${shY}" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
@@ -2002,10 +2371,7 @@
             <circle cx="116" cy="${barY}" r="12" fill="#f59e0b" stroke="#fff" stroke-width="2"/>`;
         }
         case "d2": {
-          const ang = 0.25 + t * 1.35;
-          const kneeX = 158, kneeY = 128;
-          const footX = kneeX + Math.cos(ang) * 44;
-          const footY = kneeY - Math.sin(ang) * 44;
+          const ang = 0.25 + t * 1.35, kneeX = 158, kneeY = 128, footX = kneeX + Math.cos(ang) * 44, footY = kneeY - Math.sin(ang) * 44;
           return `${floor}
             <rect x="52" y="128" width="110" height="9" rx="4" fill="#475569"/>
             <line x1="72" y1="137" x2="72" y2="180" stroke="#475569" stroke-width="6"/>
@@ -2016,8 +2382,7 @@
             <circle cx="${footX}" cy="${footY}" r="7" fill="#f59e0b"/>`;
         }
         case "d3": {
-          const drop = (1 - t) * 28;
-          const hipY = 98 + drop;
+          const drop = (1 - t) * 28, hipY = 98 + drop;
           return `${floor}
             <circle cx="125" cy="${50 + drop}" r="11" fill="#e2e8f0"/>
             <line x1="125" y1="${62 + drop}" x2="125" y2="${hipY}" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
@@ -2029,8 +2394,7 @@
             <rect x="115" y="${110 + drop}" width="20" height="9" rx="2" fill="#f59e0b"/>`;
         }
         case "d4": {
-          const lift = t * 18;
-          const kneeY = 118 - lift;
+          const lift = t * 18, kneeY = 118 - lift;
           return `${floor}
             <rect x="70" y="122" width="45" height="8" rx="3" fill="#475569"/>
             <line x1="92" y1="130" x2="92" y2="180" stroke="#475569" stroke-width="6"/>
@@ -2058,24 +2422,22 @@
     function renderAIAnalytics() {
       const m = state.measures;
       const ratio = (m.shoulders / m.waist).toFixed(3);
-      const getMaxRM = (exId) => {
-        return Math.max(...state.sets[exId].map(s => Math.round((parseFloat(s.w)||0)*(1+(parseInt(s.r)||0)/30))));
-      };
-      const benchRM = getMaxRM("a1");
-      const squatRM = getMaxRM("b1");
-      const rdlRM = getMaxRM("d1");
-      const targets = calcDietTargets();
-      const consumed = calcConsumedTotals();
+      const getMaxRM = (exId) => Math.max(...state.sets[exId].map(s => Math.round((parseFloat(s.w)||0)*(1+(parseInt(s.r)||0)/30))));
+      const benchRM = getMaxRM("a1"), squatRM = getMaxRM("b1"), rdlRM = getMaxRM("d1");
+      const targets = calcDietTargets(), consumed = calcConsumedTotals();
       const suppDone = Object.values(state.supplements).filter(Boolean).length;
+      const lastInfo = state.lastCompleted && state.lastCompleted.workout
+        ? `Último: <strong>TREINO ${state.lastCompleted.workout}</strong> (${state.lastCompleted.dateBR}) → Próximo: <strong>TREINO ${state.activeWorkout}</strong>`
+        : `Ficha ativa: <strong>TREINO ${state.activeWorkout}</strong>`;
 
       document.getElementById("aiReportBox").innerHTML = `
         <div style="padding:10px; background:var(--card-2); border-radius:10px; border-left:3px solid var(--emerald);">
           <strong>1. Proporção Áurea Atual (${ratio} / 1.618):</strong>
-          Com ${m.weight} kg e ${m.height} cm, sua relação Cintura/Altura é de <strong>${((m.waist/m.height)*100).toFixed(1)}%</strong> (meta estética: descer de 82 cm para ~76 cm).
+          Com ${m.weight} kg e ${m.height} cm, sua relação Cintura/Altura é de <strong>${((m.waist/m.height)*100).toFixed(1)}%</strong> (meta: descer para ~76 cm).
         </div>
         <div style="padding:10px; background:var(--card-2); border-radius:10px; border-left:3px solid var(--cyan);">
-          <strong>2. Próximo Treino na Fila Automática:</strong>
-          Ficha ativa: <strong>TREINO ${state.activeWorkout}</strong> • Supino 1RM: <strong>${benchRM} kg</strong> (${(benchRM/m.weight).toFixed(2)}x BW) • Agachamento 1RM: <strong>${squatRM} kg</strong>.
+          <strong>2. Rotação Inteligente & Força:</strong>
+          ${lastInfo} • Supino 1RM: <strong>${benchRM} kg</strong> • Agachamento: <strong>${squatRM} kg</strong>.
         </div>
         <div style="padding:10px; background:var(--card-2); border-radius:10px; border-left:3px solid var(--amber);">
           <strong>3. Nutrição & Stack Hoje:</strong>
@@ -2103,54 +2465,36 @@
       }).join("");
 
       const hList = document.getElementById("historyList");
-      if (!state.history.length) {
-        hList.innerHTML = "<p>Nenhuma sessão salva ainda. Finalize um treino na aba 'Treinos'.</p>";
-      } else {
-        hList.innerHTML = state.history.map(h => `
+      hList.innerHTML = !state.history.length
+        ? "<p>Nenhuma sessão salva ainda. Finalize um treino na aba 'Treinos'.</p>"
+        : state.history.map(h => `
           <div style="padding:8px 0; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;">
             <div><strong style="color:var(--text);">${h.workout}</strong><br><span>${h.date} ${h.cardio ? '• 🔥 Cardio OK' : ''}</span></div>
             <div style="text-align:right; color:var(--emerald); font-weight:800;">${h.volume} kg<br><span style="color:var(--muted); font-weight:400;">${h.sets} séries</span></div>
-          </div>
-        `).join("");
-      }
+          </div>`).join("");
     }
 
     function clearHistory() {
-      if (confirm("Limpar todo o histórico de sessões?")) {
-        state.history = [];
-        saveState();
-        renderAIAnalytics();
-      }
+      if (confirm("Limpar todo o histórico de sessões?")) { state.history = []; saveState(); renderAIAnalytics(); }
     }
-
     function exportBackup() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-      const a = document.createElement("a");
-      a.href = dataStr;
-      a.download = "vtaper_v4_backup.json";
-      a.click();
+      const a = document.createElement("a"); a.href = dataStr; a.download = "vtaper_v5_backup.json"; a.click();
     }
 
-    // PWA INSTALL HANDLER & SERVICE WORKER
+    // PWA INSTALL & SERVICE WORKER
     let deferredPrompt = null;
     window.addEventListener("beforeinstallprompt", (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
+      e.preventDefault(); deferredPrompt = e;
       document.getElementById("installAppBtn").style.display = "flex";
     });
-
     async function installPWA() {
       if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      document.getElementById("installAppBtn").style.display = "none";
+      deferredPrompt.prompt(); await deferredPrompt.userChoice;
+      deferredPrompt = null; document.getElementById("installAppBtn").style.display = "none";
     }
-
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(() => {});
-      });
+      window.addEventListener("load", () => { navigator.serviceWorker.register("./sw.js").catch(() => {}); });
     }
 
     // INIT
