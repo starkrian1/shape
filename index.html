@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#090d16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>V-Taper Protocol V5 Pro</title>
+  <title>V-Taper Protocol V5.1 Pro</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <style>
@@ -171,7 +171,7 @@
       padding: 3px 7px; font-size: 10px; font-weight: 800; color: var(--text); cursor: pointer;
     }
 
-    /* SET BUBBLES (USADO NOS DOIS MODOS) */
+    /* SET BUBBLES */
     .bubbles-row {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(66px, 1fr));
       gap: 7px; margin: 10px 0 12px;
@@ -191,7 +191,7 @@
     .bubble-main { font-size: 13px; font-weight: 900; margin-top: 2px; }
     .bubble-sub { font-size: 10px; font-weight: 700; opacity: 0.85; }
 
-    /* STEPPER CONTROLS (- / +) */
+    /* STEPPER CONTROLS */
     .stepper-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
     .stepper-box {
       background: var(--card-2); border: 1px solid var(--border);
@@ -379,8 +379,8 @@
       <button class="icon-btn" onclick="toggleDrawer(true)" aria-label="Menu">☰</button>
       <div class="brand-logo">V</div>
       <div>
-        <div class="brand-title">V-TAPER PRO V5</div>
-        <div class="brand-sub">Player • Bolinhas • Auto-Next</div>
+        <div class="brand-title">V-TAPER PRO V5.1</div>
+        <div class="brand-sub">27 Exercícios • Player • Auto-Next</div>
       </div>
     </div>
     <div class="top-actions">
@@ -398,10 +398,10 @@
       <button class="icon-btn" onclick="toggleDrawer(false)">✕</button>
     </div>
     <div class="drawer-title">Fichas de Treino (Rotação Automática)</div>
-    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('A')"><span>Treino A • Superiores Força</span><span>→</span></button>
-    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('B')"><span>Treino B • Inferiores Base</span><span>→</span></button>
-    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('C')"><span>Treino C • Hipertrofia V-Taper</span><span>→</span></button>
-    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('D')"><span>Treino D • Posterior & Core</span><span>→</span></button>
+    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('A')"><span>Treino A • Superiores Força (7)</span><span>→</span></button>
+    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('B')"><span>Treino B • Inferiores Base (6)</span><span>→</span></button>
+    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('C')"><span>Treino C • Hipertrofia V-Taper (7)</span><span>→</span></button>
+    <button class="drawer-btn" onclick="selectWorkoutFromDrawer('D')"><span>Treino D • Posterior & Core (6)</span><span>→</span></button>
 
     <div class="drawer-title">Ferramentas</div>
     <button class="drawer-btn" onclick="openPlateModal(60); toggleDrawer(false);"><span>🏋️ Calculadora de Anilhas</span><span>→</span></button>
@@ -419,13 +419,10 @@
 
     <!-- ABA 1: TREINOS (PLAYER + ACORDEÃO COM BOLINHAS) -->
     <section id="tab-workout" class="tab-view active">
-      <!-- Memória do Último Treino -->
       <div class="memory-pill" id="lastWkBanner"></div>
 
-      <!-- Seletor Rápido A B C D -->
       <div class="wk-strip" id="wkSelector"></div>
 
-      <!-- Barra de Progresso Geral da Sessão -->
       <div class="wk-progress-wrap">
         <div class="wk-progress-top">
           <span id="wkTitleLine" style="color:var(--text);">TREINO A • Superiores Força</span>
@@ -436,16 +433,13 @@
         </div>
       </div>
 
-      <!-- Alternador: Modo Player vs Modo Bolinhas -->
       <div class="mode-switch">
         <button class="mode-btn active" id="modePlayerBtn" onclick="setViewMode('player')">🎬 Modo Player (Foco)</button>
         <button class="mode-btn" id="modeAccBtn" onclick="setViewMode('accordion')">🫧 Modo Bolinhas (Lista)</button>
       </div>
 
-      <!-- Área Dinâmica do Treino -->
       <div id="workoutContentArea"></div>
 
-      <!-- Cardio & Finalização com Auto-Next -->
       <div class="card">
         <label style="display:flex; align-items:center; gap:10px; font-size:12px; font-weight:700; cursor:pointer; margin-bottom:12px;">
           <input type="checkbox" id="cardioDone" style="width:20px; height:20px; accent-color:var(--emerald);" onchange="saveState()">
@@ -714,7 +708,7 @@
 
   </main>
 
-  <!-- MODAL DE ANIMAÇÃO BIOMECÂNICA (PARA O MODO BOLINHAS / DICAS) -->
+  <!-- MODAL DE ANIMAÇÃO BIOMECÂNICA -->
   <div class="modal-backdrop" id="animModal" onclick="if(event.target===this) closeAnimModal()">
     <div class="modal-box">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -815,9 +809,10 @@
   <script>
     const WORKOUT_ORDER = ["A", "B", "C", "D"];
 
+    // 27 EXERCÍCIOS (A:7, B:6, C:7, D:6)
     const WORKOUT_DB = {
       A: {
-        tag: "TREINO A", short: "Sup. Força", name: "Superiores — Força & Expansão", sub: "Peitoral, Largura de Dorsal e Topo de Ombro",
+        tag: "TREINO A", short: "Sup. Força", name: "Superiores — Força & Expansão", sub: "Peitoral, Largura de Dorsal, Ombro e Postura",
         cardio: "15 min HIIT Pós-Treino (30s Sprint Forte / 60s Leve)",
         exercises: [
           { id:"a1", name:"1. Supino Reto (Barra ou Halteres)", target:"Peitoral Maior & Tríceps", sets:4, reps:"6-8", topRep:8, bar:true, rest:90, equip:"Banco Reto + Barra",
@@ -843,11 +838,15 @@
           { id:"a6", name:"6. Bi-set: Rosca Direta + Tríceps Pulley", target:"Bíceps & Tríceps Completo", sets:3, reps:"10-12", topRep:12, bar:true, rest:60, equip:"Barra W + Polia Alta",
             steps:["Crave os cotovelos ao lado das costelas na Rosca Direta.","Sem descanso, vá à polia alta e estenda o tríceps travando tudo embaixo.","Controle a volta sem deixar o cotovelo subir."],
             mistake:"Mover o cotovelo para frente e para trás usando o ombro.",
-            defaultSets:[{w:28,r:12,d:false},{w:30,r:10,d:false},{w:30,r:10,d:false}] }
+            defaultSets:[{w:28,r:12,d:false},{w:30,r:10,d:false},{w:30,r:10,d:false}] },
+          { id:"a7", name:"7. Face Pull na Polia Alta (Corda)", target:"Deltoide Posterior, Manguito & Postura", sets:3, reps:"15", topRep:15, bar:false, rest:60, equip:"Polia Alta + Corda",
+            steps:["Ajuste a polia na linha do rosto e segure a corda com os polegares apontando para trás.","Puxe a corda em direção à testa abrindo bem os cotovelos e rodando os punhos para fora.","Segure 1 segundo esmagando a parte de trás dos ombros."],
+            mistake:"Puxar em direção ao peito com cotovelos baixos (rouba com o bíceps).",
+            defaultSets:[{w:20,r:15,d:false},{w:25,r:15,d:false},{w:25,r:15,d:false}] }
         ]
       },
       B: {
-        tag: "TREINO B", short: "Inf. Base", name: "Inferiores — Força & Base", sub: "Quadríceps, Panturrilha e Pegada Tática",
+        tag: "TREINO B", short: "Inf. Base", name: "Inferiores — Força, Base & Core", sub: "Quadríceps, Panturrilha, Pegada Tática e Abdômen Infra",
         cardio: "20 min Cardio Moderado (Caminhada Inclinada ou Bike)",
         exercises: [
           { id:"b1", name:"1. Agachamento Livre com Barra", target:"Quadríceps, Glúteos & Core", sets:4, reps:"6-8", topRep:8, bar:true, rest:120, equip:"Gaiola + Barra Olímpica",
@@ -869,11 +868,15 @@
           { id:"b5", name:"5. Farmer's Walk (Caminhada Fazendeiro)", target:"Antebraço, Trapézio & Core", sets:3, reps:"40m", topRep:40, bar:false, rest:90, equip:"Halteres Pesados em Movimento",
             steps:["Segure um par de halteres pesados ao lado do corpo.","Mantenha postura alta, ombros encaixados para trás e abdômen firme.","Caminhe 40 metros em passos firmes e controlados."],
             mistake:"Deixar os ombros caírem para frente ou inclinar o tronco.",
-            defaultSets:[{w:28,r:40,d:false},{w:28,r:40,d:false},{w:30,r:40,d:false}] }
+            defaultSets:[{w:28,r:40,d:false},{w:28,r:40,d:false},{w:30,r:40,d:false}] },
+          { id:"b6", name:"6. Elevação de Pernas na Barra / Paralela", target:"Abdômen Infra (Sem Alargar Cintura)", sets:3, reps:"12-15", topRep:15, bar:false, rest:60, equip:"Barra Fixa / Apoio Paralela",
+            steps:["Pendure-se na barra ou apoie os antebraços na paralela sem balançar o corpo.","Suba as pernas (estendidas ou joelhos levemente flexionados) enrolando a pelve para cima.","Desça devagar controlando o retorno sem usar embalo."],
+            mistake:"Balançar o tronco para frente e para trás usando apenas o flexor de quadril.",
+            defaultSets:[{w:68,r:15,d:false},{w:68,r:12,d:false},{w:68,r:12,d:false}] }
         ]
       },
       C: {
-        tag: "TREINO C", short: "V-Taper", name: "Superiores — Hipertrofia V-Taper", sub: "Peitoral Clavicular, Dorsal e Ombros 3D",
+        tag: "TREINO C", short: "V-Taper", name: "Superiores — Hipertrofia V-Taper", sub: "Peitoral Clavicular, Dorsal, Ombros 3D e Braços",
         cardio: "15 min HIIT Pós-Treino (Esteira ou Bike)",
         exercises: [
           { id:"c1", name:"1. Supino Inclinado com Halteres (30°)", target:"Peitoral Superior (Clavicular)", sets:4, reps:"8-12", topRep:12, bar:false, rest:90, equip:"Banco Inclinado 30° + Halteres",
@@ -899,11 +902,15 @@
           { id:"c6", name:"6. Paralelas / Mergulho (Dips)", target:"Peitoral Inferior & Tríceps", sets:3, reps:"10-12", topRep:12, bar:false, rest:60, equip:"Barras Paralelas",
             steps:["Incline levemente o tronco à frente e desça até o cotovelo formar 90°.","Empurre até estender os braços mantendo os ombros firmes."],
             mistake:"Descer além do limite articular jogando o ombro para frente.",
-            defaultSets:[{w:68,r:12,d:false},{w:68,r:10,d:false},{w:68,r:10,d:false}] }
+            defaultSets:[{w:68,r:12,d:false},{w:68,r:10,d:false},{w:68,r:10,d:false}] },
+          { id:"c7", name:"7. Bi-set: Rosca Martelo + Tríceps Francês", target:"Braquial, Antebraço & Cabeça Longa", sets:3, reps:"10-12", topRep:12, bar:false, rest:60, equip:"Halteres + Polia Corda",
+            steps:["Faça a Rosca Martelo com pegada neutra (polegares para cima) sem balançar o cotovelo.","Logo em seguida, faça o Tríceps Francês na polia com corda acima da cabeça alongando bem o tríceps."],
+            mistake:"Abrir demais os cotovelos no Tríceps Francês perdendo o foco na cabeça longa.",
+            defaultSets:[{w:14,r:12,d:false},{w:14,r:12,d:false},{w:16,r:10,d:false}] }
         ]
       },
       D: {
-        tag: "TREINO D", short: "Post. & Core", name: "Inferiores — Posterior & Core", sub: "Posterior de Coxa, Glúteos e Cintura Compacta",
+        tag: "TREINO D", short: "Post. & Core", name: "Inferiores — Posterior, Lombar & Core", sub: "Posterior de Coxa, Glúteos, Blindagem Lombar e Cintura Compacta",
         cardio: "20 min Cardio Moderado (Esteira Inclinada ou Escada)",
         exercises: [
           { id:"d1", name:"1. Levantamento Terra Romeno / Stiff", target:"Posterior de Coxa, Glúteos & Lombar", sets:4, reps:"6-8", topRep:8, bar:true, rest:120, equip:"Barra Olímpica (Dobradiça)",
@@ -925,7 +932,11 @@
           { id:"d5", name:"5. Prancha Abdominal + Stomach Vacuum", target:"Transverso Abdominal (Cintura Fina)", sets:3, reps:"60s + 30s", topRep:60, bar:false, rest:60, equip:"Solo / Isometria Core",
             steps:["Mantenha corpo em linha reta apoiado nos antebraços e sugue o umbigo contra a coluna."],
             mistake:"Deixar o quadril cair na prancha ou prender o ar estufando a barriga.",
-            defaultSets:[{w:68,r:60,d:false},{w:68,r:60,d:false},{w:68,r:60,d:false}] }
+            defaultSets:[{w:68,r:60,d:false},{w:68,r:60,d:false},{w:68,r:60,d:false}] },
+          { id:"d6", name:"6. Hiperextensão Lombar (Banco 45°)", target:"Eretores da Coluna, Glúteo & Posterior", sets:3, reps:"12-15", topRep:15, bar:false, rest:60, equip:"Banco Romano 45° + Anilha",
+            steps:["Apoie o quadril logo abaixo do estofado e cruze os braços (ou abrace uma anilha no peito).","Desça o tronco mantendo a coluna alinhada até sentir alongar o posterior.","Suba contraindo glúteos e lombar até o corpo formar uma linha reta (sem jogar para trás)."],
+            mistake:"Hiperestender demais a coluna para cima no topo do movimento.",
+            defaultSets:[{w:10,r:15,d:false},{w:10,r:15,d:false},{w:15,r:12,d:false}] }
         ]
       }
     };
@@ -973,7 +984,7 @@
 
     let state = {
       activeWorkout: "A",
-      viewMode: "player", // 'player' | 'accordion'
+      viewMode: "player",
       activeExIdx: 0,
       selectedSetIdx: 0,
       lastCompleted: { workout: null, dateISO: null, dateBR: null },
@@ -1031,9 +1042,6 @@
         });
       });
 
-      // MEMÓRIA INTELIGENTE DE PRÓXIMO DIA:
-      // Se já é um novo dia após o último treino salvo e o usuário ainda não iniciou outro hoje,
-      // garante automaticamente o próximo treino da sequência (A -> B -> C -> D -> A).
       const todayISO = getTodayISO();
       if (state.lastCompleted && state.lastCompleted.workout && state.lastCompleted.dateISO !== todayISO) {
         const expectedNext = getNextWorkoutKey(state.lastCompleted.workout);
@@ -1044,7 +1052,6 @@
           state.selectedSetIdx = 0;
         }
       }
-      // Garante índice válido
       const maxEx = WORKOUT_DB[state.activeWorkout].exercises.length - 1;
       if (state.activeExIdx > maxEx || state.activeExIdx < 0) state.activeExIdx = 0;
     }
@@ -1157,14 +1164,13 @@
       return sets.length > 0 && sets.every(s => s.d);
     }
 
-    // RENDERIZAR ABA TREINOS (MODO PLAYER OU MODO BOLINHAS)
+    // RENDERIZAR ABA TREINOS
     let playerTipsOpen = false;
     function renderWorkoutView() {
       const wkKey = state.activeWorkout;
       const wk = WORKOUT_DB[wkKey];
       const nextKey = getNextWorkoutKey(wkKey);
 
-      // Banner de Memória do Último Treino
       const memEl = document.getElementById("lastWkBanner");
       if (state.lastCompleted && state.lastCompleted.workout) {
         const lastW = state.lastCompleted.workout;
@@ -1180,7 +1186,6 @@
         `;
       }
 
-      // Faixa A B C D
       document.getElementById("wkSelector").innerHTML = WORKOUT_ORDER.map(k => {
         const item = WORKOUT_DB[k];
         return `<button class="wk-chip ${k === wkKey ? 'active' : ''}" onclick="selectWorkout('${k}')">
@@ -1207,7 +1212,7 @@
       updateStatsHeader();
     }
 
-    // MODO 1: PLAYER IMERSIVO DE FOCO ÚNICO
+    // MODO 1: PLAYER IMERSIVO
     function renderPlayerMode(wkKey, wk) {
       const exList = wk.exercises;
       if (state.activeExIdx >= exList.length) state.activeExIdx = 0;
@@ -1281,7 +1286,6 @@
             <span class="badge badge-cyan">${ex.sets}x ${ex.reps}</span>
           </div>
 
-          <!-- Palco Biomecânico 60 FPS Ao Vivo -->
           <div class="player-stage">
             <div class="phase-pill" id="playerPhasePill">Concêntrica</div>
             <div class="stage-tools">
@@ -1296,7 +1300,6 @@
           ${tipsHtml}
           ${prHtml}
 
-          <!-- Cronômetro de Descanso Integrado no Player -->
           <div class="player-rest-banner ${restRemaining > 0 ? 'active' : ''}" id="playerRestBanner">
             <div>
               <div style="font-size:10px; font-weight:800; color:var(--cyan); text-transform:uppercase;">⏳ Descansando para próxima série</div>
@@ -1308,14 +1311,12 @@
             </div>
           </div>
 
-          <!-- Bolinhas de Séries do Exercício -->
           <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); font-weight:700;">
             <span>Séries (toque p/ selecionar ou editar):</span>
             <span style="color:var(--cyan);">Editando S${state.selectedSetIdx + 1}</span>
           </div>
           <div class="bubbles-row">${bubblesHtml}</div>
 
-          <!-- Controles Grandes (- / +) para a Série Selecionada -->
           <div class="stepper-grid">
             <div class="stepper-box">
               <div class="stepper-label">Carga (kg) • S${state.selectedSetIdx + 1}</div>
@@ -1429,7 +1430,7 @@
       document.getElementById("workoutContentArea").innerHTML = html;
     }
 
-    // INTERAÇÕES DO PLAYER & BOLINHAS
+    // INTERAÇÕES
     function stepExercise(delta) {
       const len = WORKOUT_DB[state.activeWorkout].exercises.length;
       state.activeExIdx = (state.activeExIdx + delta + len) % len;
@@ -1477,7 +1478,6 @@
       const current = parseFloat(state.sets[exId][sIdx][field]) || 0;
       const next = Math.max(0, current + delta);
       state.sets[exId][sIdx][field] = next;
-      // Se ajustou o peso de uma série ainda não feita, replica automaticamente para as próximas séries não feitas para agilizar na academia
       if (field === 'w') {
         for (let i = sIdx + 1; i < state.sets[exId].length; i++) {
           if (!state.sets[exId][i].d) state.sets[exId][i].w = next;
@@ -1501,12 +1501,10 @@
       playBeep(760, 0.12);
       startRest(restSec);
 
-      // Avança para a próxima série não feita
       const nextUndone = state.sets[exId].findIndex(s => !s.d);
       if (nextUndone !== -1) {
         state.selectedSetIdx = nextUndone;
       } else {
-        // Exercício completo! Se houver próximo exercício incompleto, avança após 650ms
         const exList = WORKOUT_DB[state.activeWorkout].exercises;
         const nextEx = exList.findIndex((e, i) => i > state.activeExIdx && !isExerciseAllDone(e.id));
         if (nextEx !== -1) {
@@ -1545,7 +1543,6 @@
         if (nextUndone !== -1) {
           state.selectedSetIdx = nextUndone;
         } else {
-          // Fecha este exercício e abre o próximo automaticamente!
           const exList = WORKOUT_DB[state.activeWorkout].exercises;
           const nextEx = exList.findIndex((e, i) => i > exIdx && !isExerciseAllDone(e.id));
           if (nextEx !== -1) {
@@ -1605,7 +1602,6 @@
       renderWorkoutView();
     }
 
-    // FINALIZAR TREINO E MEMORIZAR PARA AVANÇAR NO PRÓXIMO DIA (A -> B -> C -> D -> A)
     function finishWorkoutSession() {
       const currentKey = state.activeWorkout;
       const wk = WORKOUT_DB[currentKey];
@@ -1636,20 +1632,17 @@
         cardio: !!state.cardio[currentKey]
       });
 
-      // Grava qual treino foi concluído por último e a data exata
       state.lastCompleted = {
         workout: currentKey,
         dateISO: getTodayISO(),
         dateBR: dateShortBR
       };
 
-      // Limpa as marcações do treino finalizado (mantendo pesos para a semana seguinte)
       wk.exercises.forEach(ex => {
         state.sets[ex.id].forEach(s => s.d = false);
       });
       state.cardio[currentKey] = false;
 
-      // Avança imediatamente para o próximo treino da sequência
       const nextKey = getNextWorkoutKey(currentKey);
       state.activeWorkout = nextKey;
       state.activeExIdx = 0;
@@ -1665,7 +1658,7 @@
       switchTab("ai");
     }
 
-    // MOTOR DE ANIMAÇÃO INLINE DO MODO PLAYER (60 FPS)
+    // MOTOR DE ANIMAÇÃO INLINE DO PLAYER (60 FPS)
     let inlineAnimFrame = null, inlineAnimExId = "a1", inlineAnimSpeed = 1, inlineAnimTick = 0;
 
     function startInlinePlayerAnim(exId) {
@@ -1703,9 +1696,8 @@
       inlineAnimFrame = requestAnimationFrame(loopInlinePlayer);
     }
 
-    // CRONÔMETRO DE DESCANSO SINCRONIZADO (BARRA INFERIOR + PLAYER)
-    let restInterval = null;
-    let restRemaining = 0;
+    // CRONÔMETRO DE DESCANSO SINCRONIZADO
+    let restInterval = null, restRemaining = 0;
     function formatRestClock(sec) {
       const m = String(Math.floor(sec / 60)).padStart(2, "0");
       const s = String(sec % 60).padStart(2, "0");
@@ -1725,15 +1717,8 @@
         }
       }, 1000);
     }
-    function addRestSeconds(extra) {
-      restRemaining += extra;
-      renderRestTime();
-    }
-    function stopRest() {
-      clearInterval(restInterval);
-      restRemaining = 0;
-      renderRestTime();
-    }
+    function addRestSeconds(extra) { restRemaining += extra; renderRestTime(); }
+    function stopRest() { clearInterval(restInterval); restRemaining = 0; renderRestTime(); }
     function renderRestTime() {
       const formatted = formatRestClock(restRemaining);
       document.getElementById("restDisplay").textContent = formatted;
@@ -1751,9 +1736,7 @@
       document.getElementById("plateModal").classList.add("open");
       renderPlateCalc();
     }
-    function closePlateModal() {
-      document.getElementById("plateModal").classList.remove("open");
-    }
+    function closePlateModal() { document.getElementById("plateModal").classList.remove("open"); }
     function renderPlateCalc() {
       const total = parseFloat(document.getElementById("plateTotalInput").value) || 0;
       const bar = parseFloat(document.getElementById("plateBarSelect").value) || 0;
@@ -2092,7 +2075,7 @@
       document.getElementById("vacStartBtn").textContent = "▶ Iniciar Ciclo Guiado";
     }
 
-    // MODAL BIOMECÂNICA 60 FPS (USADO NO MODO BOLINHAS)
+    // MODAL BIOMECÂNICA 60 FPS
     let animFrame = null, animExId = "a1", animSpeed = 1, animPaused = false, animTick = 0;
     function openAnimModal(wkKey, exId) {
       const ex = WORKOUT_DB[wkKey].exercises.find(e => e.id === exId);
@@ -2134,7 +2117,7 @@
       animFrame = requestAnimationFrame(loopBiomechanics);
     }
 
-    // MOTOR VETORIAL DOS 23 EXERCÍCIOS
+    // MOTOR VETORIAL DOS 27 EXERCÍCIOS
     function drawExerciseSVG(id, t, tick) {
       const floor = `<line x1="15" y1="180" x2="235" y2="180" stroke="#334155" stroke-width="4"/>`;
       switch (id) {
@@ -2227,6 +2210,23 @@
             <line x1="165" y1="76" x2="170" y2="102" stroke="#e2e8f0" stroke-width="5"/>
             <line x1="170" y1="102" x2="195" y2="${triY}" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>`;
         }
+        // A7: FACE PULL NA POLIA ALTA
+        case "a7": {
+          const handX = 165 - t * 42;
+          const elbowX = 132 - t * 38;
+          const elbowY = 80 - t * 8;
+          return `${floor}
+            <line x1="205" y1="30" x2="205" y2="180" stroke="#475569" stroke-width="6"/>
+            <line x1="205" y1="62" x2="${handX}" y2="66" stroke="#38bdf8" stroke-width="2"/>
+            <circle cx="95" cy="58" r="11" fill="#e2e8f0"/>
+            <line x1="95" y1="72" x2="92" y2="128" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
+            <line x1="92" y1="128" x2="82" y2="180" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>
+            <line x1="92" y1="128" x2="108" y2="180" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>
+            <circle cx="96" cy="76" r="7" fill="#10b981"/>
+            <line x1="96" y1="76" x2="${elbowX}" y2="${elbowY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <line x1="${elbowX}" y1="${elbowY}" x2="${handX}" y2="66" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <circle cx="${handX}" cy="66" r="6" fill="#f59e0b"/>`;
+        }
         case "b1": {
           const depth = (1 - t) * 36, hipX = 104 - (1 - t) * 10, hipY = 104 + depth, shX = 122, shY = 60 + depth;
           return `${floor}
@@ -2282,6 +2282,20 @@
             <line x1="147" y1="72" x2="154" y2="125" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
             <rect x="84" y="122" width="22" height="12" rx="3" fill="#f59e0b"/>
             <rect x="144" y="122" width="22" height="12" rx="3" fill="#f59e0b"/>`;
+        }
+        // B6: ELEVAÇÃO DE PERNAS NA BARRA / PARALELA
+        case "b6": {
+          const ang = t * 1.55;
+          const hipX = 105, hipY = 112;
+          const footX = hipX + Math.sin(ang) * 56;
+          const footY = hipY + Math.cos(ang) * 56;
+          return `${floor}
+            <line x1="70" y1="22" x2="145" y2="22" stroke="#94a3b8" stroke-width="5"/>
+            <line x1="105" y1="22" x2="105" y2="62" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="105" cy="56" r="10" fill="#e2e8f0"/>
+            <line x1="105" y1="68" x2="${hipX}" y2="${hipY}" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
+            <line x1="${hipX}" y1="${hipY}" x2="${footX}" y2="${footY}" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+            <circle cx="${footX}" cy="${footY}" r="5" fill="#f59e0b"/>`;
         }
         case "c1": {
           const dbY = 86 - t * 38;
@@ -2361,6 +2375,29 @@
             <line x1="102" y1="${dipY + 18}" x2="115" y2="110" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
             <line x1="114" y1="${dipY + 42}" x2="102" y2="${dipY + 68}" stroke="#64748b" stroke-width="7" stroke-linecap="round"/>`;
         }
+        // C7: BI-SET ROSCA MARTELO + TRÍCEPS FRANCÊS
+        case "c7": {
+          const hammerY = 122 - t * 38;
+          const frenchX = 185 + t * 30;
+          const frenchY = 72 - t * 26;
+          return `${floor}
+            <line x1="125" y1="20" x2="125" y2="180" stroke="#1e293b" stroke-dasharray="4 4" stroke-width="2"/>
+            <text x="18" y="34" fill="#10b981" font-size="10" font-weight="bold">1. ROSCA MARTELO</text>
+            <circle cx="62" cy="58" r="10" fill="#e2e8f0"/>
+            <line x1="62" y1="70" x2="62" y2="125" stroke="#10b981" stroke-width="9" stroke-linecap="round"/>
+            <line x1="62" y1="125" x2="62" y2="180" stroke="#64748b" stroke-width="7"/>
+            <line x1="62" y1="76" x2="65" y2="104" stroke="#e2e8f0" stroke-width="5"/>
+            <line x1="65" y1="104" x2="90" y2="${hammerY}" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+            <rect x="86" y="${hammerY - 9}" width="8" height="18" rx="2" fill="#f59e0b"/>
+            <text x="136" y="34" fill="#38bdf8" font-size="10" font-weight="bold">2. TRÍCEPS FRANCÊS</text>
+            <line x1="138" y1="170" x2="${frenchX}" y2="${frenchY}" stroke="#94a3b8" stroke-width="2"/>
+            <circle cx="176" cy="64" r="10" fill="#e2e8f0"/>
+            <line x1="172" y1="76" x2="162" y2="126" stroke="#38bdf8" stroke-width="9" stroke-linecap="round"/>
+            <line x1="162" y1="126" x2="155" y2="180" stroke="#64748b" stroke-width="7"/>
+            <line x1="172" y1="78" x2="188" y2="56" stroke="#e2e8f0" stroke-width="5" stroke-linecap="round"/>
+            <line x1="188" y1="56" x2="${frenchX}" y2="${frenchY}" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="${frenchX}" cy="${frenchY}" r="5" fill="#f59e0b"/>`;
+        }
         case "d1": {
           const hipX = 88 + t * 18, shX = 148 - t * 32, shY = 98 - t * 34, barY = 142 - t * 32;
           return `${floor}
@@ -2405,6 +2442,24 @@
             <line x1="144" y1="${kneeY}" x2="144" y2="${166 - lift}" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>
             <line x1="132" y1="${172 - lift}" x2="158" y2="168" stroke="#e2e8f0" stroke-width="6" stroke-linecap="round"/>
             <rect x="132" y="${kneeY - 12}" width="24" height="10" rx="3" fill="#f59e0b"/>`;
+        }
+        // D6: HIPEREXTENSÃO LOMBAR (BANCO ROMANO 45°)
+        case "d6": {
+          const hipX = 115, hipY = 115;
+          const shX = 148 + t * 16;
+          const shY = 146 - t * 68;
+          return `${floor}
+            <!-- Estrutura Banco 45° -->
+            <line x1="64" y1="180" x2="120" y2="120" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+            <line x1="115" y1="124" x2="142" y2="180" stroke="#475569" stroke-width="6"/>
+            <rect x="104" y="114" width="24" height="10" rx="4" fill="#94a3b8"/>
+            <!-- Pernas apoiadas a 45° -->
+            <line x1="72" y1="168" x2="${hipX}" y2="${hipY}" stroke="#38bdf8" stroke-width="9" stroke-linecap="round"/>
+            <!-- Tronco subindo até alinhar -->
+            <line x1="${hipX}" y1="${hipY}" x2="${shX}" y2="${shY}" stroke="#10b981" stroke-width="11" stroke-linecap="round"/>
+            <circle cx="${shX + 10}" cy="${shY - 6}" r="10" fill="#e2e8f0"/>
+            <!-- Anilha abraçada no peito -->
+            <circle cx="${(hipX + shX)/2 + 6}" cy="${(hipY + shY)/2 + 8}" r="9" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>`;
         }
         default: {
           const vacIn = t * 9;
@@ -2479,7 +2534,7 @@
     }
     function exportBackup() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-      const a = document.createElement("a"); a.href = dataStr; a.download = "vtaper_v5_backup.json"; a.click();
+      const a = document.createElement("a"); a.href = dataStr; a.download = "vtaper_v5_1_backup.json"; a.click();
     }
 
     // PWA INSTALL & SERVICE WORKER

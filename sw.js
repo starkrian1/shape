@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vtaper-pro-v5';
+const CACHE_NAME = 'vtaper-pro-v6';
 const ASSETS = [
   './',
   './index.html',
