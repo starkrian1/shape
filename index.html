@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#090d16">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>V-Taper Protocol V5.1 Pro</title>
+  <title>Shape-V Rian</title>
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <style>
@@ -379,7 +379,7 @@
       <button class="icon-btn" onclick="toggleDrawer(true)" aria-label="Menu">☰</button>
       <div class="brand-logo">V</div>
       <div>
-        <div class="brand-title">V-TAPER PRO V5.1</div>
+        <div class="brand-title">Shape-V Rian</div>
         <div class="brand-sub">27 Exercícios • Player • Auto-Next</div>
       </div>
     </div>
@@ -1164,6 +1164,13 @@
       return sets.length > 0 && sets.every(s => s.d);
     }
 
+    // Busca circular: prioriza pendentes à frente e, se estiver no fim, volta para o início
+    function findNextPendingExIdx(exList, currentIdx) {
+      const after = exList.findIndex((e, i) => i > currentIdx && !isExerciseAllDone(e.id));
+      if (after !== -1) return after;
+      return exList.findIndex((e, i) => i !== currentIdx && !isExerciseAllDone(e.id));
+    }
+
     // RENDERIZAR ABA TREINOS
     let playerTipsOpen = false;
     function renderWorkoutView() {
@@ -1250,8 +1257,10 @@
       if (allWorkoutDone) {
         actionBtnHtml = `<button class="btn-giant" onclick="finishWorkoutSession()">🏆 TREINO COMPLETO! SALVAR & IR P/ ${getNextWorkoutKey(wkKey)}</button>`;
       } else if (allExDone) {
-        const nextExIdx = (state.activeExIdx + 1) % exList.length;
-        actionBtnHtml = `<button class="btn-giant" style="background:linear-gradient(135deg, #06b6d4, #0284c7); color:#fff;" onclick="jumpToExercise(${nextExIdx})">➡️ EXERCÍCIO CONCLUÍDO! IR PARA O PRÓXIMO</button>`;
+        const nextExIdx = findNextPendingExIdx(exList, state.activeExIdx);
+        const targetIdx = nextExIdx !== -1 ? nextExIdx : (state.activeExIdx + 1) % exList.length;
+        const isWrapBack = targetIdx < state.activeExIdx;
+        actionBtnHtml = `<button class="btn-giant" style="background:linear-gradient(135deg, #06b6d4, #0284c7); color:#fff;" onclick="jumpToExercise(${targetIdx})">${isWrapBack ? '↩️ VOLTAR P/ PENDENTE: ' + exList[targetIdx].name : '➡️ EXERCÍCIO CONCLUÍDO! IR PARA O PRÓXIMO'}</button>`;
       } else {
         const nextUndone = getFirstUndoneSetIdx(ex.id);
         const targetIdx = !curSet.d ? state.selectedSetIdx : nextUndone;
@@ -1506,7 +1515,7 @@
         state.selectedSetIdx = nextUndone;
       } else {
         const exList = WORKOUT_DB[state.activeWorkout].exercises;
-        const nextEx = exList.findIndex((e, i) => i > state.activeExIdx && !isExerciseAllDone(e.id));
+        const nextEx = findNextPendingExIdx(exList, state.activeExIdx);
         if (nextEx !== -1) {
           saveState();
           renderWorkoutView();
@@ -1544,7 +1553,7 @@
           state.selectedSetIdx = nextUndone;
         } else {
           const exList = WORKOUT_DB[state.activeWorkout].exercises;
-          const nextEx = exList.findIndex((e, i) => i > exIdx && !isExerciseAllDone(e.id));
+          const nextEx = findNextPendingExIdx(exList, exIdx);
           if (nextEx !== -1) {
             saveState();
             renderWorkoutView();
@@ -1619,6 +1628,26 @@
       if (setsDone === 0) {
         alert("Conclua pelo menos uma série antes de salvar o treino!");
         return;
+      }
+
+      const pendingExercises = wk.exercises.filter(ex => !isExerciseAllDone(ex.id));
+      if (pendingExercises.length > 0) {
+        const pendingNames = pendingExercises.map(e => `• ${e.name}`).join("\n");
+        const forceFinish = confirm(
+          `⚠️ Ainda há ${pendingExercises.length} exercício(s) pendente(s):\n${pendingNames}\n\n` +
+          `• CANCELAR: voltar agora para o exercício pendente\n` +
+          `• OK: encerrar incompleto e avançar para o próximo treino`
+        );
+
+        if (!forceFinish) {
+          const firstPendingIdx = wk.exercises.findIndex(e => !isExerciseAllDone(e.id));
+          state.activeExIdx = firstPendingIdx;
+          state.selectedSetIdx = getFirstUndoneSetIdx(wk.exercises[firstPendingIdx].id);
+          saveState();
+          renderWorkoutView();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
       }
 
       const nowBR = new Date().toLocaleDateString("pt-BR", { day:"2-digit", month:"2-digit", hour:"2-digit", minute:"2-digit" });
@@ -2205,7 +2234,7 @@
             <line x1="215" y1="40" x2="215" y2="180" stroke="#475569" stroke-width="4"/>
             <line x1="215" y1="40" x2="195" y2="${triY}" stroke="#94a3b8" stroke-width="2"/>
             <circle cx="165" cy="58" r="10" fill="#e2e8f0"/>
-            <line x1="165" y1="70" x2="165" y2="125" stroke="#1e293b" stroke="#38bdf8" stroke-width="8" stroke-linecap="round"/>
+            <line x1="165" y1="70" x2="165" y2="125" stroke="#1e293b" stroke-width="8" stroke-linecap="round"/>
             <line x1="165" y1="125" x2="165" y2="180" stroke="#64748b" stroke-width="7"/>
             <line x1="165" y1="76" x2="170" y2="102" stroke="#e2e8f0" stroke-width="5"/>
             <line x1="170" y1="102" x2="195" y2="${triY}" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>`;
@@ -2534,7 +2563,7 @@
     }
     function exportBackup() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-      const a = document.createElement("a"); a.href = dataStr; a.download = "vtaper_v5_1_backup.json"; a.click();
+      const a = document.createElement("a"); a.href = dataStr; a.download = "vtaper_v5_2_backup.json"; a.click();
     }
 
     // PWA INSTALL & SERVICE WORKER
